@@ -1,9 +1,12 @@
-//fragile data
-require('dotenv').config({path: "./env/.env"});
+//fragile data... ES6...
+import * as dotenv from 'dotenv'
+dotenv.config({path: "./env/.env"});
 //express
-const express = require("express");
+import express from "express";
+//for testing on localhost
+import cors from 'cors';
 //db
-const connectDB = require('./db/config');
+import { connectDB }  from './db/config.js';
 
 
 //connect DB
@@ -12,6 +15,8 @@ connectDB();
 
 //set up expressa
 const app = express();
+//for testing on localhost
+app.use(cors());
 //allow to handle json
 app.use(express.json());
 
@@ -25,7 +30,7 @@ app.get("/url", (req, res, next) => {
         );
    });
 
-app.use('/api/stages', require('./api/stages/routes/stages.routes'));
+//app.use('/api/stages', require('./api/stages/routes/stages.routes'));
 
 //set up PORTU - albo taki z env albo 5000
 const PORT = process.env.PORT || 5000;

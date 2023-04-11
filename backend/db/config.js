@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 // creating function to connect - fragile data in ENV format
 const connectDB = async() => {
@@ -9,4 +9,4 @@ const connectDB = async() => {
     console.log('mongoDB connected');
 }
 
-module.exports = connectDB;
+export { connectDB };

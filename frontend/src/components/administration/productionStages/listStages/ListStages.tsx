@@ -1,17 +1,30 @@
+
+import useFetchData from '../../../../services/useFetch';
 import { Link } from 'react-router-dom'
-import AddNewStage from '../addNewStage/AddnewStage'
+
 import './ListStages.css'
 
 function ListStages() {
   
 
-  return (
-    <section>
-    <div>list stages</div>
-    <Link to= "/adminStages/new"> Add new </Link>
+  const { isLoading, isError, data, errorMessage } = useFetchData('http://localhost:5000/url');
 
-    </section>
-    
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (isError) {
+    return <div>{errorMessage}</div>;
+  }
+
+  return (
+    <div>
+      <ul>
+      {data?.map(({id, name}:any)=>{
+        return <li key={id}>{name}</li>;
+      })}
+      </ul>
+    </div>
   )
 }
 
