@@ -1,12 +1,18 @@
+import ListStages from '../listStages/ListStages';
+import { useLoaderData } from 'react-router-dom';
+
 import './StagePage.css'
 
+
+interface StageData {
+    results: Stage[];
+  }
+
 function StagePage() {
+  const stages = useLoaderData();
   
   return (
-    <div>
-      LIST
-      
-    </div>
+    <ListStages stages={stages} />
   )
 }
 
@@ -25,6 +31,5 @@ export const stagesLoader = async (): Promise<StageData> => {
   const response = await fetch ("http://localhost:5000/url");
 
   const data = await response.json();
-  console.log(data);
   return data  ;
 }

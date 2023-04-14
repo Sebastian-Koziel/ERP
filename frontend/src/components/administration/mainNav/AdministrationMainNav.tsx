@@ -1,11 +1,8 @@
 import "./AdministrationMainNav.css"
 import { NavLink } from "react-router-dom"
 
-
-
 function AdministrationMainNav() {
   
-
   return (
     <section>
       <div className="nav">

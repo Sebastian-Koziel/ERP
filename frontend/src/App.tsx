@@ -14,6 +14,7 @@ import AddNewStage from './components/administration/productionStages/addNewStag
 import CompanyLogin from './components/companyLogin/CompanyLogin';
 
 import ProductionStage from './components/production/ProductionStage';
+import SingleStagePage, { singleStagesLoader } from './components/administration/productionStages/singleStagePage/SingleStagePage';
 
 
 
@@ -46,6 +47,11 @@ const router = createBrowserRouter([
           { 
             path: 'new', 
             element: <AddNewStage />
+          },
+          { 
+            path: ':stageId', 
+            element: <SingleStagePage />,
+            loader: singleStagesLoader
           },
         ]
       },

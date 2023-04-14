@@ -10,7 +10,7 @@ import { connectDB }  from './db/config.js';
 
 
 //connect DB
-connectDB();
+//connectDB();
 
 
 //set up expressa
@@ -21,6 +21,7 @@ app.use(cors());
 app.use(express.json());
 
 app.get("/url", (req, res, next) => {
+    console.log(`wszystkie`)
     res.json(
         [
             { id: 1, name: 'Test1' },
@@ -28,6 +29,32 @@ app.get("/url", (req, res, next) => {
             { id: 3, name: 'Test3' }
         ]
         );
+   });
+
+app.get("/url/:id", (req, res, next) => {
+    console.log(`pojedyncze ${req.params.id}` )
+    if(req.params.id === '1'){
+        res.json(
+            
+                { id: 1, name: 'Test1' },
+            
+            );
+    }
+    if(req.params.id === '2'){
+        res.json(
+            
+            { id: 2, name: 'Test2' },
+        
+        );
+    }
+    if(req.params.id === '3'){
+        res.json(
+            
+            { id: 3, name: 'Test3' },
+        
+        );
+    }
+    
    });
 
 //app.use('/api/stages', require('./api/stages/routes/stages.routes'));
