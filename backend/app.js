@@ -20,16 +20,27 @@ app.use(cors());
 //allow to handle json
 app.use(express.json());
 
+const dummy = [
+    { id: 1, name: 'Test1' },
+    { id: 2, name: 'Test2' },
+    { id: 3, name: 'Test3' }
+]
+
 app.get("/url", (req, res, next) => {
     console.log(`wszystkie`)
     res.json(
-        [
-            { id: 1, name: 'Test1' },
-            { id: 2, name: 'Test2' },
-            { id: 3, name: 'Test3' }
-        ]
+        dummy
         );
    });
+
+app.post("/stage/add", (req, res, next) => {
+    dummy.push(
+        {
+        id: Math.random(),
+        name: req.body.name
+        }
+        );
+})
 
 app.get("/url/:id", (req, res, next) => {
     console.log(`pojedyncze ${req.params.id}` )

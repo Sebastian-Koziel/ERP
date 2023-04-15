@@ -1,5 +1,5 @@
 
-import { useLoaderData } from 'react-router-dom';
+import { useRouteLoaderData, Link } from 'react-router-dom';
 
 import './SingleStagePage.css'
 
@@ -13,18 +13,22 @@ interface Stage {
     stageId: number;
   }
 
+
 function SingleStagePage() {
-  const stage = useLoaderData();
+  const stage = useRouteLoaderData("stagesLoader");
   
   return (
+    <>
     <div>{stage.name}</div>
+    <Link to='edit'>edit</Link>
+    </>
   )
 }
 
 export default SingleStagePage
 
 
-export const singleStagesLoader = async ({ request, params }): Promise<Stage> => {
+export const singleStagesLoader = async ({ params }: { params: MyLoaderProps }): Promise<Stage> => {
   const stageId = params.stageId;
   
 

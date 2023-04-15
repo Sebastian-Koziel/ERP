@@ -1,6 +1,6 @@
 
 import './App.css'
-import { Route, Routes, Navigate, createBrowserRouter, RouterProvider, createRoutesFromElements } from 'react-router-dom'
+import {createBrowserRouter, RouterProvider} from 'react-router-dom'
 
 import AdministrationRoot from './components/administration/administrationRoot/AdministrationRoot';
 
@@ -9,12 +9,13 @@ import Summary from './components/administration/summary/Summary';
 import StagesRoot from './components/administration/productionStages/stagesRoot/StagesRoot';
 import StagePage from './components/administration/productionStages/StagesPage/StagesPage';
 import { stagesLoader } from './components/administration/productionStages/StagesPage/StagesPage';
-import AddNewStage from './components/administration/productionStages/addNewStage/AddnewStage';
+import AddNewStage, { action as newStageAction } from './components/administration/productionStages/addNewStage/AddnewStage';
 
 import CompanyLogin from './components/companyLogin/CompanyLogin';
 
 import ProductionStage from './components/production/ProductionStage';
 import SingleStagePage, { singleStagesLoader } from './components/administration/productionStages/singleStagePage/SingleStagePage';
+import EditStage from './components/administration/productionStages/editStage/EditStage';
 
 
 
@@ -46,13 +47,25 @@ const router = createBrowserRouter([
           },
           { 
             path: 'new', 
-            element: <AddNewStage />
+            element: <AddNewStage />,
+            action: newStageAction
           },
-          { 
-            path: ':stageId', 
-            element: <SingleStagePage />,
-            loader: singleStagesLoader
-          },
+          {
+            path: ":stageId",
+            id: "stagesLoader",
+            loader: singleStagesLoader,
+            children: [
+              { 
+                path: '', 
+                element: <SingleStagePage />,  
+              },
+              { 
+                path: 'edit', 
+                element: <EditStage />,  
+              },
+            ]
+          }
+          
         ]
       },
     ]
