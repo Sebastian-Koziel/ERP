@@ -17,6 +17,9 @@ function CompanyLogin() {
     if(inpu.current?.value === 'admin'){
       navigate('/administration')
     } 
+    if(inpu.current?.value === 'client'){
+      navigate('/client')
+    }
     
   }
 
@@ -24,7 +27,7 @@ function CompanyLogin() {
     <section>
    <div className='login'> 
    <div>login firmowy</div>
-   <div>można się zalogować "druk" albo "admin"</div>
+   <div>można się zalogować "druk", "client" albo "admin"</div>
    <input type="text" ref={inpu}></input>
    <button onClick={submitHandler}>Login</button>
    </div>

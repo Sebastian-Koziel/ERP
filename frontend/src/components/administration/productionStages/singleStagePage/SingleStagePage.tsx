@@ -16,11 +16,21 @@ interface Stage {
 
 function SingleStagePage() {
   const stage = useRouteLoaderData("stagesLoader");
-  
+  function startDeleteHandler(){
+    const proceed = window.confirm('are ju siur?');
+
+    if(proceed){
+      //powinna być osobny component na to
+      //nie wiem jak dodac kilka akcji do 1 sciezki
+      console.log(`gonna delete ${stage.id}`)
+    }
+  }
+
   return (
     <>
     <div>{stage.name}</div>
     <Link to='edit'>edit</Link>
+    <button onClick={startDeleteHandler}>Delete</button>
     </>
   )
 }

@@ -17,6 +17,8 @@ import ProductionStage from './components/production/ProductionStage';
 import SingleStagePage, { singleStagesLoader } from './components/administration/productionStages/singleStagePage/SingleStagePage';
 import EditStage from './components/administration/productionStages/editStage/EditStage';
 
+import ClientSideRoot from './components/clientside/ClientSideRoot';
+
 
 
 const router = createBrowserRouter([
@@ -27,6 +29,10 @@ const router = createBrowserRouter([
   { 
     path: '/production', 
     element: <ProductionStage />
+  },
+  { 
+    path: '/client', 
+    element: <ClientSideRoot />
   },
   { 
     path: '/administration', 
