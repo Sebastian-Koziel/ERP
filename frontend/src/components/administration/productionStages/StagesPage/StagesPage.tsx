@@ -1,5 +1,5 @@
 import ListStages from '../listStages/ListStages';
-import { useLoaderData } from 'react-router-dom';
+import { useRouteLoaderData } from 'react-router-dom';
 
 import './StagePage.css'
 
@@ -9,8 +9,8 @@ interface StageData {
   }
 
 function StagePage() {
-  const stages = useLoaderData();
-  
+  const stages = useRouteLoaderData('stages');
+  console.log(stages);
   return (
     <ListStages stages={stages} />
   )

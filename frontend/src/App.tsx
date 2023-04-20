@@ -11,7 +11,7 @@ import StagePage from './components/administration/productionStages/StagesPage/S
 import { stagesLoader } from './components/administration/productionStages/StagesPage/StagesPage';
 import AddNewStage, { action as newStageAction } from './components/administration/productionStages/addNewStage/AddnewStage';
 
-import CompanyLogin from './components/companyLogin/CompanyLogin';
+import CompanyLogin, {action} from './components/companyLogin/CompanyLogin';
 
 import ProductionStage from './components/production/ProductionStage';
 import SingleStagePage, { singleStagesLoader } from './components/administration/productionStages/singleStagePage/SingleStagePage';
@@ -20,11 +20,41 @@ import EditStage from './components/administration/productionStages/editStage/Ed
 import ClientSideRoot from './components/clientside/ClientSideRoot';
 
 
+import UsersRoot from './components/administration/users/Root/UsersRoot';
+import UserListPage, { usersLoader, deleteUser} from './components/administration/users/ListPage/UserListPage';
+import AddNewUser, {action as addNewUser} from './components/administration/users/New/AddNewUser';
+import UserDetails, {userByIdLoader as findUser} from './components/administration/users/Details/UserDetails';
+
+const userRoutes = {
+  path: 'users', 
+        element: <UsersRoot />,
+        children: [
+          {
+            index: true,
+            id:'user',
+            element: <UserListPage />,
+            loader: usersLoader,
+            action: deleteUser
+          },
+          { 
+            path: 'new', 
+            element: <AddNewUser />,
+            action: addNewUser
+          },
+          { 
+            path: ':userId', 
+            id: 'singleUserLoader',
+            element: <UserDetails />,
+            loader: findUser
+          },
+        ]
+}
 
 const router = createBrowserRouter([
   { 
-    path: '', 
-    element: <CompanyLogin />
+    path: '/', 
+    element: <CompanyLogin />,
+    action: action
   },
   { 
     path: '/production', 
@@ -39,15 +69,17 @@ const router = createBrowserRouter([
     element: <AdministrationRoot />,
     children: [
       { 
-        path: '', 
+        index: true, 
         element: <Summary />
       },
+      userRoutes,
       { 
         path: 'stages', 
         element: <StagesRoot />,
         children: [
           { 
-            path: '', 
+            index:true,
+            id: 'stages', 
             element: <StagePage />,
             loader: stagesLoader
           },
@@ -79,84 +111,7 @@ const router = createBrowserRouter([
   
 ]);
 
-
-/* const router = createBrowserRouter(createRoutesFromElements(
   
-    <Route path="/administration" element={<AdministrationRoot />}>
-      <Route index element={<Summary />}/>
-      <Route path="stages" element={<StagesRoot />}>
-        <Route index element={<ListStages />}/>
-        <Route path="new" element={<AddNewStage />}/>
-      </Route>
-    </Route>
-
-
-  
-  
-  
-)) */
-
-/* const router = createBrowserRouter([
-  { 
-    path: '/', 
-    element: <CompanyLogin />
-  },
-  { 
-    path: '/production', 
-    element: <ProductionStage />
-  },
-  { 
-    path: '/administration', 
-    element: <AdministrationRoot />,
-    children: [
-      {
-        path: '', 
-        element: <Summary />, 
-      },
-      {
-        path: 'stages', 
-        element: <StagesRoot />, 
-        children: [
-          {
-            path: '', 
-            element: <ListStages />, 
-          },
-          {
-            path: 'new', 
-            element: <AddNewStage />, 
-          },
-        ]
-      }
-    ]
-  },
-
-
-]); */
-
-/* const router = createBrowserRouter([
-  { path: '/production', element: <ProductionStage />},
-
-  { path: '/', element: <CompanyLogin />},
-
-   { path: '/administration', element: <AdministrationRoot />, children: [
-    { path: '', index: true, element: <Summary />},
-    { path: 'stages', element: <StagesRoot />, children: [
-      { path: '', index: true, element: <ListStages />},
-      { path: 'new', element: <AddNewStage />},
-      { path: ':stageId', element: <DetailsStage />},
-      { path: ':stageId/edit', element: <EditStage />}
-    ]},
-   ]},
-   
-
-
-   return (
-   <RouterProvider router={router} />
-  )
-
-
- ]); */
-
 function App() {
   return (
   <RouterProvider router={router} />

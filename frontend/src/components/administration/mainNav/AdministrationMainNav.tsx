@@ -28,6 +28,15 @@ function AdministrationMainNav() {
         Production Stages
       </NavLink>
       </li>
+      <li>
+        <NavLink to="users" 
+        className={( navData) => 
+          navData.isActive ? 'active' : undefined
+      }
+      >
+        Users
+      </NavLink>
+      </li>
     </ul>
     </div>
     </section>

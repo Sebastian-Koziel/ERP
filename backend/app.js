@@ -1,17 +1,19 @@
 //fragile data... ES6...
 import * as dotenv from 'dotenv'
 dotenv.config({path: "./env/.env"});
+import jwt from 'jsonwebtoken';
 //express
 import express from "express";
 //for testing on localhost
 import cors from 'cors';
 //db
 import { connectDB }  from './db/config.js';
-
+import mongoose from 'mongoose';
 
 //connect DB
-//connectDB();
+connectDB();
 
+//import * as authRoutes from'./api/auth/routes/auth.js';
 
 //set up expressa
 const app = express();
@@ -20,11 +22,149 @@ app.use(cors());
 //allow to handle json
 app.use(express.json());
 
+//app.use(bodyParser.json());
+
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PATCH,DELETE');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type,Authorization');
+  next();
+});
+
+const KEY = 'supersecret';
+
+function createJSONToken(login) {
+  return jwt.sign({ login }, KEY, { expiresIn: '1h' });
+}
+
+///// LOGIN ////
+
+app.post("/login", async (req, res, next ) => {
+    console.log(`trying to log back`)
+    const { login, password} = req.body;
+
+    console.log(login, password)
+
+    if(!login || !password){
+        console.log(`error`);
+    }
+
+    try{
+        //takes 1 from database and define password
+        const user = await User.findOne({ login }).select("+password");
+
+        //if count not find
+        if(!user) {
+            
+            console.log(`no user`);
+            return;
+        }
+
+        let token = createJSONToken(login);
+        res.json({success: true, token, user});
+
+        
+
+    }
+    catch (error){
+        console.log(`error catch`);
+    }
+});
+
+///// USERS //////
+
+const UserSchema = new mongoose.Schema({
+    login : {
+        type : String,
+        require: [true, "Pleae provide a mail"],
+        unique: true,
+    },
+    password: {
+        type: String,
+        require: [true, "Pleae provide a password"],
+    },
+    role: {
+        type: String
+    }
+    
+});
+
+const User = mongoose.model("User", UserSchema);
+
+
+
+//app.use(authRoutes);
+let zapytanie = 0;
+
 const dummy = [
     { id: 1, name: 'Test1' },
     { id: 2, name: 'Test2' },
     { id: 3, name: 'Test3' }
 ]
+
+app.get("/url/users", async (req, res, next) => {
+    console.log(`zapytanie o wszystkich userow ${zapytanie}`)
+    
+    try{
+    const users = await User.find({} );
+    
+    res.json(users); 
+    }
+    catch{
+
+    }
+   });
+
+app.get("/user/:id", async (req, res, next) => {
+    console.log(`zapytanie usera ${req.params.id}`)
+    const id = req.params.id;
+    try{
+        console.log(id)
+    const user = await User.findById(id);
+    
+    res.json(user); 
+    }
+    catch{
+        console.log(`error`)
+    }
+});
+
+app.delete("/user/delete/:id", async (req, res, next) => {
+    console.log(`usuwam usera ${req.params.id}`)
+    const id = req.params.id;
+    try{
+        
+    await User.findByIdAndDelete(id);
+     
+    }
+    catch{
+        console.log(`error`)
+    }
+});
+
+app.post("/user/add", (req, res, next) => {
+    
+    const {login, password, role} = req.body;
+
+    console.log('probuje dodac usera');
+
+    try {
+        const user = User.create({
+            login, password, role
+        });
+
+        //sendToken(user, 200, res);
+    }
+    catch (error) {
+        
+    }
+});
+
+   
+
+
+
+
 
 app.get("/url", (req, res, next) => {
     console.log(`wszystkie`)
