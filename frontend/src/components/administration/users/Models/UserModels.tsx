@@ -4,6 +4,7 @@ export interface User {
     //surname: string,
     login: string,
     password: string,
-    role: string
+    role: string,
+    test: string
 }
 

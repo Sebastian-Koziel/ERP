@@ -2,59 +2,32 @@
 import './App.css'
 import {createBrowserRouter, RouterProvider} from 'react-router-dom'
 
-import AdministrationRoot from './components/administration/administrationRoot/AdministrationRoot';
-
-import Summary from './components/administration/summary/Summary';
-
-import StagesRoot from './components/administration/productionStages/stagesRoot/StagesRoot';
-import StagePage from './components/administration/productionStages/StagesPage/StagesPage';
-import { stagesLoader } from './components/administration/productionStages/StagesPage/StagesPage';
-import AddNewStage, { action as newStageAction } from './components/administration/productionStages/addNewStage/AddnewStage';
-
+//ROUTES
+//login
 import CompanyLogin, {action} from './components/companyLogin/CompanyLogin';
-
+//production view
 import ProductionStage from './components/production/ProductionStage';
-import SingleStagePage, { singleStagesLoader } from './components/administration/productionStages/singleStagePage/SingleStagePage';
-import EditStage from './components/administration/productionStages/editStage/EditStage';
-
+//client
 import ClientSideRoot from './components/clientside/ClientSideRoot';
+//administration
+import AdministrationRoot from './components/administration/administrationRoot/AdministrationRoot';
+import Summary from './components/administration/summary/Summary';
+//administration - users
+import { userRoutes } from './Routes/AdministratioUsers';
+//administration - stages
+import { stagesRoutes } from './Routes/AdministrationStages';
+//auth
+import { logOut, tokenAndAccesLoader } from './services/auth';
+import AdministrationAuth from './components/auth/AdministrationAuth';
+import { Children } from 'react';
 
 
-import UsersRoot from './components/administration/users/Root/UsersRoot';
-import UserListPage, { usersLoader, deleteUser} from './components/administration/users/ListPage/UserListPage';
-import AddNewUser, {action as addNewUser} from './components/administration/users/New/AddNewUser';
-import UserDetails, {userByIdLoader as findUser} from './components/administration/users/Details/UserDetails';
-
-const userRoutes = {
-  path: 'users', 
-        element: <UsersRoot />,
-        children: [
-          {
-            index: true,
-            id:'user',
-            element: <UserListPage />,
-            loader: usersLoader,
-            action: deleteUser
-          },
-          { 
-            path: 'new', 
-            element: <AddNewUser />,
-            action: addNewUser
-          },
-          { 
-            path: ':userId', 
-            id: 'singleUserLoader',
-            element: <UserDetails />,
-            loader: findUser
-          },
-        ]
-}
 
 const router = createBrowserRouter([
   { 
     path: '/', 
     element: <CompanyLogin />,
-    action: action
+    action: action,
   },
   { 
     path: '/production', 
@@ -64,50 +37,30 @@ const router = createBrowserRouter([
     path: '/client', 
     element: <ClientSideRoot />
   },
+  {
+    path: '/logout', 
+    action: logOut
+  },
   { 
     path: '/administration', 
-    element: <AdministrationRoot />,
+    element: <AdministrationAuth />,
     children: [
       { 
-        index: true, 
-        element: <Summary />
-      },
-      userRoutes,
-      { 
-        path: 'stages', 
-        element: <StagesRoot />,
+        element: <AdministrationRoot />,
+        id: 'root',
+        loader: tokenAndAccesLoader,
         children: [
           { 
-            index:true,
-            id: 'stages', 
-            element: <StagePage />,
-            loader: stagesLoader
+            index: true, 
+            element: <Summary />
           },
-          { 
-            path: 'new', 
-            element: <AddNewStage />,
-            action: newStageAction
-          },
-          {
-            path: ":stageId",
-            id: "stagesLoader",
-            loader: singleStagesLoader,
-            children: [
-              { 
-                path: '', 
-                element: <SingleStagePage />,  
-              },
-              { 
-                path: 'edit', 
-                element: <EditStage />,  
-              },
-            ]
-          }
-          
+          userRoutes,
+          stagesRoutes
         ]
-      },
+      }
     ]
   },
+  
   
 ]);
 
@@ -121,3 +74,8 @@ function App() {
 export default App
 
 
+/*TODO
+uporzadkowac kod w app.tsx (routy)
+
+
+*/

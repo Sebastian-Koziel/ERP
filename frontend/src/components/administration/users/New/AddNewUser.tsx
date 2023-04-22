@@ -1,5 +1,5 @@
 import { Form, json, redirect, useNavigate, useNavigation } from 'react-router-dom'
-
+import "./AddNewUser.css";
 
 function AddNewUser() {
   
@@ -44,6 +44,9 @@ function AddNewUser() {
           
       </select>
 
+      <input type="checkbox" id="access-productionStagesRoot" name="access-productionStagesRoot" value="true"/>
+      <label htmlFor="access-productionStagesRoot"> Production stages</label>
+
       <button type="submit">ADD</button>
 
       <button type="button" onClick={cancelHandler} disabled={isSubmitting}>
@@ -64,7 +67,8 @@ export async function action({request}:{request:Request}) {
   const authData = {
     login: data.get('login'),
     password: data.get('password'),
-    role: data.get('role')
+    role: data.get('role'),
+    test: data.get('access-productionStagesRoot')
   }
   console.log(authData)
   console.log('probuje dodac usera front');

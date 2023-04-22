@@ -5,9 +5,8 @@ import UserList from '../List/UserList';
 
 
 function UserListPage() {
+    
     const users = useRouteLoaderData('user');
-  
-//<ListStages stages={stages} />
 
   return (
     <UserList users = {users} />
@@ -20,14 +19,13 @@ export default UserListPage
 export const usersLoader = async (): Promise<User[]> => {
   const response = await fetch ("http://localhost:5000/url/users");
   const data = await response.json();
-  return data  ;
+  return data;
 }
 
 
 export async function deleteUser({request}:{request:Request}) {
   const data = await request.formData();
   const id = data.get('id')
-
 
   console.log(`front probuje usunac usera ${id}`);
 

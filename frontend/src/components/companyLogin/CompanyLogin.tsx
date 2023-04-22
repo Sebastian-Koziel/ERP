@@ -42,15 +42,13 @@ export default CompanyLogin
 
 
 export async function action({request}:{request:Request}) {
-  console.log(`trying to log`)
+  
 
   const data = await request.formData();
   const authData = {
     login: data.get('login'),
     password: data.get('password'),
   };
-
-  console.log(authData)
 
   const response = await fetch('http://localhost:5000/login', {
     method: 'POST',
@@ -70,11 +68,14 @@ export async function action({request}:{request:Request}) {
 
   const resData = await response.json();
   const token = resData.token;
+  const user = resData.user;
 
   localStorage.setItem('token', token);
   const expiration = new Date();
   expiration.setHours(expiration.getHours() + 1);
   localStorage.setItem('expiration', expiration.toISOString());
+
+  localStorage.setItem('access', user.test);
 
   if(resData.user.role === "Admin" || resData.user.role === "Administration"){
   return redirect('/administration');

@@ -85,6 +85,9 @@ const UserSchema = new mongoose.Schema({
     },
     role: {
         type: String
+    },
+    test:{
+        type: String
     }
     
 });
@@ -144,13 +147,13 @@ app.delete("/user/delete/:id", async (req, res, next) => {
 
 app.post("/user/add", (req, res, next) => {
     
-    const {login, password, role} = req.body;
+    const {login, password, role, test} = req.body;
 
     console.log('probuje dodac usera');
 
     try {
         const user = User.create({
-            login, password, role
+            login, password, role, test
         });
 
         //sendToken(user, 200, res);

@@ -1,4 +1,4 @@
-import { Link, redirect, useSubmit } from 'react-router-dom';
+import { Link, useSubmit } from 'react-router-dom';
 import { User } from '../Models/UserModels';
 
 
@@ -15,7 +15,7 @@ function UserList(users:any) {
         }
     }
     users = users.users;
-    console.log(users)
+   
   return (
     <>
     <table>
@@ -29,6 +29,9 @@ function UserList(users:any) {
                         </th>
                         <th>
                             role
+                        </th>
+                        <th>
+                            access to stages
                         </th>
                         <th>
                             show
@@ -50,6 +53,9 @@ function UserList(users:any) {
                     </td>
                     <td>
                         {user.role}
+                    </td>
+                    <td>
+                        {user.test}
                     </td>
                     <td>
                         <Link to={user._id}>show</Link>
