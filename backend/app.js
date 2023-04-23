@@ -86,24 +86,20 @@ const UserSchema = new mongoose.Schema({
     role: {
         type: String
     },
-    test:{
+    name: {
         type: String
+    },
+    surname: {
+        type: String
+    },
+    test:{
+        type: String,
+        default: true
     }
     
 });
 
 const User = mongoose.model("User", UserSchema);
-
-
-
-//app.use(authRoutes);
-let zapytanie = 0;
-
-const dummy = [
-    { id: 1, name: 'Test1' },
-    { id: 2, name: 'Test2' },
-    { id: 3, name: 'Test3' }
-]
 
 app.get("/url/users", async (req, res, next) => {
     console.log(`zapytanie o wszystkich userow ${zapytanie}`)
@@ -145,18 +141,18 @@ app.delete("/user/delete/:id", async (req, res, next) => {
     }
 });
 
-app.post("/user/add", (req, res, next) => {
+app.post("/user/add", async (req, res, next) => {
     
-    const {login, password, role, test} = req.body;
+    const {login, password, role, test, name, surname} = req.body;
 
     console.log('probuje dodac usera');
 
     try {
-        const user = User.create({
-            login, password, role, test
+        const user = await User.create({
+            login, password, role, test, name, surname
         });
-
-        //sendToken(user, 200, res);
+        
+        res.json(user._id );
     }
     catch (error) {
         
@@ -167,7 +163,16 @@ app.post("/user/add", (req, res, next) => {
 
 
 
+///STAGES////
 
+//app.use(authRoutes);
+let zapytanie = 0;
+
+const dummy = [
+    { id: 1, name: 'Test1' },
+    { id: 2, name: 'Test2' },
+    { id: 3, name: 'Test3' }
+]
 
 app.get("/url", (req, res, next) => {
     console.log(`wszystkie`)

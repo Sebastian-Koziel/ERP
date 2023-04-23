@@ -75,7 +75,7 @@ export default App
 
 
 /*TODO
-uporzadkowac kod w app.tsx (routy)
+przy logowaniu sprawdzic token jak jest to od razu nav w zaleznosci od roli
 
 
 */

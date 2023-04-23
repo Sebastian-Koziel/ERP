@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom"
-function UserListNav() {
+function UserDetailsNav() {
   
 
   return (
@@ -13,17 +13,16 @@ function UserListNav() {
       }
       end
       >
-        List
+        General information
       </NavLink>
       </li>
       <li>
-        <NavLink to="new" 
+        <NavLink to="access" 
         className={( navData) => 
           navData.isActive ? 'active' : undefined
       }
-      
       >
-        New
+        Role and access
       </NavLink>
       </li>
       
@@ -33,4 +32,4 @@ function UserListNav() {
   )
 }
 
-export default UserListNav
+export default UserDetailsNav

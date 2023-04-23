@@ -3,6 +3,9 @@ import UsersRoot from '../components/administration/users/Root/UsersRoot';
 import UserListPage, { usersLoader, deleteUser} from '../components/administration/users/ListPage/UserListPage';
 import AddNewUser, {action as addNewUser} from '../components/administration/users/New/AddNewUser';
 import UserDetails, {userByIdLoader as findUser} from '../components/administration/users/Details/UserDetails';
+import UserGeneralInfo from '../components/administration/users/Details/GeneralInfo/UserGeneralInfo';
+import UserAccess from '../components/administration/users/Details/AccessAndRoles/AccessAndRoles';
+import UsersDetailsRoot from '../components/administration/users/Details/DetailsPage/DetailsPage';
 
 const userRoutes:any = {
     path: 'users', 
@@ -23,8 +26,19 @@ const userRoutes:any = {
             { 
               path: ':userId', 
               id: 'singleUserLoader',
-              element: <UserDetails />,
-              loader: findUser
+              element: <UsersDetailsRoot />,
+              loader: findUser,
+              children: [
+                {
+                  index: true,
+                  element: <UserGeneralInfo />,
+                   
+                },
+                {
+                  path: 'access',
+                  element: <UserAccess />,  
+                }
+              ]
             },  
           ]
   }

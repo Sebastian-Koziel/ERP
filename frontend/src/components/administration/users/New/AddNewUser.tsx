@@ -35,6 +35,24 @@ function AddNewUser() {
           
         />
 
+    <label htmlFor="name">name</label>
+        <input
+          id="name"
+          type="text"
+          name="name"
+          required
+          
+        />
+
+    <label htmlFor="surname">surname</label>
+        <input
+          id="surname"
+          type="text"
+          name="surname"
+          required
+          
+        />
+
     <label htmlFor="role">Role</label>
       <select id="role" name="role">
           <option value="Administration">Administration</option>
@@ -44,8 +62,7 @@ function AddNewUser() {
           
       </select>
 
-      <input type="checkbox" id="access-productionStagesRoot" name="access-productionStagesRoot" value="true"/>
-      <label htmlFor="access-productionStagesRoot"> Production stages</label>
+      
 
       <button type="submit">ADD</button>
 
@@ -67,8 +84,9 @@ export async function action({request}:{request:Request}) {
   const authData = {
     login: data.get('login'),
     password: data.get('password'),
-    role: data.get('role'),
-    test: data.get('access-productionStagesRoot')
+    name: data.get('name'),
+    surname: data.get('surname'),
+    role: data.get('role'),  
   }
   console.log(authData)
   console.log('probuje dodac usera front');
@@ -81,19 +99,11 @@ export async function action({request}:{request:Request}) {
     body: JSON.stringify(authData)
   });
 
-  //error handling
-  if(response.status === 422 || response.status === 401) {
-    console.log(`m1`)
-    return response;
-  }
-
-  if(!response.ok) {
-    console.log(`m2`)
-    throw json({message: 'Could not authenticate user.'}, {status: 500});
-  }
+  const resData:string = await response.json();
   
+  console.log(resData);
 
   console.log(`wsio ok`)
   //redirect
-  return redirect("administration/users");
+  return redirect("/administration/users/" + resData);
 }
