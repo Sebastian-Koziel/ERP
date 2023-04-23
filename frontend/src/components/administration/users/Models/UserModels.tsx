@@ -4,7 +4,18 @@ export interface User {
     //surname: string,
     login: string,
     password: string,
-    role: string,
-    test: string
+    name: string,
+    surname: string,
+    access: {
+        role: string,
+        users:{
+            general: true
+        },
+        stages: {
+            general: true
+        }
+    }
+    
+    
 }
 

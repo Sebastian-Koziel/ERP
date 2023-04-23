@@ -75,15 +75,15 @@ export async function action({request}:{request:Request}) {
   expiration.setHours(expiration.getHours() + 1);
   localStorage.setItem('expiration', expiration.toISOString());
 
-  localStorage.setItem('access', user.test);
+  localStorage.setItem('access', user.access);
 
-  if(resData.user.role === "Admin" || resData.user.role === "Administration"){
+  if(resData.user.access.role === "Admin" || resData.user.role === "Administration"){
   return redirect('/administration');
   }
-  if(resData.user.role === "Production"){
+  if(resData.user.access.role === "Production"){
     return redirect('/production');
     }
-  if(resData.user.role === "Client"){
+  if(resData.user.access.role === "Client"){
       return redirect('/client');
     }
 }

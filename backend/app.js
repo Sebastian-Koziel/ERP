@@ -83,19 +83,30 @@ const UserSchema = new mongoose.Schema({
         type: String,
         require: [true, "Pleae provide a password"],
     },
-    role: {
-        type: String
-    },
     name: {
         type: String
     },
     surname: {
         type: String
     },
-    test:{
-        type: String,
-        default: true
+    access: {
+        role: {
+            type: String
+        },
+        usersNav:{
+            general: {
+                type: Boolean,
+                default: true
+            }
+        },
+        stages: {
+            general: {
+                type: Boolean,
+                default: true
+            }
+        }
     }
+   
     
 });
 
@@ -134,7 +145,7 @@ app.delete("/user/delete/:id", async (req, res, next) => {
     try{
         
     await User.findByIdAndDelete(id);
-     
+    res.json({message: 'wsio ok'} );
     }
     catch{
         console.log(`error`)
@@ -142,15 +153,22 @@ app.delete("/user/delete/:id", async (req, res, next) => {
 });
 
 app.post("/user/add", async (req, res, next) => {
-    
-    const {login, password, role, test, name, surname} = req.body;
+        
+    const {login, password, role, name, surname} = req.body;
 
     console.log('probuje dodac usera');
 
     try {
         const user = await User.create({
-            login, password, role, test, name, surname
-        });
+            login: login,
+        password: password,
+        name: name,
+        surname: surname,
+        access: {
+                    role: role,
+                }
+            });
+        
         
         res.json(user._id );
     }

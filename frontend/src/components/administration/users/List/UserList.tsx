@@ -31,7 +31,10 @@ function UserList(users:any) {
                             role
                         </th>
                         <th>
-                            access to stages
+                            name
+                        </th>
+                        <th>
+                            surname
                         </th>
                         <th>
                             show
@@ -52,10 +55,13 @@ function UserList(users:any) {
                         {user.password}
                     </td>
                     <td>
-                        {user.role}
+                        {user.access.role}
                     </td>
                     <td>
-                        {user.test}
+                        {user.name}
+                    </td>
+                    <td>
+                        {user.surname}
                     </td>
                     <td>
                         <Link to={user._id}>show</Link>
