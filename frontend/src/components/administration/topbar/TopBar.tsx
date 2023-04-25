@@ -26,7 +26,7 @@ function TopBar() {
           <Center>
             <Box>
               <Form action="/logout" method="post">
-                <Button mr="1rem">Logout</Button>
+                <Button mr="0.5rem">Logout</Button>
               </Form>
             </Box>
           </Center>
