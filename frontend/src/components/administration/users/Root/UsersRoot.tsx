@@ -1,19 +1,17 @@
-import { Outlet, Navigate } from "react-router-dom"
-import UserListNav from "../ListNav/UserListNav"
-import { hasAccessToUsers } from "../../../../services/auth"
-
-
+import { Outlet, Navigate } from "react-router-dom";
+import UserListNav from "../ListNav/UserListNav";
+import { hasAccessToUsers } from "../../../../services/auth";
 
 function UsersRoot() {
   return (
     <>
-    {!hasAccessToUsers() && <Navigate to="/administration"/>}
+      {!hasAccessToUsers() && <Navigate to="/administration" />}
 
-        <UserListNav />
-        
-        <Outlet />
+      <UserListNav />
+
+      <Outlet />
     </>
-  )
+  );
 }
 
-export default UsersRoot
+export default UsersRoot;

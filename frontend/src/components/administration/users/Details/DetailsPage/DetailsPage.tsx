@@ -1,18 +1,14 @@
-import { Outlet } from "react-router-dom"
-import UserDetailsNav from "../DetailsNav/DetailsNav"
+import { Outlet } from "react-router-dom";
+import UserDetailsNav from "../DetailsNav/DetailsNav";
 
 function UsersDetailsRoot() {
-
-  
-
   return (
     <>
-        <UserDetailsNav />
-        
-        <Outlet />
+      <UserDetailsNav />
+
+      <Outlet />
     </>
-  )
+  );
 }
 
-export default UsersDetailsRoot
-
+export default UsersDetailsRoot;
