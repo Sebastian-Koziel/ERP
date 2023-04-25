@@ -1,4 +1,4 @@
-import { Form, json, redirect, useNavigate, useNavigation } from 'react-router-dom'
+import { Form, redirect, useNavigate, useNavigation } from 'react-router-dom'
 import "./AddNewUser.css";
 
 function AddNewUser() {
@@ -88,8 +88,8 @@ export async function action({request}:{request:Request}) {
     surname: data.get('surname'),
     role: data.get('role'),  
   }
-  console.log(authData)
-  console.log('probuje dodac usera front');
+  //console.log(authData)
+  //console.log('probuje dodac usera front');
 
   const response = await fetch('http://localhost:5000/user/add', {
     method: 'POST',
@@ -101,9 +101,9 @@ export async function action({request}:{request:Request}) {
 
   const resData:string = await response.json();
   
-  console.log(resData);
+  //console.log(resData);
 
-  console.log(`wsio ok`)
+  //console.log(`wsio ok`)
   //redirect
   return redirect("/administration/users/" + resData);
 }

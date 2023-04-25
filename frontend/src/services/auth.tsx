@@ -8,23 +8,33 @@ export function logOut(){
     return redirect('/')
 }
 
-export function tokenAndAccesLoader(){
-    
-    return getAuthTokenAndAccess();
-
-}
 
 export function isLogged(){
     const token = localStorage.getItem('token');
-    return token;
+    if(!token){
+        return false;
+    }
+    return true;
 }
-export function hasAccess(component:String){
-    const access = localStorage.getItem('access');
-    return access;
+export function hasAccessToStages(){
+    
+    const accessJSON = localStorage.getItem('access');
+    if(accessJSON !== null){
+    const access: any = accessJSON ? JSON.parse(accessJSON) : {};
+    return access.stages.general;
+    }
+    
+    return false;
+
 }
 
-export function getAuthTokenAndAccess(){
-    const token = localStorage.getItem('token');
-    const access = localStorage.getItem('access');
-    return token;
+export function hasAccessToUsers(){
+    
+    const accessJSON = localStorage.getItem('access');
+    if(accessJSON !== null){
+    const access: any = accessJSON ? JSON.parse(accessJSON) : {};
+
+    return access.usersNav.general;
+    }
+    return false;
 }

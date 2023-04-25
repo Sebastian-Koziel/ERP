@@ -23,16 +23,16 @@ interface MyLoaderProps {
 }
 
 export const userByIdLoader = async ({ params }: { params: MyLoaderProps }): Promise<User> => {
-  console.log(`sss`)
+  
 const userId = params.userId;
-console.log(`front probuje wbic na usera ${userId}`)
+//console.log(`front probuje wbic na usera ${userId}`)
 
 const response = await fetch ("http://localhost:5000/user/" +userId);
 
 const data = await response.json();
 
 
-console.log(data)
+//console.log(data)
 
 return data  ;
 }

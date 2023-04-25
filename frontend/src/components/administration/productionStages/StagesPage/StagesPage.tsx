@@ -10,7 +10,7 @@ interface StageData {
 
 function StagePage() {
   const stages = useRouteLoaderData('stages');
-  console.log(stages);
+  
   return (
     <ListStages stages={stages} />
   )

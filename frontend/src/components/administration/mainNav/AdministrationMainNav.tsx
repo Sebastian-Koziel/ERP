@@ -1,8 +1,10 @@
+import { hasAccessToStages, hasAccessToUsers } from "../../../services/auth"
 import "./AdministrationMainNav.css"
 import { NavLink } from "react-router-dom"
 
 function AdministrationMainNav() {
- 
+
+
   return (
     <section>
       <div className="nav">
@@ -19,24 +21,28 @@ function AdministrationMainNav() {
         Summary
       </NavLink>
       </li>
-      <li>
-        <NavLink to="stages" 
-        className={( navData) => 
-          navData.isActive ? 'active' : undefined
+      { hasAccessToStages() &&
+        <li>
+          <NavLink to="stages" 
+          className={( navData) => 
+            navData.isActive ? 'active' : undefined
+        }
+        >
+          Production Stages
+        </NavLink>
+        </li>
       }
-      >
-        Production Stages
-      </NavLink>
-      </li>
-      <li>
-        <NavLink to="users" 
-        className={( navData) => 
-          navData.isActive ? 'active' : undefined
+      { hasAccessToUsers() && 
+        <li>
+          <NavLink to="users" 
+          className={( navData) => 
+            navData.isActive ? 'active' : undefined
+        }
+        >
+          Users
+        </NavLink>
+        </li>
       }
-      >
-        Users
-      </NavLink>
-      </li>
     </ul>
     </div>
     </section>

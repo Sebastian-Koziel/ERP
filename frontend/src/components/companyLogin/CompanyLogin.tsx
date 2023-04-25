@@ -1,30 +1,16 @@
-import { useRef } from "react";
-import { useNavigate, redirect, Form, json } from "react-router-dom";
+import { redirect, Form, json, Navigate } from "react-router-dom";
 
 import './CompanyLogin.css'
+import { isLogged } from "../../services/auth";
 
 function CompanyLogin() {
 
-  const navigate = useNavigate();
-  const inpu = useRef<HTMLInputElement>(null);
-
-  const submitHandler = () => {
-    if(inpu.current?.value === 'druk'){
-      
-      navigate('/production')
-    } 
-
-    if(inpu.current?.value === 'admin'){
-      navigate('/administration')
-    } 
-    if(inpu.current?.value === 'client'){
-      navigate('/client')
-    }
-    
-  }
+  
 
   return (
     <>
+    {isLogged() && <Navigate to="/administration"/>}
+    
     <div className="log-form">
     <h2>Login to your company</h2>
     <Form method='post'>
@@ -70,20 +56,24 @@ export async function action({request}:{request:Request}) {
   const token = resData.token;
   const user = resData.user;
 
+  console.log(user.access)
+
   localStorage.setItem('token', token);
   const expiration = new Date();
   expiration.setHours(expiration.getHours() + 1);
   localStorage.setItem('expiration', expiration.toISOString());
 
-  localStorage.setItem('access', user.access);
+  localStorage.setItem('access', JSON.stringify(user.access));
 
-  if(resData.user.access.role === "Admin" || resData.user.role === "Administration"){
+  if(user.access.role === "Admin" || user.role === "Administration"){
   return redirect('/administration');
   }
-  if(resData.user.access.role === "Production"){
+  if(user.access.role === "Production"){
     return redirect('/production');
     }
-  if(resData.user.access.role === "Client"){
+  if(user.access.role === "Client"){
       return redirect('/client');
     }
+
+    return null;
 }

@@ -17,9 +17,9 @@ import { userRoutes } from './Routes/AdministratioUsers';
 //administration - stages
 import { stagesRoutes } from './Routes/AdministrationStages';
 //auth
-import { logOut, tokenAndAccesLoader } from './services/auth';
-import AdministrationAuth from './components/auth/AdministrationAuth';
-import { Children } from 'react';
+import { logOut } from './services/auth';
+
+
 
 
 
@@ -42,23 +42,19 @@ const router = createBrowserRouter([
     action: logOut
   },
   { 
-    path: '/administration', 
-    element: <AdministrationAuth />,
+    path: '/administration',
+    element: <AdministrationRoot />,
+    id: 'root',
     children: [
       { 
-        element: <AdministrationRoot />,
-        id: 'root',
-        loader: tokenAndAccesLoader,
-        children: [
-          { 
-            index: true, 
-            element: <Summary />
-          },
-          userRoutes,
-          stagesRoutes
+        index: true, 
+        element: <Summary />
+      },
+      userRoutes,
+      stagesRoutes
         ]
-      }
-    ]
+      
+    
   },
   
   

@@ -152,6 +152,26 @@ app.delete("/user/delete/:id", async (req, res, next) => {
     }
 });
 
+
+app.patch("/user/updateAccess", async (req, res, next) => {
+    const userId = req.body.id;
+
+    console.log(`edytuje usera ${userId}`)
+
+    try{
+        
+    const user = await User.findById(userId);
+    user.access.stages.general = req.body.stagesGeneralAccess;
+    user.access.usersNav.general = req.body.usersNavGeneralAccess;
+    await user.save();
+    res.json({message: 'wsio ok'} );
+    }
+    catch{
+        console.log(`error`)
+    }
+});
+
+
 app.post("/user/add", async (req, res, next) => {
         
     const {login, password, role, name, surname} = req.body;
