@@ -14,12 +14,9 @@ function AdministrationMainNav() {
         <NavLink to="" 
         className={( navData) => 
           navData.isActive ? 'active' : undefined
-        
-      }
-      end
-      >
-        Summary
-      </NavLink>
+        }end>
+          Summary
+        </NavLink>
       </li>
       { hasAccessToStages() &&
         <li>
@@ -37,10 +34,10 @@ function AdministrationMainNav() {
           <NavLink to="users" 
           className={( navData) => 
             navData.isActive ? 'active' : undefined
-        }
-        >
-          Users
-        </NavLink>
+          }
+          >
+            Users
+          </NavLink>
         </li>
       }
     </ul>

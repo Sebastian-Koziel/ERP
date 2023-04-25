@@ -1,5 +1,7 @@
 import { redirect, Form, json, Navigate } from "react-router-dom";
 
+import {Container, Input, Button, Heading, InputGroup, Stack} from '@chakra-ui/react'
+
 import './CompanyLogin.css'
 import { isLogged } from "../../services/auth";
 
@@ -11,15 +13,20 @@ function CompanyLogin() {
     <>
     {isLogged() && <Navigate to="/administration"/>}
     
-    <div className="log-form">
-    <h2>Login to your company</h2>
-    <Form method='post'>
-      <input type="text" title="login" name="login" placeholder="username" />
-      <input type="password" title="password" name="password" placeholder="password" />
-      <button type="submit" className="btn">Login</button>
-      
-    </Form>
-    </div>
+    <Container>
+      <Heading mt="50%" mb="1.5rem" ml="2.5rem">Login to your company</Heading>
+      <Form method='post'>
+        <InputGroup size='md'>
+          <Stack direction="row" spacing={1}>
+            <Stack direction="row" spacing={1}>
+              <Input type="text" title="login" name="login" placeholder="Enter username"  />
+              <Input type="password" title="password" name="password" placeholder="Enter password"  />
+            </Stack>
+            <Button type="submit" className="btn" colorScheme="blackAlpha">Login</Button>
+          </Stack>
+        </InputGroup>
+      </Form>
+    </Container>
     </>
   )
 }

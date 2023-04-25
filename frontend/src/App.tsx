@@ -1,7 +1,7 @@
 
 import './App.css'
 import {createBrowserRouter, RouterProvider} from 'react-router-dom'
-
+import { ChakraProvider } from '@chakra-ui/react'
 //ROUTES
 //login
 import CompanyLogin, {action} from './components/companyLogin/CompanyLogin';
@@ -63,7 +63,9 @@ const router = createBrowserRouter([
   
 function App() {
   return (
-  <RouterProvider router={router} />
+    <ChakraProvider>
+      <RouterProvider router={router} />
+    </ChakraProvider>
   )
 }
 
