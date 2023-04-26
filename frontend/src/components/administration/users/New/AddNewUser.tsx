@@ -1,4 +1,14 @@
 import { Form, redirect, useNavigate, useNavigation } from "react-router-dom";
+import {
+  Container,
+  Input,
+  Button,
+  Select,
+  Spacer,
+  VStack,
+  StackDivider,
+  Stack,
+} from "@chakra-ui/react";
 import "./AddNewUser.css";
 
 function AddNewUser() {
@@ -12,37 +22,69 @@ function AddNewUser() {
   }
 
   return (
-    <section>
-      <div>
-        <Form method="post">
-          <label htmlFor="login">Login</label>
-          <input id="login" type="text" name="login" required />
+    <Container mt="1rem" mb="1rem" centerContent>
+      <Form method="post">
+        <Stack minW="container.sm">
+          <Input
+            id="login"
+            type="text"
+            name="login"
+            required
+            placeholder="Login"
+            variant="outline"
+          />
 
-          <label htmlFor="password">Password</label>
-          <input id="password" type="password" name="password" required />
+          <Input
+            id="password"
+            type="password"
+            name="password"
+            required
+            placeholder="Password"
+            variant="outline"
+          />
 
-          <label htmlFor="name">name</label>
-          <input id="name" type="text" name="name" required />
+          <Input
+            id="name"
+            type="text"
+            name="name"
+            required
+            placeholder="Name"
+            variant="outline"
+          />
 
-          <label htmlFor="surname">surname</label>
-          <input id="surname" type="text" name="surname" required />
+          <Input
+            id="surname"
+            type="text"
+            name="surname"
+            required
+            placeholder="Surname"
+            variant="outline"
+          />
 
-          <label htmlFor="role">Role</label>
-          <select id="role" name="role">
-            <option value="Administration">Administration</option>
+          <Select id="role" name="role" placeholder="Select Role">
             <option value="Production">Production</option>
             <option value="Client">Client</option>
             <option value="Admin">Admin</option>
-          </select>
+          </Select>
 
-          <button type="submit">ADD</button>
+          <Spacer />
 
-          <button type="button" onClick={cancelHandler} disabled={isSubmitting}>
+          <Button type="submit" variant="solid" colorScheme="purple">
+            ADD
+          </Button>
+
+          <Button
+            type="button"
+            onClick={cancelHandler}
+            disabled={isSubmitting}
+            variant="outline"
+            colorScheme="purple"
+          >
             Cancel
-          </button>
-        </Form>
-      </div>
-    </section>
+          </Button>
+        </Stack>
+      </Form>
+    </Container>
   );
 }
 
