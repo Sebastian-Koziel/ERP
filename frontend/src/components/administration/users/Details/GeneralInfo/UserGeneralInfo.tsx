@@ -1,16 +1,22 @@
 import { User } from "../../Models/UserModels";
 import { useRouteLoaderData } from "react-router-dom";
+import { Card, CardBody, CardHeader, Heading, Text } from "@chakra-ui/react";
 
 function UserGeneralInfo() {
   const user: any | User = useRouteLoaderData(`singleUserLoader`);
 
   return (
-    <>
-      {/* <span>Name: {user.name}</span>
-    <span>Surname: {user.surname}</span> */}
-      <span>login: {user.login}</span>
-      <span>password: {user.password}</span>
-    </>
+    <Card>
+      <CardHeader>
+        <Heading size="sm">
+          User Info : {user.name} {user.surname}
+        </Heading>
+      </CardHeader>
+      <CardBody>
+        <Text>login: {user.login}</Text>
+        <Text>password: {user.password}</Text>
+      </CardBody>
+    </Card>
   );
 }
 

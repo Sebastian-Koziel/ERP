@@ -30,15 +30,17 @@ function CompanyLogin() {
                   title="login"
                   name="login"
                   placeholder="Enter username"
+                  
                 />
                 <Input
                   type="password"
                   title="password"
                   name="password"
                   placeholder="Enter password"
+                  
                 />
               </Stack>
-              <Button type="submit" className="btn" colorScheme="blackAlpha">
+              <Button type="submit" className="btn" colorScheme="purple">
                 Login
               </Button>
             </Stack>

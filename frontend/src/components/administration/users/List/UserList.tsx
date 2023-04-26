@@ -1,5 +1,18 @@
+import './UserList.css'
+
 import { Link, useSubmit } from "react-router-dom";
 import { User } from "../Models/UserModels";
+import {
+  Table,
+  Thead,
+  Tbody,
+  Tr,
+  Th,
+  Td,
+  TableCaption,
+  TableContainer,
+  Button
+} from "@chakra-ui/react";
 
 function UserList(users: any) {
   const submit = useSubmit();
@@ -15,41 +28,52 @@ function UserList(users: any) {
 
   return (
     <>
-      <table>
-        <tbody>
-          <tr>
-            <th>login</th>
-            <th>password</th>
-            <th>role</th>
-            <th>name</th>
-            <th>surname</th>
-            <th>show</th>
-            <th>delete</th>
-          </tr>
-
+      <TableContainer>
+        <Table variant="simple">
+          <TableCaption>Users List</TableCaption>
+          <Thead>
+            <Tr>
+              <Th>Login</Th>
+              <Th>Password</Th>
+              <Th>Role</Th>
+              <Th>Name</Th>
+              <Th>Surname</Th>
+              <Th></Th>
+              <Th></Th>
+            </Tr>
+          </Thead>
+          <Tbody>
           {users.map((user: User) => (
-            <tr>
-              <td>{user.login}</td>
-              <td>{user.password}</td>
-              <td>{user.access.role}</td>
-              <td>{user.name}</td>
-              <td>{user.surname}</td>
-              <td>
-                <Link to={user._id}>show</Link>
-              </td>
-              <td>
-                <button
-                  type="button"
-                  onClick={() => startDeleteHandler(user._id)}
-                >
-                  Remove
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </>
+              <Tr>
+                <Td>{user.login}</Td>
+                <Td className="hidenText">{user.password}</Td>
+                <Td>{user.access.role}</Td>
+                <Td>{user.name}</Td>
+                <Td>{user.surname}</Td>
+                <Td>
+                  <Button variant='solid' colorScheme="purple">
+                  <Link to={user._id}>show</Link>
+                  </Button>
+                </Td>
+                <Td>
+                  <Button
+                  variant='solid'
+                  colorScheme="red"
+                    type="button"
+                    onClick={() => startDeleteHandler(user._id)}
+                  >
+                    Remove
+                  </Button>
+                </Td>
+              </Tr>
+            ))}
+          </Tbody>
+        </Table>
+      </TableContainer>
+
+     
+      </>
+   
   );
 }
 

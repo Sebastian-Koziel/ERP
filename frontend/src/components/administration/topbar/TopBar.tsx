@@ -15,14 +15,14 @@ function TopBar() {
       <Flex
         w="100%"
         h="3.5rem"
-        bg="gray.300"
+        bg="purple.600"
         justify="space-between"
         wrap="wrap"
         gap="2"
       >
         <Center>
           <Box flexGrow="1" ml="1rem">
-            <Heading>Statera</Heading>
+            <Heading color='aliceblue'>Statera</Heading>
           </Box>
         </Center>
         <Spacer />
@@ -33,14 +33,16 @@ function TopBar() {
                   TO DO 
                     Wklejenie nazwy użytkowika
                 */}
-              <Text>Username</Text>
+              <Text color='aliceblue'>Username</Text>
             </>
           </Box>
         </Center>
         <Center>
           <Box>
             <Form action="/logout" method="post">
-              <Button mr="0.5rem">Logout</Button>
+              <Button mr="0.5rem" type="submit" color='aliceblue' colorScheme="purple" variant='outline'>
+                Logout
+              </Button>
             </Form>
           </Box>
         </Center>
