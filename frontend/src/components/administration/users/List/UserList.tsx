@@ -1,4 +1,4 @@
-import './UserList.css'
+import "./UserList.css";
 
 import { Link, useSubmit } from "react-router-dom";
 import { User } from "../Models/UserModels";
@@ -11,7 +11,8 @@ import {
   Td,
   TableCaption,
   TableContainer,
-  Button
+  Button,
+  Container,
 } from "@chakra-ui/react";
 
 function UserList(users: any) {
@@ -28,52 +29,51 @@ function UserList(users: any) {
 
   return (
     <>
-      <TableContainer>
-        <Table variant="simple">
-          <TableCaption>Users List</TableCaption>
-          <Thead>
-            <Tr>
-              <Th>Login</Th>
-              <Th>Password</Th>
-              <Th>Role</Th>
-              <Th>Name</Th>
-              <Th>Surname</Th>
-              <Th></Th>
-              <Th></Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-          {users.map((user: User) => (
+      <Container centerContent minW="75%">
+        <TableContainer>
+          <Table variant="simple">
+            <TableCaption>Users List</TableCaption>
+            <Thead>
               <Tr>
-                <Td>{user.login}</Td>
-                <Td className="hidenText">{user.password}</Td>
-                <Td>{user.access.role}</Td>
-                <Td>{user.name}</Td>
-                <Td>{user.surname}</Td>
-                <Td>
-                  <Button variant='solid' colorScheme="purple">
-                  <Link to={user._id}>show</Link>
-                  </Button>
-                </Td>
-                <Td>
-                  <Button
-                  variant='solid'
-                  colorScheme="red"
-                    type="button"
-                    onClick={() => startDeleteHandler(user._id)}
-                  >
-                    Remove
-                  </Button>
-                </Td>
+                <Th>Login</Th>
+                <Th>Password</Th>
+                <Th>Role</Th>
+                <Th>Name</Th>
+                <Th>Surname</Th>
+                <Th></Th>
+                <Th></Th>
               </Tr>
-            ))}
-          </Tbody>
-        </Table>
-      </TableContainer>
-
-     
-      </>
-   
+            </Thead>
+            <Tbody>
+              {users.map((user: User) => (
+                <Tr>
+                  <Td>{user.login}</Td>
+                  <Td className="hidenText">{user.password}</Td>
+                  <Td>{user.access.role}</Td>
+                  <Td>{user.name}</Td>
+                  <Td>{user.surname}</Td>
+                  <Td>
+                    <Button variant="solid" colorScheme="purple">
+                      <Link to={user._id}>Show</Link>
+                    </Button>
+                  </Td>
+                  <Td>
+                    <Button
+                      variant="solid"
+                      colorScheme="red"
+                      type="button"
+                      onClick={() => startDeleteHandler(user._id)}
+                    >
+                      Remove
+                    </Button>
+                  </Td>
+                </Tr>
+              ))}
+            </Tbody>
+          </Table>
+        </TableContainer>
+      </Container>
+    </>
   );
 }
 

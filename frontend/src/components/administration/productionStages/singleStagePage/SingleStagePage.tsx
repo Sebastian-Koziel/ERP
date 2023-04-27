@@ -1,6 +1,7 @@
 import { useRouteLoaderData, Link } from "react-router-dom";
 
 import "./SingleStagePage.css";
+import { Container, Heading, Button, Stack, Divider } from "@chakra-ui/react";
 
 interface Stage {
   id: number;
@@ -25,9 +26,30 @@ function SingleStagePage() {
 
   return (
     <>
+      <Container centerContent>
+        <Stack direction="row" p={4}>
+          <Heading>{stage.name}</Heading>
+          <Divider orientation="vertical" />
+
+          <Link to="edit">
+            <Button variant="outline" colorScheme="purple">
+              Edit
+            </Button>
+          </Link>
+          <Button
+            onClick={startDeleteHandler}
+            variant="solid"
+            colorScheme="red"
+          >
+            Delete
+          </Button>
+        </Stack>
+      </Container>
+
+      {/* 
       <div>{stage.name}</div>
       <Link to="edit">edit</Link>
-      <button onClick={startDeleteHandler}>Delete</button>
+      <button onClick={startDeleteHandler}>Delete</button> */}
     </>
   );
 }

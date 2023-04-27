@@ -11,7 +11,7 @@ function UserDetailsNav() {
             className={(navData) => (navData.isActive ? "active" : undefined)}
             end
           >
-            General information
+            Info
           </NavLink>
         </Button>
 
@@ -20,7 +20,7 @@ function UserDetailsNav() {
             to="access"
             className={(navData) => (navData.isActive ? "active" : undefined)}
           >
-            Role and access
+            Access
           </NavLink>
         </Button>
       </Stack>

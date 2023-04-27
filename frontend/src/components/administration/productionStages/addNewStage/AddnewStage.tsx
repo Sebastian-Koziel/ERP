@@ -1,16 +1,19 @@
 import { Form } from "react-router-dom";
 import "./AddNewStage.css";
+import { Container, Input, Button, Stack } from "@chakra-ui/react";
 
 function AddNewStage() {
   return (
-    <section>
-      <div>
-        <Form method="post">
-          <input type="text" name="name" />
-          <button type="submit">ADD</button>
-        </Form>
-      </div>
-    </section>
+    <Container p="5rem" centerContent>
+      <Form method="post">
+        <Stack direction="row" spacing={1}>
+          <Input placeholder="Name" type="text" name="name" w="25rem" />
+          <Button type="submit" variant="solid" colorScheme="purple">
+            ADD
+          </Button>
+        </Stack>
+      </Form>
+    </Container>
   );
 }
 

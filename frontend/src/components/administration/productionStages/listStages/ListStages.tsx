@@ -1,21 +1,25 @@
 import { Link } from "react-router-dom";
 import "./ListStages.css";
+import { Text, Flex, List, ListItem, Divider, Button } from "@chakra-ui/react";
 
 function ListStages(stages: any) {
   stages = stages.stages;
   return (
-    <div>
-      All Events
-      <ul>
+    <Flex>
+      <Text p="1rem">All Events</Text>
+      <Divider orientation="vertical" />
+      <List spacing={1} p="1rem">
         {stages.map((stage: any) => (
-          <li key={stage.id}>
+          <ListItem key={stage.id}>
             <Link to={stage.id.toString()}>
-              <div>{stage.name}</div>
+              <Button variant="outline" colorScheme="purple">
+                {stage.name}
+              </Button>
             </Link>
-          </li>
+          </ListItem>
         ))}
-      </ul>
-    </div>
+      </List>
+    </Flex>
   );
 }
 
