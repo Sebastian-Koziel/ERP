@@ -45,11 +45,6 @@ function SingleStagePage() {
           </Button>
         </Stack>
       </Container>
-
-      {/* 
-      <div>{stage.name}</div>
-      <Link to="edit">edit</Link>
-      <button onClick={startDeleteHandler}>Delete</button> */}
     </>
   );
 }
