@@ -1,35 +1,36 @@
-import { Form } from 'react-router-dom'
-import './AddNewStage.css'
+import { Form } from "react-router-dom";
+import "./AddNewStage.css";
+import { Container, Input, Button, Stack } from "@chakra-ui/react";
 
 function AddNewStage() {
-  
   return (
-    <section>
-    <div>
-    <Form method='post'>
-      <input type="text" name="name"/> 
-      <button type="submit">ADD</button>
-    </Form>
-
-    </div>
-    </section>
-  )
+    <Container p="5rem" centerContent>
+      <Form method="post">
+        <Stack direction="row" spacing={1}>
+          <Input placeholder="Name" type="text" name="name" w="25rem" />
+          <Button type="submit" variant="solid" colorScheme="purple">
+            ADD
+          </Button>
+        </Stack>
+      </Form>
+    </Container>
+  );
 }
 
-export default AddNewStage
+export default AddNewStage;
 
-export async function action({request, params}) {
+export async function action({ request, params }) {
   const data = await request.formData();
-  console.log(`in action`)
+  console.log(`in action`);
   const eventData = {
-    name: data.get('name')
-  }
+    name: data.get("name"),
+  };
 
-  const response = await fetch('http://localhost:5000/stage/add', {
-    method: 'POST',
+  const response = await fetch("http://localhost:5000/stage/add", {
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json'
+      "Content-Type": "application/json",
     },
-    body: JSON.stringify(eventData)
+    body: JSON.stringify(eventData),
   });
 }

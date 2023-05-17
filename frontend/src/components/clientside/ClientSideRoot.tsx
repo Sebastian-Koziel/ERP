@@ -1,13 +1,7 @@
-
-import './ClientSideRoot.css'
+import "./ClientSideRoot.css";
 
 function ClientSideRoot() {
-
- 
-
-  return (
-    <div>client will have their own view for making orders</div>
-  )
+  return <div>client will have their own view for making orders</div>;
 }
 
-export default ClientSideRoot
+export default ClientSideRoot;

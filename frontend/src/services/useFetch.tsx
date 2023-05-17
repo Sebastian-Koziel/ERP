@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
 interface Data {
   id: number;
@@ -36,7 +36,7 @@ const useFetchData = (url: string): FetchState<Data[]> => {
           isLoading: false,
           isError: true,
           data: null,
-          errorMessage: 'Error fetching data: ' + error.message,
+          errorMessage: "Error fetching data: " + error.message,
         });
       }
     };

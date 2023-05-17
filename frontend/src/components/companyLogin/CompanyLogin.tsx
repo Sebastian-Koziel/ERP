@@ -1,38 +1,99 @@
-import { useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { redirect, Form, json, Navigate } from "react-router-dom";
 
-import './CompanyLogin.css'
+import {
+  Container,
+  Input,
+  Button,
+  Heading,
+  InputGroup,
+  Stack,
+} from "@chakra-ui/react";
+
+import "./CompanyLogin.css";
+import { isLogged } from "../../services/auth";
 
 function CompanyLogin() {
-
-  const navigate = useNavigate();
-  const inpu = useRef<HTMLInputElement>(null);
-
-  const submitHandler = () => {
-    if(inpu.current?.value === 'druk'){
-      
-      navigate('/production')
-    } 
-
-    if(inpu.current?.value === 'admin'){
-      navigate('/administration')
-    } 
-    if(inpu.current?.value === 'client'){
-      navigate('/client')
-    }
-    
-  }
-
   return (
-    <section>
-   <div className='login'> 
-   <div>login firmowy</div>
-   <div>można się zalogować "druk", "client" albo "admin"</div>
-   <input type="text" ref={inpu}></input>
-   <button onClick={submitHandler}>Login</button>
-   </div>
-    </section>
-  )
+    <>
+      {isLogged() && <Navigate to="/administration" />}
+
+      <Container>
+        <Heading mt="50%" mb="1.5rem" ml="2.5rem">
+          Login to your company
+        </Heading>
+        <Form method="post">
+          <InputGroup size="md">
+            <Stack direction="row" spacing={1}>
+              <Stack direction="row" spacing={1}>
+                <Input
+                  type="text"
+                  title="login"
+                  name="login"
+                  placeholder="Enter username"
+                />
+                <Input
+                  type="password"
+                  title="password"
+                  name="password"
+                  placeholder="Enter password"
+                />
+              </Stack>
+              <Button type="submit" className="btn" colorScheme="purple">
+                Login
+              </Button>
+            </Stack>
+          </InputGroup>
+        </Form>
+      </Container>
+    </>
+  );
 }
 
-export default CompanyLogin
+export default CompanyLogin;
+
+export async function action({ request }: { request: Request }) {
+  const data = await request.formData();
+  const authData = {
+    login: data.get("login"),
+    password: data.get("password"),
+  };
+
+  const response = await fetch("http://localhost:3000/auth/login", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(authData),
+  });
+
+  if (response.status === 422 || response.status === 401) {
+    return response;
+  }
+
+  if (!response.ok) {
+    throw json({ message: "Could not authenticate user." }, { status: 500 });
+  }
+
+  const resData = await response.json();
+  const token = resData.access_token;
+  const user = resData.user;
+
+  localStorage.setItem("token", token);
+  const expiration = new Date();
+  expiration.setHours(expiration.getHours() + 1);
+  localStorage.setItem("expiration", expiration.toISOString());
+
+  localStorage.setItem("access", JSON.stringify(user.access));
+
+  if (user.access.role === "Admin" || user.role === "Administration") {
+    return redirect("/administration");
+  }
+  if (user.access.role === "Production") {
+    return redirect("/production");
+  }
+  if (user.access.role === "Client") {
+    return redirect("/client");
+  }
+
+  return null;
+}
