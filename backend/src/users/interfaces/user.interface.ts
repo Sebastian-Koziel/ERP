@@ -13,6 +13,11 @@ export interface User extends Document {
         },
         stages: {
             stagesTab_access: Boolean,
+        },
+        backEndAccess: {
+            admin_company_setup_can_modify: Boolean,
+            admin_company_setup_can_read: Boolean,   
+            admin_company_setup_can_delete: Boolean        
         }
     }
    

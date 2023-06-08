@@ -20,7 +20,6 @@ export class AccessGuard implements CanActivate {
     async canActivate(contex: ExecutionContext): Promise<boolean> {
         
         const request = contex.switchToHttp().getRequest();
-        console.log(request.user);
         const current_user = await this.usersService.findOne(request.user.sub);
 
         if(!current_user){

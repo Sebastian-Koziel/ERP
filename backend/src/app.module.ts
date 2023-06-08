@@ -8,10 +8,11 @@ import { ProductsModule } from './products/products.module';
 import { ComponentsModule } from './components/components.module';
 import { OrdersModule } from './orders/orders.module';
 import { OperationHandlersModule } from './operation-handlers/operation-handlers.module';
+import { WorkspacesModule } from './workspaces/workspaces.module';
 
 
 @Module({
-  imports: [UsersModule, StagesModule, OperationsModule, ProductsModule, ComponentsModule, OrdersModule, OperationHandlersModule],
+  imports: [UsersModule, StagesModule, OperationsModule, ProductsModule, ComponentsModule, OrdersModule, OperationHandlersModule, WorkspacesModule],
   controllers: [AppController],
   providers: [AppService],
 })

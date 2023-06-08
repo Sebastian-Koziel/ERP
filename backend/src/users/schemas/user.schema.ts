@@ -39,6 +39,20 @@ export const UserSchema = new mongoose.Schema({
                 default: true,
                 
             }
+        },
+        backEndAccess: {
+            admin_company_setup_can_modify: {
+                type: Boolean,
+                default: true
+            },
+            admin_company_setup_can_read: {
+                type: Boolean,
+                default: true
+            },
+            admin_company_setup_can_delete: {
+                type: Boolean,
+                default: true
+            },
         }
     }
 });
