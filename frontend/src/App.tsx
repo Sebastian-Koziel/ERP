@@ -19,6 +19,7 @@ import { stagesRoutes } from "./Routes/AdministrationStages";
 //auth
 import { logOut } from "./services/auth";
 import { workspacesRoutes } from "./Routes/AdministrationWorkspaces";
+import { operationsRoutes } from "./Routes/AdministrationOperations";
 
 const router = createBrowserRouter([
   {
@@ -48,6 +49,7 @@ const router = createBrowserRouter([
         element: <Summary />,
       },
       userRoutes,
+      operationsRoutes,
       stagesRoutes,
       workspacesRoutes
     ],

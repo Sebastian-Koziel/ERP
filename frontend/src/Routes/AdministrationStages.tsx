@@ -1,13 +1,8 @@
-import StagesRoot from "../components/administration/productionStages/stagesRoot/StagesRoot";
-import StagePage from "../components/administration/productionStages/StagesPage/StagesPage";
-import { stagesLoader } from "../components/administration/productionStages/StagesPage/StagesPage";
-import AddNewStage, {
-  action as newStageAction,
-} from "../components/administration/productionStages/addNewStage/AddnewStage";
-import SingleStagePage, {
-  singleStagesLoader,
-} from "../components/administration/productionStages/singleStagePage/SingleStagePage";
+import StagesRoot from "../components/administration/productionStages/Root/StagesRoot";
+import AddNewStage, {action as addNewStage} from "../components/administration/productionStages/New/AddnewStage";
+import SingleStagePage, {singleStagesLoader,} from "../components/administration/productionStages/singleStagePage/SingleStagePage";
 import EditStage from "../components/administration/productionStages/editStage/EditStage";
+import StagesListPage, { stagesLoader } from "../components/administration/productionStages/ListPage/StagesListPage";
 
 const stagesRoutes = {
   path: "stages",
@@ -16,13 +11,13 @@ const stagesRoutes = {
     {
       index: true,
       id: "stages",
-      element: <StagePage />,
+      element: <StagesListPage />,
       loader: stagesLoader,
     },
     {
       path: "new",
       element: <AddNewStage />,
-      action: newStageAction,
+      action: addNewStage,
     },
     {
       path: ":stageId",

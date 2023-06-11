@@ -15,8 +15,7 @@ export class ProductsController {
     @UseGuards(AuthGuard)
     @Post('create')
     async createProduct(@Body() body: CreateProductDto) {
-        return this.productsService.create(body);
-        
+        return this.productsService.create(body);    
     }
 
     @UseGuards(AuthGuard)

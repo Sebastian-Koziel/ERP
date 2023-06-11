@@ -12,6 +12,6 @@ export const OperationSchema = new mongoose.Schema({
     },
     workSpace_type:{
         type: String,
-        require: [true, "Pleae provide a workspace type"],
+        //require: [true, "Pleae provide a workspace type"],
     }
 });

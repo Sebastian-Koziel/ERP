@@ -1,10 +1,9 @@
 import { Outlet, Navigate } from "react-router-dom";
-
 import { hasAccessToUsers } from "../../../../services/auth";
 
 
 
-function WorkspaceRoot() {
+function OperationsRoot() {
   return (
     <>
       {!hasAccessToUsers() && <Navigate to="/administration" />}
@@ -14,4 +13,4 @@ function WorkspaceRoot() {
   );
 }
 
-export default WorkspaceRoot;
+export default OperationsRoot;
