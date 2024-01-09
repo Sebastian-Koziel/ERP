@@ -1,17 +1,9 @@
 import UsersRoot from "../components/administration/users/Root/UsersRoot";
-import UserListPage, {
-  usersLoader,
-  deleteUser,
-} from "../components/administration/users/ListPage/UserListPage";
-import AddNewUser, {
-  action as addNewUser,
-} from "../components/administration/users/New/AddNewUser";
-import { userByIdLoader as findUser } from "../components/administration/users/Details/GeneralInfo/UserGeneralInfo";
-import UserGeneralInfo from "../components/administration/users/Details/GeneralInfo/UserGeneralInfo";
-import UserAccess, {
-  updateAccess,
-} from "../components/administration/users/Details/AccessAndRoles/AccessAndRoles";
-import UsersDetailsRoot from "../components/administration/users/Details/DetailsPage/DetailsPage";
+import UserListPage from "../components/administration/users/ListPage/UserListPage";
+import AddNewUser, {action as addNewUser,} from "../components/administration/users/New/AddNewUser";
+
+import UsersDetailsRoot, { userByIdLoader } from "../components/administration/users/Details/Root/UserDetailRoot";
+import { usersLoader } from "../components/administration/users/Utils/fetchUsers";
 
 const userRoutes: any = {
   path: "users",
@@ -19,10 +11,8 @@ const userRoutes: any = {
   children: [
     {
       index: true,
-      id: "user",
       element: <UserListPage />,
-      loader: usersLoader,
-      action: deleteUser,
+      loader: usersLoader
     },
     {
       path: "new",
@@ -31,20 +21,8 @@ const userRoutes: any = {
     },
     {
       path: ":userId",
-      id: "singleUserLoader",
       element: <UsersDetailsRoot />,
-      loader: findUser,
-      children: [
-        {
-          index: true,
-          element: <UserGeneralInfo />,
-        },
-        {
-          path: "access",
-          element: <UserAccess />,
-          action: updateAccess,
-        },
-      ],
+      loader: userByIdLoader,
     },
   ],
 };

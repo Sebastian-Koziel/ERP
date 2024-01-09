@@ -1,6 +1,6 @@
 import { useRouteLoaderData, Link } from "react-router-dom";
 
-import "./SingleStagePage.css";
+
 import { Container, Heading, Button, Stack, Divider } from "@chakra-ui/react";
 
 interface Stage {

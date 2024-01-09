@@ -5,13 +5,17 @@ import {
   Button,
   Select,
   Spacer,
-  VStack,
-  StackDivider,
   Stack,
 } from "@chakra-ui/react";
-import "./AddNewUser.css";
+
+//list of roles
+import { roles } from "../Utils/roles";
+//post service
+import { postNewUser } from "../Utils/postNewUser";
+
 
 function AddNewUser() {
+
   const navigate = useNavigate();
   const navigation = useNavigation();
 
@@ -62,9 +66,11 @@ function AddNewUser() {
           />
 
           <Select id="role" name="role" placeholder="Select Role">
-            <option value="Production">Production</option>
-            <option value="Client">Client</option>
-            <option value="Admin">Admin</option>
+          {roles.map((role:string) => (
+              <option key={role} value={role}>
+                {role}
+              </option>
+            ))}
           </Select>
 
           <Spacer />
@@ -100,22 +106,16 @@ export async function action({ request }: { request: Request }) {
     surname: data.get("surname"),
     role: data.get("role"),
   };
-  //console.log(authData)
-  //console.log('probuje dodac usera front');
+  
+  try {
+    const resData = await postNewUser(authData);
+    console.log(resData)
+    return redirect("/administration/users/" + resData)
+  } catch (err) {
+    return err;
+  }
+  
 
-  const response = await fetch("http://localhost:5000/user/add", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(authData),
-  });
-
-  const resData: string = await response.json();
-
-  //console.log(resData);
-
-  //console.log(`wsio ok`)
-  //redirect
-  return redirect("/administration/users/" + resData);
+  
+  
 }

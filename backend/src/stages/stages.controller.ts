@@ -15,35 +15,35 @@ export class StagesController {
         private stagesService: StagesService
     ){}
 
-    @Access_decorator(Access.admin_company_setup_can_modify)
-    @UseGuards(AuthGuard, AccessGuard)
+    //@Access_decorator(Access.admin_company_setup_can_modify)
+    //@UseGuards(AuthGuard, AccessGuard)
     @Post('create')
     async createWorkspace(@Body() body: CreateStageDto) {
         return await this.stagesService.create(body);
     }
 
-    @Access_decorator(Access.admin_company_setup_can_read)
-    @UseGuards(AuthGuard, AccessGuard)
+    //@Access_decorator(Access.admin_company_setup_can_read)
+    //@UseGuards(AuthGuard, AccessGuard)
     @Get()
     async findAll(): Promise<Stage[]> {
         return await this.stagesService.findAll();
     }
 
-    @Access_decorator(Access.admin_company_setup_can_read)
-    @UseGuards(AuthGuard, AccessGuard)
+    //@Access_decorator(Access.admin_company_setup_can_read)
+    //@UseGuards(AuthGuard, AccessGuard)
     @Get('/:id')
     async findOne(@Param('id') id:string): Promise<Stage>{
         return await this.stagesService.findOne(id);
     }
 
-    @Access_decorator(Access.admin_company_setup_can_modify)
-    @UseGuards(AuthGuard, AccessGuard)
+   // @Access_decorator(Access.admin_company_setup_can_modify)
+    //@UseGuards(AuthGuard, AccessGuard)
     @Put('/:id')
     async update(@Param('id') id: string, @Body() body: UpdateStageDto) {
         return await this.stagesService.update(id, body);
     }
 
-    @Access_decorator(Access.admin_company_setup_can_delete)
+    //@Access_decorator(Access.admin_company_setup_can_delete)
     @UseGuards(AuthGuard, AccessGuard)
     @Delete('/:id')
     async remove(@Param('id') id:string){

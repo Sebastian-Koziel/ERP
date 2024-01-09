@@ -8,6 +8,10 @@ export class CreateProductDto {
 
   comment: string;
 
+  qty: number;
+  
+  productType_id: string
+
   operations: [
     Operation
   ];

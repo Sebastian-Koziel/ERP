@@ -3,12 +3,10 @@ import {
   Container,
   Input,
   Button,
-  Select,
   Spacer,
-  VStack,
-  StackDivider,
   Stack,
 } from "@chakra-ui/react";
+import { useInput } from "../../../../hooks/form/use-input";
 
 
 
@@ -22,7 +20,25 @@ function AddNewStage() {
     navigate("..");
   }
 
+  const {
+      value: enteredName, 
+      isValid: enteredNameIsValid,
+      hasError: nameInputHasError, 
+      valueChangeHandler: nameChangedHandler, 
+      inputBlurHandler: nameBlurHandler,
+      message: errorMessage
+    } = useInput([{name: 'required'}],'');
+
+  let formIsValid = false;
+
+  if (enteredNameIsValid) {
+    formIsValid = true;
+  }
+
+  
+
   return (
+    <>
     <Container mt="1rem" mb="1rem" centerContent>
       <Form method="post">
         <Stack minW="container.sm">
@@ -30,16 +46,20 @@ function AddNewStage() {
             id="name"
             type="text"
             name="name"
-            required
             placeholder="Name"
             variant="outline"
+            onChange={nameChangedHandler}
+            onBlur={nameBlurHandler}
+            value={enteredName}
           />
+          {nameInputHasError && (
+            <span>{errorMessage}</span>
+          )}
 
           <Input
             id="comment"
             type="text"
             name="comment"
-            required
             placeholder="comment"
             variant="outline"
           />
@@ -47,9 +67,9 @@ function AddNewStage() {
           
           <Spacer />
 
-          <Button type="submit" variant="solid" colorScheme="purple">
+          <button type="submit" disabled={!formIsValid}>
             ADD
-          </Button>
+          </button>
 
           <Button
             type="button"
@@ -63,6 +83,7 @@ function AddNewStage() {
         </Stack>
       </Form>
     </Container>
+    </>
   );
 }
 

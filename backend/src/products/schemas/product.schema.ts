@@ -15,6 +15,10 @@ export const ProductSchema = new mongoose.Schema({
         type: Number,
         default: null
     },
+    productType_id: {
+        type: String,
+        default: null
+    },
     operations: [
         ProductSchema_operations
     ]   

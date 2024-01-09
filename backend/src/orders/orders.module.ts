@@ -5,13 +5,13 @@ import { DatabaseModule } from 'src/database/database.module';
 import { ordersProviders } from './orders.providers';
 import { ProductsModule } from 'src/products/products.module';
 import { OperationHandlersModule } from 'src/operation-handlers/operation-handlers.module';
-import { OperationHandlersController } from 'src/operation-handlers/operation-handlers.controller';
+import { ProductionGraphService } from 'src/operation-handlers/ProductionGraphHandlers/productionGraphHandler';
 
 
 
 @Module({
   imports: [DatabaseModule, ProductsModule, OperationHandlersModule],
   controllers: [OrdersController],
-  providers: [OrdersService, ...ordersProviders]
+  providers: [OrdersService, ...ordersProviders, ProductionGraphService]
 })
 export class OrdersModule {}

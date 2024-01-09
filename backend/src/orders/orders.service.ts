@@ -10,7 +10,7 @@ import { Product } from 'src/products/interfaces/product.interface';
 export class OrdersService {
     constructor(
         @Inject('ORDER_MODEL') 
-        private orderModel: Model<Order>,
+        private orderModel: Model<Order>
         ){}
 
     async findAll(): Promise<Order[]> {
@@ -18,14 +18,8 @@ export class OrdersService {
     }
 
     
-    async create(createOrderDto: CreateOrderDto, newProducts:Product[]): Promise<Order>{
-        const createdOrder = await this.orderModel.create(createOrderDto);
-        newProducts.map((newProduct)=>{
-            console.log(`wrzucam nowy produkt to stworzonego zamowienia`)
-            createdOrder.products.push(newProduct);
-        })
-        console.log(createdOrder);
-        createdOrder.save();
+    async create(createOrderDto: CreateOrderDto): Promise<Order>{
+        const createdOrder = this.orderModel.create(createOrderDto);
         return createdOrder;
     }
 

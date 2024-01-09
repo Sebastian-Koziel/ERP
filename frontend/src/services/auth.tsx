@@ -4,6 +4,7 @@ export function logOut() {
   localStorage.removeItem("token");
   localStorage.removeItem("access");
   localStorage.removeItem("expiration");
+  localStorage.removeItem("lastViewedStage");
   return redirect("/");
 }
 

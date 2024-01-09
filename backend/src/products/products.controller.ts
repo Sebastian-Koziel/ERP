@@ -15,6 +15,7 @@ export class ProductsController {
     @UseGuards(AuthGuard)
     @Post('create')
     async createProduct(@Body() body: CreateProductDto) {
+        console.log('trying to add product')
         return this.productsService.create(body);    
     }
 

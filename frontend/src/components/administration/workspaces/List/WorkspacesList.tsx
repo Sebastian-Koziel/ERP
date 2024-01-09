@@ -33,7 +33,7 @@ function WorkspacesList(workspaces: any) {
             </Thead>
             <Tbody>
               {workspaces.map((workspace: Workspace) => (
-                <Tr>
+                <Tr key={workspace._id}>
                   <Td>{workspace.name}</Td>
                   <Td>
                     <Button variant="solid" colorScheme="purple">

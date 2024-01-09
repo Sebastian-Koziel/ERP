@@ -9,10 +9,10 @@ function Summary() {
           Main Page
         </Heading>
         <Divider />
-        <Text mb="0.5rem"> Glowny widok administracji, podsumowanie.</Text>
+        <Text mb="0.5rem"> Orders on time summary</Text>
 
         <Text mb="0.5rem">
-          Powrzucalbym tutaj np. wykaz zlecen po terminie itp.
+          complaint summary
         </Text>
         <Text>
           Ogolnie rozne sekcje z informacjami ktore mozna wlaczac/wyl w

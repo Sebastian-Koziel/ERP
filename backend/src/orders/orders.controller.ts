@@ -6,6 +6,9 @@ import { Order } from './interfaces/order.interface';
 import { addProductDto } from './dtos/addProduct.dtos';
 import { ProductsService } from 'src/products/products.service';
 import { OperationHandlersService } from 'src/operation-handlers/operation-handlers.service';
+import { ProductionGraphService } from 'src/operation-handlers/ProductionGraphHandlers/productionGraphHandler';
+import { StartOrder } from './interfaces/startOrder.interface';
+
 
 
 
@@ -15,23 +18,13 @@ export class OrdersController {
     constructor(
         private orderService: OrdersService,
         private productService: ProductsService,
-        private operationHandlerService: OperationHandlersService,
-        
+        private productionGraphHandler: ProductionGraphService 
     ){}
 
     @UseGuards(AuthGuard)
-    @Post('createneworder')
+    @Post('create')
     async createNewOrder(@Body() body: CreateOrderDto){
-        let newProducts = [];
-        body.products_types.map(async (product)=>{
-            const newProduct = await this.productService.findOneWithOutId(product.product_type);
-            newProduct.qty = product.qty;
-            console.log(newProduct)
-            newProducts.push(newProduct);
-        })
-        
-        return this.orderService.create(body, newProducts);
-        
+        return this.orderService.create(body);  
     }
 
     @UseGuards(AuthGuard)
@@ -47,15 +40,16 @@ export class OrdersController {
 
 
     @UseGuards(AuthGuard)
-    @Get('start/:id')
-    async startOrder(@Param('id') id:string) {
-        const orderToStart = await this.orderService.findOne(id);
+    @Post('start')
+    async startOrder(@Body() body: StartOrder) {
+        const orderToStart = await this.orderService.findOne(body.order_id);
+        console.log(`got order`)
         //for each product/component create and map operations
         let productsToBeMapped = JSON.parse(JSON.stringify(orderToStart.products));
         console.log(`dodaje produkty`)
         while(productsToBeMapped.length){
             let product = productsToBeMapped.pop();
-            this.operationHandlerService.createTreeForProduct(product, orderToStart._id);
+            this.productionGraphHandler.createGraphForProduct(product, orderToStart._id);
         }
     }
 
@@ -68,6 +62,7 @@ export class OrdersController {
     @UseGuards(AuthGuard)
     @Get('/:id')
     async findOne(@Param('id') id:string): Promise<Order>{
+        console.log(`szukam order`)
         return this.orderService.findOne(id);
     }
 }

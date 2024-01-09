@@ -6,4 +6,21 @@ export class CreateUserDto {
 
   @IsString()
   password: string;
+  
+  @IsString()
+  name: string;
+
+  @IsString()
+  surname: string;
+
+  @IsString()
+  role: string;
+
+  access: {
+        
+        defaultStartPage: string
+        production: {
+            stagesAccess: string[]
+        }
+    }
 }

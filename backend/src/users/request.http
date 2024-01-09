@@ -7,8 +7,11 @@ POST http://localhost:3000/auth/create
 Content-Type: application/json
 
 {
-    "login": "admin",
-    "password": "admin"
+    "login": "stefan",
+    "password": "stefan",
+    "name": "stefan",
+    "surname": "stefan",
+    "role": "administration"
 }
 
 ###login
@@ -16,8 +19,8 @@ POST http://localhost:3000/auth/login
 Content-Type: application/json
 
 {
-    "login": "test enum",
-    "password": "stefanos"
+    "login": "Roman6",
+    "password": "Roman6"
 }
 
 ### particular

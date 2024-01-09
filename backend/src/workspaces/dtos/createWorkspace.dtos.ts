@@ -6,7 +6,8 @@ export class CreateWorkspaceDto {
   @IsString()
   comment:  string;
   @IsString()
-  addedBy: string;
+  stage_id:  string;
   @IsString()
-  addedWhen:  string;
+  workspaceType_id:  string;
+
 }

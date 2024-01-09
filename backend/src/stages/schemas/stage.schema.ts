@@ -7,5 +7,15 @@ export const StageSchema = new mongoose.Schema({
     },
     comment: {
         type: String
+    },
+
+    //for removal - so we dont erase used one
+    active: {
+        type: Boolean,
+        default: false,
+    },
+    active_in: {
+        type: [String],
+        default: [],
     }
 });

@@ -5,7 +5,7 @@ import { hasAccessToUsers } from "../../../../services/auth";
 function UsersRoot() {
   return (
     <>
-      {!hasAccessToUsers() && <Navigate to="/administration" />}
+      {/*!hasAccessToUsers() && <Navigate to="/administration" />*/}
 
       <UserListNav />
 

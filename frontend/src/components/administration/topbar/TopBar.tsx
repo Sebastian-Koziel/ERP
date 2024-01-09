@@ -1,4 +1,4 @@
-import { Form } from "react-router-dom";
+import { Form, useNavigate } from "react-router-dom";
 import {
   Flex,
   Center,
@@ -8,8 +8,28 @@ import {
   Box,
   Spacer,
 } from "@chakra-ui/react";
+import { storageGetUser } from "../../../utils/localhostHandlers";
+import monitorIcon from '../../../assets/monitor.png';
+import './tobbar.css'
+import { useState } from "react";
+
+/* TO DO
+change drop down manu and show only views that user can access
+
+*/
 
 function TopBar() {
+
+  const views = [{path:"/client", name:'client'}, {path:"/production", name:'production'}, {path:"/administration", name:'administration'}, {path:"/canvas", name:'canvas'}];
+  const [dropDownOpen, setDropDownOpen] = useState(false); 
+  const navigate = useNavigate()
+  const user = storageGetUser();
+
+  const dropDownLinkClickedHandler = (path:string) => {
+    setDropDownOpen(false);
+    navigate(path);  
+  }
+
   return (
     <section>
       <Flex
@@ -29,12 +49,25 @@ function TopBar() {
         <Center>
           <Box>
             <>
-              {/* 
-                  TO DO 
-                    Wklejenie nazwy użytkowika
-                */}
-              <Text color='aliceblue'>Username</Text>
+              <Text color='aliceblue'>Hey {user.name}</Text>
             </>
+          </Box>
+          
+         <Box>
+            <div className="monitor-icon-container">
+          <img onClick={(e)=>setDropDownOpen(!dropDownOpen)} src={monitorIcon} alt="Monitor" />
+          
+          {dropDownOpen && 
+            <div className="dropdown">
+              <ul>
+                {views.map((menu) => (
+                  <li onClick={(e)=>{dropDownLinkClickedHandler(menu.path)}} className="dropdownElement" key={menu.path}>{menu.name}</li>
+                ))}
+              </ul>
+            </div>
+          }
+          </div>
+          
           </Box>
         </Center>
         <Center>

@@ -33,8 +33,8 @@ function OperaionsList(operations: any) {
               </Tr>
             </Thead>
             <Tbody>
-              {operations.map((operation: Operation) => (
-                <Tr>
+              {operations.map((operation: Operation, key: any) => (
+                <Tr key={key}>
                   <Td>{operation.name}</Td>
                   <Td>
                     <Button variant="solid" colorScheme="purple">

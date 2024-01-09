@@ -1,4 +1,4 @@
-import mongoose, * as moongose from 'mongoose';
+import mongoose from 'mongoose';
 
 export const WorkspaceSchema = new mongoose.Schema({
     name: {
@@ -8,11 +8,15 @@ export const WorkspaceSchema = new mongoose.Schema({
     comment: {
         type: String
     },
-    addedBy: {
-        type: String
+    
+    stage_id: {
+        type: String,
+        require: [true, "Please provide a stage for a new workspace"],
     },
-    addedWhen: {
-        type: String
+
+    workspaceType_id: {
+        type: String,
+        require: [true, "Please provide a type for a new workspace"],
     }
 
 })

@@ -5,8 +5,8 @@ import { ChakraProvider } from "@chakra-ui/react";
 //ROUTES
 //login
 import CompanyLogin, { action } from "./components/companyLogin/CompanyLogin";
-//production view
-import ProductionStage from "./components/production/ProductionStage";
+
+
 //client
 import ClientSideRoot from "./components/clientside/ClientSideRoot";
 //administration
@@ -20,20 +20,45 @@ import { stagesRoutes } from "./Routes/AdministrationStages";
 import { logOut } from "./services/auth";
 import { workspacesRoutes } from "./Routes/AdministrationWorkspaces";
 import { operationsRoutes } from "./Routes/AdministrationOperations";
+import { productsRoutes } from "./Routes/AdministrationProducts";
+import { ordersRoutes } from "./Routes/AdministrationOrders";
+import { productionRoutes } from "./Routes/AdministrationProduction";
+//production view
+import ProductionRoot from "./components/production/Root/ProductionRoot";
+import OperationHandlerDetails, { operationHandlerLoader } from "./components/production/Details/operationHandlerDetails";
+import OperationHanldersList from "./components/production/StagePage/OperationHanldersList";
+import CanvasRoot from "./components/CanvasTest/Root/CanvasRoot";
+
+
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <CompanyLogin />,
-    //action: action,
+    action: action,
   },
   {
     path: "/production",
-    element: <ProductionStage />,
+    element: <ProductionRoot />,
+    children: [
+      {
+        path: "",
+        element: <OperationHanldersList />, 
+      }, 
+      {
+        path: ":operationHandlerId",
+        element: <OperationHandlerDetails />, 
+        loader: operationHandlerLoader
+      }, 
+    ],
   },
   {
     path: "/client",
     element: <ClientSideRoot />,
+  },
+  {
+    path: "/canvas",
+    element: <CanvasRoot />,
   },
   {
     path: "/logout",
@@ -51,7 +76,10 @@ const router = createBrowserRouter([
       userRoutes,
       operationsRoutes,
       stagesRoutes,
-      workspacesRoutes
+      workspacesRoutes,
+      productsRoutes,
+      ordersRoutes,
+      productionRoutes
     ],
   },
 ]);

@@ -14,6 +14,10 @@ export const OperationHandlerSchema = new mongoose.Schema({
     qty: {
         type: Number
     },
+    qtyDone: {
+        type: Number,
+        default: 0
+    },
     stage_id: {
         type: String
     },

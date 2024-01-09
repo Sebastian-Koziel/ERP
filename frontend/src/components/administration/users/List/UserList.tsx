@@ -1,7 +1,6 @@
 import "./UserList.css";
 
 import { Link, useSubmit } from "react-router-dom";
-import { User } from "../Models/UserModels";
 import {
   Table,
   Thead,
@@ -14,18 +13,12 @@ import {
   Button,
   Container,
 } from "@chakra-ui/react";
+import { User } from "../Interfaces/user.interface";
 
-function UserList(users: any) {
+function UserList(props:any) {
   const submit = useSubmit();
 
-  function startDeleteHandler(id: string) {
-    const proceed = window.confirm("Siur?");
-
-    if (proceed) {
-      submit({ id }, { method: "delete" });
-    }
-  }
-  users = users.users;
+  const users:User[] = props.users;
 
   return (
     <>
@@ -36,35 +29,23 @@ function UserList(users: any) {
             <Thead>
               <Tr>
                 <Th>Login</Th>
-                <Th>Password</Th>
-                <Th>Role</Th>
                 <Th>Name</Th>
                 <Th>Surname</Th>
+                <Th>Role</Th>
                 <Th></Th>
                 <Th></Th>
               </Tr>
             </Thead>
             <Tbody>
               {users.map((user: User) => (
-                <Tr>
+                <Tr key={user._id}>
                   <Td>{user.login}</Td>
-                  <Td className="hidenText">{user.password}</Td>
-                  <Td>{user.access.role}</Td>
                   <Td>{user.name}</Td>
                   <Td>{user.surname}</Td>
+                  <Td>{user.role}</Td>
                   <Td>
                     <Button variant="solid" colorScheme="purple">
-                      <Link to={user._id}>Show</Link>
-                    </Button>
-                  </Td>
-                  <Td>
-                    <Button
-                      variant="solid"
-                      colorScheme="red"
-                      type="button"
-                      onClick={() => startDeleteHandler(user._id)}
-                    >
-                      Remove
+                      <Link to={user._id}>Details</Link>
                     </Button>
                   </Td>
                 </Tr>

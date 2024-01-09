@@ -11,16 +11,36 @@ export const UserSchema = new mongoose.Schema({
         require: [true, "Pleae provide a password"],
     },
     name: {
-        type: String
+        type: String,
+        require: [true, "Pleae provide a name"],
     },
     surname: {
-        type: String
+        type: String,
+        require: [true, "Pleae provide a surname"],
     },
-    access: {
-        role: {
+    role: {
+        type: String,
+        require: [true, "Pleae provide a role"]
+    },
+    
+    access : {
+        defaultStartPage: {
             type: String,
-            default: 'Administration'
+            default: ''
         },
+        production: {
+            stagesAccess: {
+                type: Array,
+                default: []
+            }
+        }
+
+    },
+});
+
+
+    /* access2: {
+        
         users:{
             usersTab_access: {
                 type: Boolean,
@@ -54,5 +74,4 @@ export const UserSchema = new mongoose.Schema({
                 default: true
             },
         }
-    }
-});
+    } */

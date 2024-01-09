@@ -32,12 +32,12 @@ function StagesList(stages: any) {
               </Tr>
             </Thead>
             <Tbody>
-              {stages.map((stages: Stage) => (
-                <Tr>
-                  <Td>{stages.name}</Td>
+              {stages.map((stage: Stage) => (
+                <Tr key={stage._id}>
+                  <Td>{stage.name}</Td>
                   <Td>
                     <Button variant="solid" colorScheme="purple">
-                      <Link to={stages._id}>Edit</Link>
+                      <Link to={stage._id}>Edit</Link>
                     </Button>
                   </Td>
                 </Tr>

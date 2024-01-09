@@ -1,10 +1,10 @@
 ###create
 POST http://localhost:3000/products/create
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3QgZW51bSIsInN1YiI6IjY0NTM4YzAwMDY2YzZhMjg1ZTIxNzA2YSIsImlhdCI6MTY4MzE5NjkzN30.8QS4m9NjbCLIJaEp6k5yUH8TvTFx-Yj1EDmv9iRfMTA
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwic3ViIjoiNjQ2NGI0NzI5OWMyMTRhZTIxNjk3YWU5IiwiaWF0IjoxNjk1MTE1MDk4fQ.HLDQTRh6wLPa5F5Uun7xRUNFiHt-1J1IH5XAC9nVgAk
 Content-Type: application/json
 
 {
-    "name": "flaga",
+    "name": "flaga545345435",
     "comment": "testowanie",
     "operations": [
         {   "name" : "druk",

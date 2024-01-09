@@ -2,11 +2,8 @@ export interface Workspace {
     _id: string
     name: string
     comment:  string
-    addedBy: string
-    addedWhen:  string
+    
+    stage_id: string
+    workspaceType_id: string
 }
 
-export interface CreateWorkspace {
-    name: string 
-    comment:  string
-}

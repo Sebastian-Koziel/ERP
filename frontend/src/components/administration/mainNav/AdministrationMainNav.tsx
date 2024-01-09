@@ -16,7 +16,36 @@ function AdministrationMainNav() {
           Home
         </NavLink>
       </Button>
-
+      {hasAccessToStages() && (
+        <Button variant="ghost" colorScheme="purple">
+          <NavLink
+            to="production"
+            className={(navData) => (navData.isActive ? "active" : undefined)}
+          >
+            Production
+          </NavLink>
+        </Button>
+      )},
+      {hasAccessToStages() && (
+        <Button variant="ghost" colorScheme="purple">
+          <NavLink
+            to="orders"
+            className={(navData) => (navData.isActive ? "active" : undefined)}
+          >
+            Orders
+          </NavLink>
+        </Button>
+      )},
+      {hasAccessToStages() && (
+        <Button variant="ghost" colorScheme="purple">
+          <NavLink
+            to="products"
+            className={(navData) => (navData.isActive ? "active" : undefined)}
+          >
+            Products
+          </NavLink>
+        </Button>
+      )},
       {hasAccessToStages() && (
         <Button variant="ghost" colorScheme="purple">
           <NavLink

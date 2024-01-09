@@ -3,6 +3,12 @@ import WorkspaceRoot from "../components/administration/workspaces/Root/WorkSpac
 import AddNewWorkspace from "../components/administration/workspaces/new/AddNewWorkspace";
 import { action as AddNewWorkspaceAction } from "../components/administration/workspaces/new/AddNewWorkspace";
 
+import { newWorkspaceLoader } from "../components/administration/workspaces/new/AddNewWorkspace";
+
+import WorkspaceTypesListPage, { workspaceTypesLoader } from "../components/administration/workspaces/Types/ListPage/ListPage";
+import AddNewWorkspaceType, { action as addNewWorkspaceType} from "../components/administration/workspaces/Types/New/AddNewWorkspaceType";
+ 
+
 const workspacesRoutes = {
     path: "workspaces",
     element: <WorkspaceRoot />,
@@ -17,6 +23,7 @@ const workspacesRoutes = {
         path: "new",
         element: <AddNewWorkspace />,
         action: AddNewWorkspaceAction,
+        loader: newWorkspaceLoader
       },
       {
         /* path: ":stageId",
@@ -33,6 +40,17 @@ const workspacesRoutes = {
           },
         ], */
       },
+      {
+        path: "types",
+        id: "workspaceTypes",
+        element: < WorkspaceTypesListPage />,
+        loader: workspaceTypesLoader,
+      },
+      {
+        path: "types/new",
+            element: <AddNewWorkspaceType />,
+            action: addNewWorkspaceType,
+      }
     ],
   };
   

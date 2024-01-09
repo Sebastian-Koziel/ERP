@@ -7,6 +7,7 @@ import { AuthGuard } from '../auth/auth.guard';
 import { AccessGuard } from '../auth/access.guard';
 import { Access_decorator } from '../auth/access.decorator';
 import { Access } from '../auth/access.enum';
+import { UpdateUser } from './interfaces/updateUser.interface';
 
 @Controller('auth')
 export class UsersController {
@@ -19,7 +20,13 @@ export class UsersController {
     //@UseGuards(AuthGuard, AccessGuard)
     @Post('create')
     createUser(@Body() body: CreateUserDto) {
-        this.authService.register(body.login, body.password)
+        console.log(`in user constroller ${body.name}`);
+        return this.authService.registerEmployee(body);
+    }
+
+    @Post('update')
+    updateUser(@Body() body: UpdateUser) {
+        return this.usersService.update(body.id, body.attr);
     }
 
     @Post('login')
@@ -27,22 +34,22 @@ export class UsersController {
         return this.authService.logIn(body.login, body.password)
     }
 
-    @Access_decorator(Access.usersTab_access)
-    @UseGuards(AuthGuard, AccessGuard)
+    //@Access_decorator(Access.usersTab_access)
+    //@UseGuards(AuthGuard, AccessGuard)
     @Get()
     async findAll(): Promise<User[]> {
         return this.usersService.findAll();
     }
 
-    @Access_decorator(Access.usersTab_access)
-    @UseGuards(AuthGuard, AccessGuard)
+    //@Access_decorator(Access.usersTab_access)
+    //@UseGuards(AuthGuard, AccessGuard)
     @Get('/:id')
     async findOne(@Param('id') id:string): Promise<User>{
         return this.usersService.findOne(id);
     }
 
-    @Access_decorator(Access.usersTab_access)
-    @UseGuards(AuthGuard, AccessGuard)
+    //@Access_decorator(Access.usersTab_access)
+    //@UseGuards(AuthGuard, AccessGuard)
     @Delete('/:id')
     async remove(@Param('id') id:string){
         this.usersService.remove(id);

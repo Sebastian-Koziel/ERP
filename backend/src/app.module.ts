@@ -9,10 +9,11 @@ import { ComponentsModule } from './components/components.module';
 import { OrdersModule } from './orders/orders.module';
 import { OperationHandlersModule } from './operation-handlers/operation-handlers.module';
 import { WorkspacesModule } from './workspaces/workspaces.module';
+import { WorkspaceTypesModule } from './workspace-types/workspace-types.module';
 
 
 @Module({
-  imports: [UsersModule, StagesModule, OperationsModule, ProductsModule, ComponentsModule, OrdersModule, OperationHandlersModule, WorkspacesModule],
+  imports: [UsersModule, StagesModule, OperationsModule, ProductsModule, ComponentsModule, OrdersModule, OperationHandlersModule, WorkspacesModule, WorkspaceTypesModule],
   controllers: [AppController],
   providers: [AppService],
 })

@@ -1,23 +1,25 @@
-import { Form, redirect, useNavigate, useNavigation, useRouteLoaderData } from "react-router-dom";
+import { Form, redirect, useNavigate, useNavigation, useLoaderData } from "react-router-dom";
 import {
   Container,
   Input,
   Button,
   Select,
   Spacer,
-  VStack,
-  StackDivider,
   Stack,
 } from "@chakra-ui/react";
-
+import { Stage } from "../../productionStages/interfaces/Stage.interface";
+import { storageGetToken } from "../../../../utils/localhostHandlers";
+import { WorkspaceType } from "../../workspaces/Types/Interfaces/WorkspaceType";
+import { CreateOperation } from "../Interfaces/CreateOperation.interface";
 
 
 function AddNewOperation() {
   const navigate = useNavigate();
   const navigation = useNavigation();
-  const data = useRouteLoaderData("newOperation");
+  const fetchedData:any = useLoaderData();
+  const workspaceTypes = fetchedData.workSpaceTypes;
+  const stages = fetchedData.stages;
   
- console.log(data)
   const isSubmitting = navigation.state === "submitting";
 
   function cancelHandler() {
@@ -38,6 +40,34 @@ function AddNewOperation() {
             variant="outline"
           />
           
+          <Input
+            id="comment"
+            type="text"
+            name="comment"
+            placeholder="comment"
+            variant="outline"
+          />
+
+          <label htmlFor="workspaceType_id">Main work space type for this operation:</label>
+          <Select id="workspaceType_id" name="workspaceType_id" required>
+            <option value="" disabled>Pick a stage for this operation</option>
+            {workspaceTypes.map((type:WorkspaceType) => (
+              <option key={type._id} value={type._id}>
+                {type.name}
+              </option>
+            ))}
+          </Select>
+
+          <label htmlFor="workspaceType_id">Stage for this operation:</label>
+          <Select id="stage_id" name="stage_id" required>
+            <option value="" disabled>Pick a stage for this operation</option>
+            {stages.map((type:Stage) => (
+              <option key={type._id} value={type._id}>
+                {type.name}
+              </option>
+            ))}
+          </Select>
+
           <Spacer />
 
           <Button type="submit" variant="solid" colorScheme="purple">
@@ -64,9 +94,12 @@ export default AddNewOperation;
 export async function action({ request }: { request: Request }) {
   const data = await request.formData();
   const token = localStorage.getItem("token");
-
+  
   const authData = {
     name: data.get("name"), 
+    comment: data.get("comment"),
+    workSpace_type: data.get("workspaceType_id"),
+    stage_id: data.get('stage_id')
   };
   
   const response = await fetch("http://localhost:3000/operations/create", {
@@ -78,14 +111,13 @@ export async function action({ request }: { request: Request }) {
     body: JSON.stringify(authData),
   });
 
-  const resData: string = await response.json();
-
   return redirect("/administration/operations");
   //return redirect("/administration/workspaces/" + resData);
 }
  
 export const newOperationLoader = async (): Promise<any> => {
-  const token = localStorage.getItem("token");
+
+  const token = storageGetToken();
 
   const stages = await fetch("http://localhost:3000/stages", {
     headers: {
@@ -93,7 +125,7 @@ export const newOperationLoader = async (): Promise<any> => {
     }
   }).then(response => response.json());
 
-  const workSpaces = await fetch("http://localhost:3000/workspaces", {
+  const workSpaces = await fetch("http://localhost:3000/workspace/types", {
     headers: {
       Authorization: "Bearer "+token
     }
@@ -102,7 +134,7 @@ export const newOperationLoader = async (): Promise<any> => {
   const [data1, data2] = await Promise.all([stages, workSpaces]);
   const consolidatedData = {
     stages: data1,
-    workSpaces: data2
+    workSpaceTypes: data2
   };
   return consolidatedData;
 };

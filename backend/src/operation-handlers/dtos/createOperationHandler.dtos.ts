@@ -5,6 +5,7 @@ export class CreateOperationHandlerDto {
   product_id: String
   name: String
   qty: Number
+  qtyDone: Number
 
   //place
   stage_id: String

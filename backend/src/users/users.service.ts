@@ -8,12 +8,12 @@ export class UsersService {
     constructor(@Inject('USER_MODEL') private userModel: Model<User>) {}
     
     async findAll(): Promise<User[]> {
-        return this.userModel.find().exec();
+        return this.userModel.find().select('-password').exec();
     }
 
-    create(createUserDto: CreateUserDto): Promise<User>{
-        const createdUser = this.userModel.create(createUserDto)
-        return createdUser;
+    async create(createUserDto: CreateUserDto): Promise<any>{
+        const createdUser = await this.userModel.create(createUserDto)
+        return createdUser._id;
     }
 
     async findOne(id: string): Promise<User> {
@@ -28,4 +28,12 @@ export class UsersService {
         const filter = {_id : id}
         return this.userModel.deleteOne(filter);
       }
+    async update(id: string, attrs: Partial<User>){
+        let user = await this.findOne(id);
+        if(!user){
+            throw new Error(`UPDATE - no user by this number`)
+        }
+        Object.assign(user, attrs);
+        return user.save();
+    }
 }

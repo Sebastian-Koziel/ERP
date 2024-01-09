@@ -13,36 +13,36 @@ import { UpdateWorkspaceDto } from './dtos/updateWorkspace.dtos';
 export class WorkspacesController {
     constructor( private workspacesService: WorkspacesService){}
 
-    @Access_decorator(Access.admin_company_setup_can_modify)
-    @UseGuards(AuthGuard, AccessGuard)
+    //@Access_decorator(Access.admin_company_setup_can_modify)
+    //@UseGuards(AuthGuard, AccessGuard)
     @Post('create')
     async createWorkspace(@Body() body: CreateWorkspaceDto) {
         return await this.workspacesService.create(body);
     }
 
-    @Access_decorator(Access.admin_company_setup_can_read)
-    @UseGuards(AuthGuard, AccessGuard)
+    //@Access_decorator(Access.admin_company_setup_can_read)
+    //@UseGuards(AuthGuard, AccessGuard)
     @Get()
     async findAll(): Promise<Workspace[]> {
         return await this.workspacesService.findAll();
     }
 
-    @Access_decorator(Access.admin_company_setup_can_read)
-    @UseGuards(AuthGuard, AccessGuard)
+   // @Access_decorator(Access.admin_company_setup_can_read)
+    //@UseGuards(AuthGuard, AccessGuard)
     @Get('/:id')
     async findOne(@Param('id') id:string): Promise<Workspace>{
         return await this.workspacesService.findOne(id);
     }
 
-    @Access_decorator(Access.admin_company_setup_can_modify)
-    @UseGuards(AuthGuard, AccessGuard)
+    //@Access_decorator(Access.admin_company_setup_can_modify)
+    //@UseGuards(AuthGuard, AccessGuard)
     @Put('/:id')
     async update(@Param('id') id: string, @Body() body: UpdateWorkspaceDto) {
         return await this.workspacesService.update(id, body);
     }
 
-    @Access_decorator(Access.admin_company_setup_can_delete)
-    @UseGuards(AuthGuard, AccessGuard)
+    //@Access_decorator(Access.admin_company_setup_can_delete)
+    //@UseGuards(AuthGuard, AccessGuard)
     @Delete('/:id')
     async remove(@Param('id') id:string){
         return await this.workspacesService.remove(id);

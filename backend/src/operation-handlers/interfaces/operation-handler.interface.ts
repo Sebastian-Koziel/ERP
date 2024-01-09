@@ -9,6 +9,8 @@ export class OperationHandler extends Document{
     name:  string
    
     qty:  number
+
+    qtyDone: number
   
     stage_id:  string
    
@@ -21,6 +23,4 @@ export class OperationHandler extends Document{
     avaiable: boolean
 
     doneAt: number
-
-    qtyDone: number
 };
