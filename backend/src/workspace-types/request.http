@@ -1,0 +1,15 @@
+###create
+POST http://localhost:3000/workspace/types/create
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwic3ViIjoiNjQ2NGI0NzI5OWMyMTRhZTIxNjk3YWU5IiwiaWF0IjoxNjk1MTE1MDk4fQ.HLDQTRh6wLPa5F5Uun7xRUNFiHt-1J1IH5XAC9nVgAk
+Content-Type: application/json
+
+{
+    "name": "maszyna 4 igły",
+    "comment": "testowa"
+}
+
+
+###create
+GET http://localhost:3000/workspace/types
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwic3ViIjoiNjQ2NGI0NzI5OWMyMTRhZTIxNjk3YWU5IiwiaWF0IjoxNjk1MTE1MDk4fQ.HLDQTRh6wLPa5F5Uun7xRUNFiHt-1J1IH5XAC9nVgAk
+Content-Type: application/json

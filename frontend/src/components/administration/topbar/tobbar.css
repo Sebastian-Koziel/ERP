@@ -1,0 +1,30 @@
+.monitor-icon-container {
+    width: 28px;
+    height: 28px;
+    display: inline-block; /* Use inline-block to prevent overlap */
+    margin-left: 10px;
+    position: relative;
+  }
+  
+  .dropdown {
+    z-index: 10;
+    position: absolute;
+    background-color: gray;
+    top: 150%; /* Place the dropdown below the icon */
+    left: -100%; /* Center the dropdown under the icon */ 
+    
+  }
+
+  .dropdown ul {
+    list-style-type: none;
+  }
+
+  .dropdownElement {
+    cursor: pointer;
+  }
+
+  .dropdownElement:hover {
+    background-color: greenyellow;
+  }
+  
+  
