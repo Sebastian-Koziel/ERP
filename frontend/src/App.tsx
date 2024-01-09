@@ -25,7 +25,7 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <CompanyLogin />,
-    action: action,
+    //action: action,
   },
   {
     path: "/production",

@@ -35,12 +35,12 @@ export class AuthService{
     async logIn(login: string, password: string){
         const [user] = await this.usersService.find(login);
         if(!user){
-            throw new NotFoundException('user not found');
+            throw new NotFoundException('Wrong user or passwords');
         }
 
         const match = await bcrypt.compare(password, user.password);
         if(!match){
-            throw new BadRequestException('wrong user or password');
+            throw new BadRequestException('Wrong user or password');
         }
 
         const payload = {username: user.login, sub: user._id};

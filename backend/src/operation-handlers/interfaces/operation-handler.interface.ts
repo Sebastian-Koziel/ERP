@@ -21,4 +21,6 @@ export class OperationHandler extends Document{
     avaiable: boolean
 
     doneAt: number
+
+    qtyDone: number
 };
