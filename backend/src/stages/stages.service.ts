@@ -28,7 +28,7 @@ export class StagesService {
     async update(id: string, attrs: Partial<Stage>){
         let stageForChange = await this.stageModel.findById(id);
         if(!stageForChange){
-            throw new Error(`UPDATE - no workspace with this number`)
+            throw new Error(`UPDATE - no stage with this id found`)
         }
         Object.assign(stageForChange, attrs);
         return stageForChange.save();

@@ -23,11 +23,11 @@ export const useInput = (validators:ValidationRules, prePopolutate:any) => {
         setEnteredValue(valueBeforeEdit);
     }
 
-    const valueChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const valueChangeHandler = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setEnteredValue(event.target.value);
     };
 
-    const inputBlurHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const inputBlurHandler = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setIsTouched(true);
     }
 

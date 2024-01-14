@@ -10,7 +10,12 @@ export interface User {
     access: {
         defaultStartPage: string
         production: {
+            generalAccess: boolean
             stagesAccess: string[]
+        },
+        administration: {
+            generalAccess: boolean
+            companySetup: boolean
         }
     }
     

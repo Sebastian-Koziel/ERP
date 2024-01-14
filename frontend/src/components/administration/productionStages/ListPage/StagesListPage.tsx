@@ -1,24 +1,47 @@
-import { useRouteLoaderData } from "react-router-dom";
-import "./StagesListPage.css";
+import { Link, useRouteLoaderData } from "react-router-dom";
+import DataTable from "../utils/datatable";
+import { Box, Button, Center, Text } from "@chakra-ui/react";
 import { Stage } from "../interfaces/Stage.interface";
-import StagesList from "../List/StagesList";
+import FetchErrorComponent from "../../../errorHandling/FetchErrorComponent";
+
+interface ErrorResponse {
+  error: string;
+}
+
+type RouteLoaderData = Stage[] | ErrorResponse;
 
 function StagesListPage() {
-  const stages = useRouteLoaderData("stages");
+
+//handle error from router fetching
+  const routeData = useRouteLoaderData("stages") as RouteLoaderData;
   
-  return <StagesList stages={stages} />;
+  if('error' in routeData){
+    return (
+      <FetchErrorComponent error={routeData.error}/>
+    );
+  }
+
+//if there is no error from router fetching
+
+  
+  const columnsSetup = [
+    {header: "name", accessor: "name"},
+    {header: "comment", accessor: "comment"},
+    { header: "Actions", accessor: "actions", edit: true }
+  ]
+  
+  return (
+    <>
+    <Box>
+    <Button as={Link} to="new" variant="solid" colorScheme="purple">
+      Add new Stage
+    </Button>
+    </Box>
+    
+    <DataTable columns={columnsSetup} data={routeData} />
+    
+    </>
+  )
 }
 
 export default StagesListPage;
-
-
-export const stagesLoader = async (): Promise<Stage[]> => {
-  const token = localStorage.getItem("token");
-  const response = await fetch("http://localhost:3000/stages", {
-    headers: {
-      Authorization: "Bearer "+token
-    }
-  });
-  const data = await response.json();
-  return data;
-};

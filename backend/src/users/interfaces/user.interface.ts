@@ -11,7 +11,12 @@ export interface User extends Document {
     access: {
         defaultStartPage: String
         production: {
+            generalAccess: Boolean
             stagesAccess: String[]
+        },
+        administration: {
+            generalAccess: Boolean
+            companySetup: Boolean
         }
     }
    

@@ -26,14 +26,18 @@ export class AccessGuard implements CanActivate {
             throw new BadRequestException('Wrong user');
         }
         
+
         const reqAccess = this.reflector.getAllAndOverride<Access>('access', [
             contex.getHandler(),
             contex.getClass(),
         ])
+
+        
         if(!reqAccess){
-            return true;
+            return true;    
         }
         const path = reqAccess
+
         
         return this.get(current_user, path);
         

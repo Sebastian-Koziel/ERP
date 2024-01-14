@@ -4,7 +4,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { ChakraProvider } from "@chakra-ui/react";
 //ROUTES
 //login
-import CompanyLogin, { action } from "./components/companyLogin/CompanyLogin";
+import CompanyLogin from "./components/companyLogin/CompanyLogin";
 
 
 //client
@@ -35,7 +35,7 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <CompanyLogin />,
-    action: action,
+    //action: action,
   },
   {
     path: "/production",

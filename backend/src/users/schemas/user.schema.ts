@@ -29,9 +29,24 @@ export const UserSchema = new mongoose.Schema({
             default: ''
         },
         production: {
+            generalAccess:{
+                type: Boolean,
+                default: true
+            },
             stagesAccess: {
                 type: Array,
                 default: []
+            }
+        },
+        administration: {
+            generalAccess:
+            {
+                type: Boolean,
+                default: true
+            },
+            companySetup: {
+                type: Boolean,
+                default: true
             }
         }
 

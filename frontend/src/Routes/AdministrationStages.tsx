@@ -1,8 +1,10 @@
 import StagesRoot from "../components/administration/productionStages/Root/StagesRoot";
-import AddNewStage, {action as addNewStage} from "../components/administration/productionStages/New/AddnewStage";
-import SingleStagePage, {singleStagesLoader,} from "../components/administration/productionStages/singleStagePage/SingleStagePage";
-import EditStage from "../components/administration/productionStages/editStage/EditStage";
-import StagesListPage, { stagesLoader } from "../components/administration/productionStages/ListPage/StagesListPage";
+import AddNewStage from "../components/administration/productionStages/New/AddnewStage";
+import SingleStagePage from "../components/administration/productionStages/singleStagePage/SingleStagePage";
+import StagesListPage from "../components/administration/productionStages/ListPage/StagesListPage";
+import { fetchStageById } from "../components/administration/productionStages/utils/fetchStageById";
+import { fetchAllStages } from "../components/administration/productionStages/utils/fetchAllStages";
+import ErrorBoundary from "../components/errorHandling/ErrorBoundary";
 
 const stagesRoutes = {
   path: "stages",
@@ -12,26 +14,22 @@ const stagesRoutes = {
       index: true,
       id: "stages",
       element: <StagesListPage />,
-      loader: stagesLoader,
+      loader: fetchAllStages,
     },
     {
       path: "new",
       element: <AddNewStage />,
-      action: addNewStage,
+      //action: addNewStage,
     },
     {
       path: ":stageId",
-      id: "stagesLoader",
-      loader: singleStagesLoader,
+      id: "singleStageLoader",
+      loader: fetchStageById,
       children: [
         {
           path: "",
           element: <SingleStagePage />,
-        },
-        {
-          path: "edit",
-          element: <EditStage />,
-        },
+        } 
       ],
     },
   ],

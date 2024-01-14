@@ -1,7 +1,9 @@
 import { redirect } from "react-router-dom";
+import { storageGetToken, storageGetUser } from "../utils/localhostHandlers";
 
 export function logOut() {
   localStorage.removeItem("token");
+  localStorage.removeItem("user");
   localStorage.removeItem("access");
   localStorage.removeItem("expiration");
   localStorage.removeItem("lastViewedStage");
@@ -9,19 +11,22 @@ export function logOut() {
 }
 
 export function isLogged() {
-  const token = localStorage.getItem("token");
+  const token = storageGetToken();
   if (!token) {
     return false;
   }
   return true;
 }
-export function hasAccessToStages() {
-  /* const accessJSON = localStorage.getItem("access");
-  if (accessJSON !== null) {
-    const access: any = accessJSON ? JSON.parse(accessJSON) : {};
-    return access.stages.general;
-  } */
 
+
+export function hasAccessToCompanySetup() {
+  /* const user = storageGetUser();
+  
+  if (user !== null) {
+    if(user.access.administration.companySetup){
+      return true
+    }   
+  }  */
   return true;
 }
 
@@ -32,5 +37,9 @@ export function hasAccessToUsers() {
 
     return access.usersNav.general;
   } */
+  return true;
+}
+
+export function hasAccessToStages() {
   return true;
 }

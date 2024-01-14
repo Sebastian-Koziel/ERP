@@ -118,6 +118,7 @@ function UserGeneralInfo(props:any) {
           {LoginInputHasError && (
             <span>{loginErrorMessage}</span>
           )}
+          
           <FormLabel>Name</FormLabel>
           <Input
             id="name"

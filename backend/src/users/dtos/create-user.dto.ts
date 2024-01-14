@@ -1,5 +1,6 @@
 import { IsString } from 'class-validator';
 
+
 export class CreateUserDto {
   @IsString()
   login: string;
@@ -20,7 +21,12 @@ export class CreateUserDto {
         
         defaultStartPage: string
         production: {
+            generalAccess: boolean
             stagesAccess: string[]
+        },
+        administration: {
+            generalAccess: boolean
+            companySetup: boolean
         }
     }
 }
