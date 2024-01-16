@@ -1,9 +1,8 @@
 import { useEffect } from 'react';
-import { Outlet, Navigate, useNavigate } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
 import { hasAccessToCompanySetup } from '../../../../services/auth';
 import { storageGetUser } from '../../../../utils/localhostHandlers';
 import { useToast } from '@chakra-ui/react';
-import ErrorBoundary from '../../../errorHandling/ErrorBoundary';
 
 function StagesRoot() {
   const user = storageGetUser();

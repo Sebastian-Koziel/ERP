@@ -13,12 +13,40 @@ import {
 } from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
 
-const DataTable = ({ columns, data} ) => {
+interface Column {
+  accessor: string;
+  header: string;
+  edit?: boolean;
+  byId?: boolean;
+  data?: { _id: string; [key: string]: string }[];
+  key?: string
+}
+
+interface DataRow {
+  [key: string]: string;
+}
+
+interface DataTableProps {
+  columns: Column[];
+  data: DataRow[];
+}
+
+const DataTable: React.FC<DataTableProps> = ({ columns, data} ) => {
+
   // States for sorting and searching
-  const [sortConfig, setSortConfig] = useState({ key: null, direction: 'ascending' });
-  const [searchQuery, setSearchQuery] = useState('');
-  const [currentPage, setCurrentPage] = useState(1);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [sortConfig, setSortConfig] = useState<{ key: string; direction: 'ascending' | 'descending' }>({ key: '', direction: 'ascending' });
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [rowsPerPage, setRowsPerPage] = useState<number>(10);
+  
+  //function to handle row render
+  const renderColumn = (row: DataRow, column: Column): string => {
+    if (column.byId && column.data && column.key) {
+      const matchingObject = column.data.find(obj => obj._id === row[column.accessor]);
+      return matchingObject ? matchingObject[column.key] : '';
+    }
+    return row[column.accessor];
+  };
 
   // Function to handle sorting
   const sortedData = useMemo(() => {
@@ -49,11 +77,11 @@ const DataTable = ({ columns, data} ) => {
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
   const currentRows = filteredData.slice(indexOfFirstRow, indexOfLastRow);
 
-  const paginate = pageNumber => setCurrentPage(pageNumber);
+  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
   // Function to request a sort
-  const requestSort = key => {
-    let direction = 'ascending';
+  const requestSort = (key:string) => {
+    let direction: 'ascending' | 'descending' = 'ascending';
     if (
       sortConfig &&
       sortConfig.key === key &&
@@ -96,7 +124,7 @@ const DataTable = ({ columns, data} ) => {
                       <Link to={row._id}>Edit</Link>
                     </Button>
                   ) : (
-                    row[column.accessor]
+                    renderColumn(row, column)
                   )}
                 </Td>
               ))}

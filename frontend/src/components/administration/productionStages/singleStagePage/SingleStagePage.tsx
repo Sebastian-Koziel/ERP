@@ -18,7 +18,7 @@ function SingleStagePage() {
   
   if('error' in routeData){
     return (
-      <FetchErrorComponent error={routeData.error}/>
+      <FetchErrorComponent errors={routeData.error}/>
     );
   }
 

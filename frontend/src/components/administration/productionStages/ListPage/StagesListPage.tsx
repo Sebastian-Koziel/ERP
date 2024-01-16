@@ -1,5 +1,5 @@
 import { Link, useRouteLoaderData } from "react-router-dom";
-import DataTable from "../utils/datatable";
+import DataTable from "../../../../utils/datatable";
 import { Box, Button, Center, Text } from "@chakra-ui/react";
 import { Stage } from "../interfaces/Stage.interface";
 import FetchErrorComponent from "../../../errorHandling/FetchErrorComponent";

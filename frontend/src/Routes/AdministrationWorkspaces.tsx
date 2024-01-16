@@ -1,4 +1,4 @@
-import WorkspaceListPage, { workspacesLoader } from "../components/administration/workspaces/ListPage/WorkSpacesListPage";
+import WorkspaceListPage from "../components/administration/workspaces/ListPage/WorkSpacesListPage";
 import WorkspaceRoot from "../components/administration/workspaces/Root/WorkSpacesRoot";
 import AddNewWorkspace from "../components/administration/workspaces/new/AddNewWorkspace";
 import { action as AddNewWorkspaceAction } from "../components/administration/workspaces/new/AddNewWorkspace";
@@ -7,6 +7,9 @@ import { newWorkspaceLoader } from "../components/administration/workspaces/new/
 
 import WorkspaceTypesListPage, { workspaceTypesLoader } from "../components/administration/workspaces/Types/ListPage/ListPage";
 import AddNewWorkspaceType, { action as addNewWorkspaceType} from "../components/administration/workspaces/Types/New/AddNewWorkspaceType";
+import { fetchMultipleResources } from "../utils/fetchMultipleResources";
+import { fetchWorkSpaceById } from "../components/administration/workspaces/Utils/fetchWorkspaceById";
+import SingleWorkspacePage from "../components/administration/workspaces/singleWorkspacePage/singleWorkspacePage";
  
 
 const workspacesRoutes = {
@@ -17,7 +20,7 @@ const workspacesRoutes = {
         index: true,
         id: "workspace",
         element: <WorkspaceListPage />,
-        loader: workspacesLoader,
+        loader: ()=>fetchMultipleResources(['workspaces', 'stages', 'workspaceTypes']),
       },
       {
         path: "new",
@@ -26,32 +29,31 @@ const workspacesRoutes = {
         loader: newWorkspaceLoader
       },
       {
-        /* path: ":stageId",
-        id: "stagesLoader",
-        loader: singleStagesLoader,
+        path: ":stageId",
+        id: "singleWorkspaceLoader",
+        loader: fetchWorkSpaceById,
         children: [
           {
             path: "",
-            element: <SingleStagePage />,
-          },
-          {
-            path: "edit",
-            element: <EditStage />,
-          },
-        ], */
+            element: <SingleWorkspacePage />,
+          } 
+        ],
       },
-      {
-        path: "types",
-        id: "workspaceTypes",
-        element: < WorkspaceTypesListPage />,
-        loader: workspaceTypesLoader,
-      },
-      {
-        path: "types/new",
-            element: <AddNewWorkspaceType />,
-            action: addNewWorkspaceType,
-      }
     ],
-  };
+}
+
+/* path: "workspaceTypes",
+      id: "workspaceTypes",
+      element: < WorkspaceTypesListPage />,
+      loader: workspaceTypesLoader,
+      children: [
+        {
+          path: "new",
+              element: <AddNewWorkspaceType />,
+              action: addNewWorkspaceType,
+        }
+      ] */
+    
+  
   
   export { workspacesRoutes };

@@ -48,9 +48,12 @@ export class AuthService{
 
         const payload = {username: user.login, sub: user._id};
         
+
+        const userWithNoPassword = await this.usersService.findOneNoPass(user._id);
+        
         return {
             access_token: await this.jwtService.signAsync(payload),
-            user: user
+            user: userWithNoPassword
         };
     }
 

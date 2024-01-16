@@ -1,26 +1,42 @@
 import { useRouteLoaderData } from "react-router-dom";
-import { Workspace } from "../Interfaces/Workspace.interface";
-import WorkspacesList from "../List/WorkspacesList";
-
+import { checkForErrors, fetchMultipleResources } from "../../../../utils/fetchMultipleResources";
+import FetchErrorComponent from "../../../errorHandling/FetchErrorComponent";
+import DataTable from "../../../../utils/datatable";
+import { getSafe } from "../../../../utils/getSafeForTS";
 
 function WorkspaceListPage() {
-  const workspaces = useRouteLoaderData("workspace");
 
-  return <WorkspacesList workspaces={workspaces} />;
+  const routeData = useRouteLoaderData("workspace") as ReturnType<typeof fetchMultipleResources>;
+  
+  //pleasing TS
+  const stages = getSafe(routeData, 'stages', []);
+  const workspaceTypes = getSafe(routeData, 'workspaceTypes', []);
+  const workspaces = getSafe(routeData, 'workspaces', []);
+
+  //checking if we have any errors in routeData
+  const errors = checkForErrors(routeData);
+
+  //if so display error
+  if (errors.length > 0) {
+    return <FetchErrorComponent errors={errors} />;
+  }
+  
+  //if there are no errors from fetch
+  
+  //setting up datatable
+  const columnsSetup = [
+    {header: "name", accessor: "name"},
+    {header: "comment", accessor: "comment"},
+    { header: "stage", accessor: "stage_id", byId: true, data: stages, key: "name" },
+    { header: "type", accessor: "workspaceType_id", byId: true, data: workspaceTypes, key: "name" },
+    { header: "Actions", accessor: "actions", edit: true }
+  ]
+
+  return (
+  <DataTable columns={columnsSetup} data={workspaces} />
+  )
+  
 }
 
 export default WorkspaceListPage;
-
-
-
-export const workspacesLoader = async (): Promise<Workspace[]> => {
-  const token = localStorage.getItem("token");
-  const response = await fetch("http://localhost:3000/workspaces", {
-    headers: {
-      Authorization: "Bearer "+token
-    }
-  });
-  const data = await response.json();
-  return data;
-};
 

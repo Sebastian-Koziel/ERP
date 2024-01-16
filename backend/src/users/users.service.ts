@@ -19,10 +19,15 @@ export class UsersService {
     async findOne(id: string): Promise<User> {
         return this.userModel.findById(id);
     }
+    //finding with no password
+    async findOneNoPass(id: string): Promise<User> {
+        return this.userModel.findById(id, '-password');
+    }
 
     async find(login: string): Promise<User[]> {
         return this.userModel.find({ login });
       }
+
 
     async remove(id: string){
         const filter = {_id : id}
