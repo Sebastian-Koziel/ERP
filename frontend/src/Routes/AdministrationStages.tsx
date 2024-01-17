@@ -4,7 +4,6 @@ import SingleStagePage from "../components/administration/productionStages/singl
 import StagesListPage from "../components/administration/productionStages/ListPage/StagesListPage";
 import { fetchStageById } from "../components/administration/productionStages/utils/fetchStageById";
 import { fetchAllStages } from "../components/administration/productionStages/utils/fetchAllStages";
-import ErrorBoundary from "../components/errorHandling/ErrorBoundary";
 
 const stagesRoutes = {
   path: "stages",

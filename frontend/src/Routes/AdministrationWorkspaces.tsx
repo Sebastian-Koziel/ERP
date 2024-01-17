@@ -29,9 +29,9 @@ const workspacesRoutes = {
         loader: newWorkspaceLoader
       },
       {
-        path: ":stageId",
-        id: "singleWorkspaceLoader",
-        loader: fetchWorkSpaceById,
+        path: ":workspaceId",
+        id: "workspaceDetails",
+        loader: ()=>fetchMultipleResources(['workspaces', 'stages', 'workspaceTypes']),
         children: [
           {
             path: "",

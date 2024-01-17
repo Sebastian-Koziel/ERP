@@ -2,15 +2,19 @@ import { storageGetToken } from "../../../../utils/localhostHandlers";
 import { Stage } from "../interfaces/Stage.interface";
 
 interface MyLoaderProps {
-  stageId: number | string;
+  stageId?: number | string;
 }
 
 interface FetchError {
   error: string;
 }
 
-export const fetchStageById = async ({params}: {params: MyLoaderProps;}): Promise<Stage | FetchError> => {
-    const stage_id = params.stageId;
+export const fetchStageById = async ({stageId, params}: {stageId?: number | string;params?: MyLoaderProps;}): Promise<Stage | FetchError> => {
+  const stage_id = stageId || (params && params.stageId);
+
+  if (stage_id === undefined) {
+    return { error: "Stage ID is missing" };
+  }
 
     const token = storageGetToken();
 try{
