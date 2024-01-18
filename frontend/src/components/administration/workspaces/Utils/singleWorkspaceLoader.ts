@@ -1,27 +1,31 @@
-import { storageGetToken } from "../../../../utils/localhostHandlers";
-import { fetchAllWorkspacesTypes } from "../../../WorkspaceTypes/utils/fetchAllWorkspacesTypes";
 import { Stage } from "../../productionStages/interfaces/Stage.interface";
 import { fetchAllStages } from "../../productionStages/utils/fetchAllStages";
 import { Workspace } from "../Interfaces/Workspace.interface";
-import { WorkspaceType } from "../Types/Interfaces/WorkspaceType";
+import { WorkspaceType } from "../../workspaceTypes/Interfaces/WorkspaceType";
+import { fetchWorkSpaceById } from "./fetchWorkspaceById";
+import { fetchAllWorkspaceTypes } from "../../workspaceTypes/Utils/fetchAllWorkspaceTypes";
+
+interface MyLoaderProps {
+  workspaceId: string;
+}
 
 interface FetchError {
     error: string;
   }
 
 interface ConsolidatedData {
-    stages: Stage[];
-    workspaceTypes: WorkspaceType[];
-    workspace: Workspace;
-    // Add more properties as needed
+    stages: Stage[] | FetchError;
+    workspaceTypes: WorkspaceType[] | FetchError;
+    workspace: Workspace | FetchError;
   }
   
-  export const singleWorkspaceLoader = async (): Promise<ConsolidatedData | FetchError> => {
-    const token = storageGetToken();
-  
+  export const singleWorkspaceLoader = async ({params}: {params: MyLoaderProps}): Promise<ConsolidatedData | FetchError> => {
+    const _id = params.workspaceId;
+    console.log(`loading`)
     try {
       const stagesPromise = fetchAllStages();
-      const workspaceTypesPromise = fetchAllWorkspacesTypes();
+      const workspaceTypesPromise = fetchAllWorkspaceTypes();
+      const workspacePromise = fetchWorkSpaceById(_id);
       // Add more resource URLs as needed
   
       const [stages, workspaceTypes, workspace] = await Promise.all([stagesPromise, workspaceTypesPromise, workspacePromise ]);

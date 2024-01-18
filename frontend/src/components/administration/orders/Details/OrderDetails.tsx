@@ -137,11 +137,7 @@ interface MyLoaderProps {
     orderId: string;
 }
 
-export const orderByIdLoader = async ({
-  params,
-}: {
-  params: MyLoaderProps;
-}): Promise<Order> => {
+export const orderByIdLoader = async ({params,}: {params: MyLoaderProps;}): Promise<Order> => {
   const orderId = params.orderId;
   const token = localStorage.getItem("token");
   //console.log(`front probuje wbic na usera ${userId}`)

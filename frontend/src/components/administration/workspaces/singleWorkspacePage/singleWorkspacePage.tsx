@@ -1,5 +1,5 @@
 import { useRouteLoaderData, Link, Form, useParams } from "react-router-dom";
-import { Container, Heading, Button, Stack, FormControl, FormLabel, Input, Box, FormErrorMessage, FormHelperText, Textarea, useToast } from "@chakra-ui/react";
+import { Container, Heading, Button, Stack, FormControl, FormLabel, Input, Box, FormErrorMessage, FormHelperText, Textarea, useToast, Select } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { useInput } from "../../../../hooks/form/use-input";
 import FetchErrorComponent from "../../../errorHandling/FetchErrorComponent";
@@ -8,39 +8,23 @@ import { getSafe } from "../../../../utils/getSafeForTS";
 import { Workspace } from "../Interfaces/Workspace.interface";
 import { updateStageData } from "../../productionStages/interfaces/Stage.interface";
 import { updateStage } from "../../productionStages/utils/updateStage";
+import { useSelect } from "../../../../hooks/form/use-select";
 
 function SingleWorkspacePage() {
-    const params = useParams();
-    const workspace_id = params.workspaceId;
-
-    const routeData = useRouteLoaderData("workspaceDetails") as ReturnType<typeof fetchMultipleResources>;
     
-    //pleasing TS
-    const stages = getSafe(routeData, 'stages', []);
-    const workspaceTypes = getSafe(routeData, 'workspaceTypes', []);
-    const workspaces = getSafe<Workspace[]>(routeData, 'workspaces', []);
+    
 
-    //checking if we have any errors in routeData
-    const errors = checkForErrors(routeData);
+    const routeData = useRouteLoaderData("singleWorkspace");
+    
 
-    //if so display error
-    if (errors.length > 0) {
-        return <FetchErrorComponent errors={errors} />;
-    }
+const { stages, workspaceTypes } = routeData;
+    
     
     //if there is no error from router fetching
 
   // data set up
-  const [workspace, setWorkspace] = useState<Workspace | null>(null);
+  const [workspace, setWorkspace] = useState<Workspace>(routeData.workspace);
 
-  useEffect(() => {
-    // Find the workspace that matches the workspace_id
-    const foundWorkspace = workspaces.find(ws => ws._id === workspace_id);
-    if(foundWorkspace){
-    setWorkspace(foundWorkspace);
-    }
-}, [workspaces, workspace_id]);
-  console.log(workspace)
   //for error and confirmation displaying
   const toast = useToast();
   
@@ -64,6 +48,18 @@ function SingleWorkspacePage() {
     cancelEdit: commentCancelEdit,
     message: commentErrorMessage
   } = useInput([], workspace.comment);
+
+  
+  const {
+    value: enteredStage, 
+    isValid: enteredStageIsValid,
+    hasError: stageInputHasError, 
+    valueChangeHandler: stageChangedHandler, 
+    inputBlurHandler: stageBlurHandler,
+    cancelEdit: stageCancelEdit,
+    generateOptions: stageGenerateOptions,
+    message: roleErrorMessage
+  } = useSelect(stages,[], workspace.stage_id);
 
  
 //form overall validation
@@ -206,6 +202,19 @@ return (
           <FormErrorMessage>{commentErrorMessage}</FormErrorMessage>
           )}
     </FormControl>
+    <FormControl>
+    <FormLabel>Stage for this workspace</FormLabel>
+          <Select 
+            id="stage"
+            name="stage" 
+            value={enteredStage}
+            disabled={!editing}
+            onChange={stageChangedHandler}
+            onBlur={stageBlurHandler}
+            >
+          {stageGenerateOptions()}   
+          </Select>
+      </FormControl>
 
   </Form>
   </Box>

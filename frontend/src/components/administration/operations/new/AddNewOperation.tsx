@@ -9,7 +9,7 @@ import {
 } from "@chakra-ui/react";
 import { Stage } from "../../productionStages/interfaces/Stage.interface";
 import { storageGetToken } from "../../../../utils/localhostHandlers";
-import { WorkspaceType } from "../../workspaces/Types/Interfaces/WorkspaceType";
+import { WorkspaceType } from "../../workspaceTypes/Interfaces/WorkspaceType";
 import { CreateOperation } from "../Interfaces/CreateOperation.interface";
 
 

@@ -1,12 +1,12 @@
-import { storageGetToken } from "../../../utils/localhostHandlers";
-import { WorkspaceType } from "../../administration/workspaces/Types/Interfaces/WorkspaceType";
+import { storageGetToken } from "../../../../utils/localhostHandlers";
+import { WorkspaceType } from "../Interfaces/WorkspaceType";
 
 
 interface FetchError {
   error: string;
 }
 
-export const fetchAllWorkspacesTypes = async (): Promise<WorkspaceType[] | FetchError> => {
+export const fetchAllWorkspaceTypes = async (): Promise<WorkspaceType[] | FetchError> => {
    
     const token = storageGetToken();
     try{
@@ -18,7 +18,7 @@ export const fetchAllWorkspacesTypes = async (): Promise<WorkspaceType[] | Fetch
 
     if(!response.ok) {
       const errorResponse = await response.json();
-      const errorMessage = errorResponse.message || 'Something went wrong with fetching workspace Types';
+      const errorMessage = errorResponse.message || 'Something went wrong with fetching workspace types';
       throw new Error(errorMessage);
     }
 

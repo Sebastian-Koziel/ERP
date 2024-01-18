@@ -8,8 +8,8 @@ import { newWorkspaceLoader } from "../components/administration/workspaces/new/
 import WorkspaceTypesListPage, { workspaceTypesLoader } from "../components/administration/workspaces/Types/ListPage/ListPage";
 import AddNewWorkspaceType, { action as addNewWorkspaceType} from "../components/administration/workspaces/Types/New/AddNewWorkspaceType";
 import { fetchMultipleResources } from "../utils/fetchMultipleResources";
-import { fetchWorkSpaceById } from "../components/administration/workspaces/Utils/fetchWorkspaceById";
 import SingleWorkspacePage from "../components/administration/workspaces/singleWorkspacePage/singleWorkspacePage";
+import { singleWorkspaceLoader } from "../components/administration/workspaces/Utils/singleWorkspaceLoader";
  
 
 const workspacesRoutes = {
@@ -30,8 +30,8 @@ const workspacesRoutes = {
       },
       {
         path: ":workspaceId",
-        id: "workspaceDetails",
-        loader: ()=>fetchMultipleResources(['workspaces', 'stages', 'workspaceTypes']),
+        id: "singleWorkspace",
+        loader: singleWorkspaceLoader,
         children: [
           {
             path: "",

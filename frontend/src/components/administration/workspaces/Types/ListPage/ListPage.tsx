@@ -1,6 +1,6 @@
 import { useLoaderData, Link } from "react-router-dom";
 
-import { WorkspaceType } from "../Interfaces/WorkspaceType";
+import { WorkspaceType } from "../../../workspaceTypes/Interfaces/WorkspaceType";
 import WorkspacesTypesList from "../List/List";
 import {
   Container,

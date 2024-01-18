@@ -24,8 +24,8 @@ export const useSelect = (optionsArray: string[], validators:ValidationRules, pr
     }
     const generateOptions = () => {
         return optionsArray.map((option:any) => (
-            <option key={option} value={option}>
-              {option}
+            <option key={option._id} value={option._id}>
+              {option.name}
             </option>
           ))
     }

@@ -1,14 +1,24 @@
 import { storageGetToken } from "../../../../utils/localhostHandlers";
-import { Workspace } from "../Interfaces/Workspace.interface";
+import { WorkspaceType } from "../Interfaces/WorkspaceType";
+
+interface MyLoaderProps {
+  id?: number | string;
+}
 
 interface FetchError {
   error: string;
 }
 
-export const fetchWorkSpaceById = async (workspace_id: string): Promise<Workspace | FetchError> => {
+export const fetchWorkspaceTypeById = async ({id, params}: {id?: number | string;params?: MyLoaderProps;}): Promise<WorkspaceType | FetchError> => {
+  const _id = id || (params && params.id);
+
+  if (id === undefined) {
+    return { error: "Workspace type ID is missing" };
+  }
+
     const token = storageGetToken();
 try{
-    const response = await fetch("http://localhost:3000/workspaces/" +workspace_id, {
+    const response = await fetch("http://localhost:3000/workspace/types/" +_id, {
       headers: {
         Authorization: "Bearer "+token
       }
@@ -16,7 +26,7 @@ try{
 
     if(!response.ok) {
       const errorResponse = await response.json();
-      const errorMessage = errorResponse.message || 'Something went wrong with fetching workspace';
+      const errorMessage = errorResponse.message || 'Something went wrong with fetching workspace type';
       throw new Error(errorMessage);
     }
     const data = await response.json();

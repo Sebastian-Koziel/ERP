@@ -1,6 +1,6 @@
 
 import { Link } from "react-router-dom";
-import { WorkspaceType } from "../Interfaces/WorkspaceType";
+import { WorkspaceType } from "../../../workspaceTypes/Interfaces/WorkspaceType";
 import {
   Table,
   Thead,

@@ -154,7 +154,7 @@ function UserGeneralInfo(props:any) {
             onChange={roleChangedHandler}
             onBlur={roleBlurHandler}
             >
-          {roleGenerateOptions()}
+          {roleGenerateOptions()} 
             
           </Select>
         </Form>
