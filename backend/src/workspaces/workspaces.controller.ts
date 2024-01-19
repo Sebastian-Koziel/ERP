@@ -6,7 +6,8 @@ import { CreateWorkspaceDto } from './dtos/createWorkspace.dtos';
 import { WorkspacesService } from './workspaces.service';
 import { Access } from 'src/auth/access.enum';
 import { Workspace } from './interfaces/workspace.interface';
-import { UpdateWorkspaceDto } from './dtos/updateWorkspace.dtos';
+import { UpdateWorkspace } from './interfaces/updateWorkspace.interface';
+
 
 
 @Controller('workspaces')
@@ -34,11 +35,12 @@ export class WorkspacesController {
         return await this.workspacesService.findOne(id);
     }
 
-    //@Access_decorator(Access.admin_company_setup_can_modify)
+    //@Access_decorator(Access.companySetup)
     //@UseGuards(AuthGuard, AccessGuard)
-    @Put('/:id')
-    async update(@Param('id') id: string, @Body() body: UpdateWorkspaceDto) {
-        return await this.workspacesService.update(id, body);
+    @Post('update')
+    updateUser(@Body() body: UpdateWorkspace) {
+        console.log(`controler`)
+        return this.workspacesService.update(body.id, body.attr);
     }
 
     //@Access_decorator(Access.admin_company_setup_can_delete)

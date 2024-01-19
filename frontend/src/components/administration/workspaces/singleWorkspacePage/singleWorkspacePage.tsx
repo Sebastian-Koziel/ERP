@@ -6,24 +6,41 @@ import FetchErrorComponent from "../../../errorHandling/FetchErrorComponent";
 import { checkForErrors, fetchMultipleResources } from "../../../../utils/fetchMultipleResources";
 import { getSafe } from "../../../../utils/getSafeForTS";
 import { Workspace } from "../Interfaces/Workspace.interface";
-import { updateStageData } from "../../productionStages/interfaces/Stage.interface";
+import { Stage, updateStageData } from "../../productionStages/interfaces/Stage.interface";
 import { updateStage } from "../../productionStages/utils/updateStage";
 import { useSelect } from "../../../../hooks/form/use-select";
+import { UpdateWorkspaceData } from "../Interfaces/updateWorkspaceData";
+import { updateWorkspace } from "../Utils/updateWorkSpace";
+import { ConsolidatedData, FetchError } from "../Utils/singleWorkspaceLoader";
 
 function SingleWorkspacePage() {
     
     
+const routeData = useRouteLoaderData("singleWorkspace") as ConsolidatedData | FetchError;
+    
+if ('error' in routeData) {
+  // Handle fetch errors
+  return <FetchErrorComponent errors={routeData.error} />;
+}
 
-    const routeData = useRouteLoaderData("singleWorkspace");
-    
+// Destructure data from consolidatedData
+const { stages, workspaceTypes, workspace } = routeData;
 
-const { stages, workspaceTypes } = routeData;
-    
-    
+// Check for errors within consolidated data
+if ('error' in stages || 'error' in workspaceTypes || 'error' in workspace) {
+  // Handle errors within consolidated data
+  const errors = [
+    'Error in stages: ' + (stages as FetchError).error,
+    'Error in workspaceTypes: ' + (workspaceTypes as FetchError).error,
+    'Error in workspace: ' + (workspace as FetchError).error,
+  ];
+  return <FetchErrorComponent errors={errors} />;
+}
+
     //if there is no error from router fetching
-
+    
   // data set up
-  const [workspace, setWorkspace] = useState<Workspace>(routeData.workspace);
+  const [singleWorkspace, setWorkspace] = useState(routeData.workspace as Workspace);
 
   //for error and confirmation displaying
   const toast = useToast();
@@ -37,7 +54,7 @@ const { stages, workspaceTypes } = routeData;
     inputBlurHandler: nameBlurHandler,
     cancelEdit: nameCancelEdit,
     message: nameErrorMessage
-  } = useInput([{name: 'required'}], workspace.name);
+  } = useInput([{name: 'required'}], singleWorkspace.name);
 
   const {
     value: enteredComment, 
@@ -47,7 +64,7 @@ const { stages, workspaceTypes } = routeData;
     inputBlurHandler: commentBlurHandler,
     cancelEdit: commentCancelEdit,
     message: commentErrorMessage
-  } = useInput([], workspace.comment);
+  } = useInput([], singleWorkspace.comment);
 
   
   const {
@@ -59,7 +76,7 @@ const { stages, workspaceTypes } = routeData;
     cancelEdit: stageCancelEdit,
     generateOptions: stageGenerateOptions,
     message: roleErrorMessage
-  } = useSelect(stages,[], workspace.stage_id);
+  } = useSelect(stages,[], singleWorkspace.stage_id);
 
  
 //form overall validation
@@ -78,6 +95,7 @@ const editButtonHandler = () =>{
   if(editing){
     nameCancelEdit();
     commentCancelEdit();
+    stageCancelEdit();
   }
   //go into editing if not editing
   setEditing(!editing);
@@ -86,18 +104,20 @@ const editButtonHandler = () =>{
 //saving changes after editing
 const submitFormHandler = async () => {
   //set new data
-  const data: updateStageData = {
+  const data: UpdateWorkspaceData = {
     id: workspace._id,
     attr : {
       name: enteredName,
       comment: enteredComment,
+      stage_id: enteredStage,
+      workspaceType_id: `ddd`
     }
   }
   try {
-    const response = await updateStage(data);
+    const response = await updateWorkspace(data);
     toast({
-      title: "Stage updated",
-      description: "Stage has been successfully updated",
+      title: "Workspace updated",
+      description: "Workspace has been successfully updated",
       status: "success",
       duration: 5000,
       isClosable: true
@@ -109,7 +129,7 @@ const submitFormHandler = async () => {
   } catch (err: any) {
     toast({
       title: "Error.",
-      description: err.message || "Something went wrong with updating this stage",
+      description: err.message || "Something went wrong with updating this workspace",
       status: "error",
       duration: 5000,
       isClosable: true
@@ -124,7 +144,7 @@ const submitFormHandler = async () => {
     if (proceed) {
       //powinna być osobny component na to
       //nie wiem jak dodac kilka akcji do 1 sciezki
-      console.log(`gonna delete ${workspace._id}`);
+      console.log(`gonna delete ${singleWorkspace._id}`);
     }
   }
 

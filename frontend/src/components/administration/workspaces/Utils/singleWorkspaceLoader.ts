@@ -9,11 +9,11 @@ interface MyLoaderProps {
   workspaceId: string;
 }
 
-interface FetchError {
+export interface FetchError {
     error: string;
   }
 
-interface ConsolidatedData {
+export interface ConsolidatedData {
     stages: Stage[] | FetchError;
     workspaceTypes: WorkspaceType[] | FetchError;
     workspace: Workspace | FetchError;
