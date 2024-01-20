@@ -14,29 +14,29 @@ import { UpdateWorkspace } from './interfaces/updateWorkspace.interface';
 export class WorkspacesController {
     constructor( private workspacesService: WorkspacesService){}
 
-    //@Access_decorator(Access.admin_company_setup_can_modify)
-    //@UseGuards(AuthGuard, AccessGuard)
+    @Access_decorator(Access.companySetup)
+    @UseGuards(AuthGuard, AccessGuard)
     @Post('create')
     async createWorkspace(@Body() body: CreateWorkspaceDto) {
         return await this.workspacesService.create(body);
     }
 
-    //@Access_decorator(Access.admin_company_setup_can_read)
-    //@UseGuards(AuthGuard, AccessGuard)
+    @Access_decorator(Access.companySetup)
+    @UseGuards(AuthGuard, AccessGuard)
     @Get()
     async findAll(): Promise<Workspace[]> {
         return await this.workspacesService.findAll();
     }
 
-   // @Access_decorator(Access.admin_company_setup_can_read)
-    //@UseGuards(AuthGuard, AccessGuard)
+    @Access_decorator(Access.companySetup)
+    @UseGuards(AuthGuard, AccessGuard)
     @Get('/:id')
     async findOne(@Param('id') id:string): Promise<Workspace>{
         return await this.workspacesService.findOne(id);
     }
 
-    //@Access_decorator(Access.companySetup)
-    //@UseGuards(AuthGuard, AccessGuard)
+    @Access_decorator(Access.companySetup)
+    @UseGuards(AuthGuard, AccessGuard)
     @Post('update')
     updateUser(@Body() body: UpdateWorkspace) {
         console.log(`controler`)

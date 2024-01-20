@@ -1,4 +1,4 @@
-import { Form, redirect, useNavigate, useNavigation } from "react-router-dom";
+import { Form, useNavigate, useNavigation } from "react-router-dom";
 import {
   Container,
   Input,
@@ -160,39 +160,6 @@ if (enteredNameIsValid && enteredCommentIsValid) {
 
 export default AddNewStage;
 
-
-/* export async function action({ request }: { request: Request }) {
-  
-  const data = await request.formData();
-  
-  const newStagedata = {
-    name: data.get("stageName"),
-    comment: data.get("stageComment"),
-  };
-  
-  try {
-    const response = await addNewStage(newStagedata);
-    
-    
-  } catch (err: any) {
-    
-  }
-} */
-
-  /* const response = await fetch("http://localhost:3000/stages/create", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: "Bearer "+ token
-    },
-    body: JSON.stringify(authData),
-  });
-
-  const resData: string = await response.json();
-
-  
-  return redirect("/administration/stages"); */
-  //return redirect("/administration/workspaces/" + resData);
 
  
 

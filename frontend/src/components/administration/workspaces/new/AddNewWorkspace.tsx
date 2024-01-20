@@ -1,26 +1,30 @@
-import { Form, redirect, useNavigate, useNavigation, useLoaderData } from "react-router-dom";
+import { Form, useNavigate, useNavigation, useLoaderData } from "react-router-dom";
 import {
   Container,
   Input,
   Button,
   Select,
-  Spacer,
-  Stack,
+  useToast,
+  Box,
+  FormControl,
+  FormLabel,
+  FormHelperText,
+  FormErrorMessage,
+  Textarea,
 } from "@chakra-ui/react";
 
-import { Stage } from "../../productionStages/interfaces/Stage.interface";
-import { WorkspaceType } from "../../workspaceTypes/Interfaces/WorkspaceType";
+import { useInput } from "../../../../hooks/form/use-input";
+import { useSelect } from "../../../../hooks/form/use-select";
+import { ConsolidatedData, FetchError } from "../Utils/singleWorkspaceLoader";
+import FetchErrorComponent from "../../../errorHandling/FetchErrorComponent";
+import { addNewWorkspace } from "../Utils/addNewWorkspace";
 
 
 
 function AddNewWorkspace() {
+  const toast = useToast();
   const navigate = useNavigate();
   const navigation = useNavigation();
-  const fetchData:any = useLoaderData();
-
-  const stages = fetchData.stages;
-  const workSpaceTypes = fetchData.workSpaceTypes;
- 
 
   const isSubmitting = navigation.state === "submitting";
 
@@ -28,49 +32,197 @@ function AddNewWorkspace() {
     navigate("..");
   }
 
+  //handling fetching
+  const routeData = useLoaderData() as ConsolidatedData | FetchError;
+    
+  if ('error' in routeData) {
+    // Handle fetch errors
+    return <FetchErrorComponent errors={routeData.error} />;
+  }
+  
+  // Destructure data from consolidatedData
+  const { stages, workspaceTypes} = routeData;
+  
+  // Check for errors within consolidated data
+  if ('error' in stages || 'error' in workspaceTypes) {
+    // Handle errors within consolidated data
+    const errors = [
+      'Error in stages: ' + (stages as FetchError).error,
+      'Error in workspaceTypes: ' + (workspaceTypes as FetchError).error
+    ];
+    return <FetchErrorComponent errors={errors} />;
+  }
+
+//handling submit
+const handleSubmit = async (event:React.FormEvent<HTMLFormElement>) => {
+  event.preventDefault();
+  const formData = new FormData(event.currentTarget);
+  
+const newStagedata = {
+  name: formData.get("workspaceName") as string,
+  comment: formData.get("workspaceComment") as string,
+  stage_id: formData.get("stage") as string,
+  workspaceType_id: formData.get("workspacetype") as string,
+};
+
+  try {
+    const response = await addNewWorkspace(newStagedata);
+    toast({
+      title: "Stage added",
+      description: "Stage has been successfully added",
+      status: "success",
+      duration: 5000,
+      position: 'top',
+      isClosable: true
+    });
+    navigate("..");
+  } catch (error:any) {
+    toast({
+      title: "Error.",
+      description: error.message || "Something went wrong with adding this stage",
+      status: "error",
+      position: 'top',
+      duration: 5000,
+      isClosable: true
+    });
+  }
+}
+  //input handlers
+  const {
+    value: enteredName, 
+    isValid: enteredNameIsValid,
+    hasError: nameInputHasError, 
+    valueChangeHandler: nameChangedHandler, 
+    inputBlurHandler: nameBlurHandler,
+    message: nameErrorMessage
+  } = useInput([{name: 'required'}], '');
+
+  const {
+    value: enteredComment, 
+    isValid: enteredCommentIsValid,
+    hasError: commentInputHasError, 
+    valueChangeHandler: commentChangedHandler, 
+    inputBlurHandler: commentBlurHandler,
+    message: commentErrorMessage
+  } = useInput([], '');
+
+  
+  const {
+    value: enteredStage, 
+    isValid: enteredStageIsValid,
+    hasError: stageInputHasError, 
+    valueChangeHandler: stageChangedHandler, 
+    inputBlurHandler: stageBlurHandler,
+    generateOptions: stageGenerateOptions,
+    message: stageErrorMessage
+  } = useSelect(stages,[], '');
+
+  const {
+    value: enteredWorkspaceType, 
+    isValid: enteredWorkspaceTypeIsValid,
+    hasError: workSpaceTypeInputHasError, 
+    valueChangeHandler: workSpaceTypeChangedHandler, 
+    inputBlurHandler: workSpaceTypeBlurHandler,
+    generateOptions: workSpaceTypeGenerateOptions,
+    message: workSpaceTypeErrorMessage
+  } = useSelect(workspaceTypes,[], '');
+
+//form overall validation
+let formIsValid = false;
+
+if (enteredNameIsValid && enteredCommentIsValid && enteredStageIsValid && enteredWorkspaceTypeIsValid) {
+  formIsValid = true;
+}
+
   return (
     <Container mt="1rem" mb="1rem" centerContent>
-      <Form method="post">
-        <Stack minW="container.sm">
-          <Input
-            id="name"
-            type="text"
-            name="name"
-            required
-            placeholder="Name"
-            variant="outline"
-          />
+      <Box>
+        <Form onSubmit={handleSubmit}>
+          <FormControl isInvalid={nameInputHasError}>
+            <FormLabel>
+              Name:
+            </FormLabel>
+              <Input
+                id="workspaceName"
+                type="text"
+                name="workspaceName"
+                onChange={nameChangedHandler}
+                onBlur={nameBlurHandler}
+                value={enteredName}
+                
+              />
 
-          <Input
-            id="comment"
-            type="text"
-            name="comment"
-            required
-            placeholder="comment"
-            variant="outline"
-          />
+                {!nameErrorMessage? (
+                <FormHelperText>
+                enter name
+                </FormHelperText>
+                ) : (
+                <FormErrorMessage>{nameErrorMessage}</FormErrorMessage>
+                )}
+          </FormControl>
 
-          <label htmlFor="stage">Pick a stage for this work space:</label>
-          <Select id="stage_id" name="stage_id" required>
-            {stages.map((stage:Stage) => (
-              <option key={stage._id} value={stage._id}>
-                {stage.name}
-              </option>
-            ))}
+    <FormControl isInvalid={commentInputHasError}>
+      <FormLabel>
+        Comment:
+      </FormLabel>
+        <Textarea
+          id="workspaceComment"
+          name="workspaceComment"
+          onChange={commentChangedHandler}
+          onBlur={commentBlurHandler}
+          value={enteredComment}
+        />
+                {!commentInputHasError? (
+                <FormHelperText>
+                enter name
+                </FormHelperText>
+                ) : (
+                <FormErrorMessage>{commentErrorMessage}</FormErrorMessage>
+                )}      
+    </FormControl>
+
+    <FormControl>
+      <FormLabel>Stage for this workspace</FormLabel>
+          <Select 
+            id="stage"
+            name="stage" 
+            value={enteredStage}
+            onChange={stageChangedHandler}
+            onBlur={stageBlurHandler}
+            >
+          {stageGenerateOptions()}   
           </Select>
-
-          <label htmlFor="stage">Pick a type of workspace</label>
-          <Select id="workspaceType_id" name="workspaceType_id" required>
-            {workSpaceTypes.map((type:WorkspaceType) => (
-              <option key={type._id} value={type._id}>
-                {type.name}
-              </option>
-            ))}
+          {!stageInputHasError? (
+                <FormHelperText>
+                Pick a stage for this workspace
+                </FormHelperText>
+                ) : (
+                <FormErrorMessage>{stageErrorMessage}</FormErrorMessage>
+                )}      
+    </FormControl>
+    <FormControl>
+      <FormLabel>Workspace type for this workspace</FormLabel>
+          <Select 
+            id="workspacetype"
+            name="workspacetype" 
+            value={enteredWorkspaceType}
+            onChange={workSpaceTypeChangedHandler}
+            onBlur={workSpaceTypeBlurHandler}
+            >
+          {workSpaceTypeGenerateOptions()}   
           </Select>
-
-          <Spacer />
-
-          <Button type="submit" variant="solid" colorScheme="purple">
+          {!workSpaceTypeInputHasError? (
+                <FormHelperText>
+                Pick a workspace type
+                </FormHelperText>
+                ) : (
+                <FormErrorMessage>{workSpaceTypeErrorMessage}</FormErrorMessage>
+                )}      
+    </FormControl>
+          <Button 
+          type="submit" 
+          isDisabled = {!formIsValid}
+          >
             ADD
           </Button>
 
@@ -83,65 +235,16 @@ function AddNewWorkspace() {
           >
             Cancel
           </Button>
-        </Stack>
-      </Form>
+  </Form>
+  </Box>
     </Container>
   );
 }
 
 export default AddNewWorkspace;
 
-export async function action({ request }: { request: Request }) {
-  const data = await request.formData();
-  const token = localStorage.getItem("token");
 
-  const authData = {
-    name: data.get("name"),
-    comment: data.get("comment"),
 
-    stage_id: data.get("stage_id"),
-    workspaceType_id: data.get("workspaceType_id")
-    
-  };
-  console.log(authData);
-  
-  const response = await fetch("http://localhost:3000/workspaces/create", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: "Bearer "+ token
-    },
-    body: JSON.stringify(authData),
-  });
 
-  const resData: string = await response.json();
-
-  
-  return redirect("/administration/workspaces");
-  //return redirect("/administration/workspaces/" + resData);
-}
-
-export const newWorkspaceLoader = async (): Promise<any> => {
-  const token = localStorage.getItem("token");
-
-  const stages = await fetch("http://localhost:3000/stages", {
-    headers: {
-      Authorization: "Bearer "+token
-    }
-  }).then(response => response.json());
-
-  const workSpaceTypes = await fetch("http://localhost:3000/workspace/types", {
-    headers: {
-      Authorization: "Bearer "+token
-    }
-  }).then(response => response.json());
-
-  const [data1, data2] = await Promise.all([stages, workSpaceTypes]);
-  const consolidatedData = {
-    stages: data1,
-    workSpaceTypes: data2
-  };
-  return consolidatedData;
-};
  
 

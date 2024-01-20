@@ -1,8 +1,9 @@
-import { useRouteLoaderData } from "react-router-dom";
+import { Link, useRouteLoaderData } from "react-router-dom";
 import { checkForErrors, fetchMultipleResources } from "../../../../utils/fetchMultipleResources";
 import FetchErrorComponent from "../../../errorHandling/FetchErrorComponent";
 import DataTable from "../../../../utils/datatable";
 import { getSafe } from "../../../../utils/getSafeForTS";
+import { Box, Button } from "@chakra-ui/react";
 
 function WorkspaceListPage() {
 
@@ -33,7 +34,15 @@ function WorkspaceListPage() {
   ]
 
   return (
+    <>
+    <Box>
+    <Button as={Link} to="new" variant="solid" colorScheme="purple">
+      Add new Workspace
+    </Button>
+    </Box>
+
   <DataTable columns={columnsSetup} data={workspaces} />
+  </>
   )
   
 }
