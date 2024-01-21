@@ -1,127 +1,81 @@
 import { useState } from "react";
-import { Form, redirect, useActionData, useNavigate, useNavigation, useRouteLoaderData} from "react-router-dom";
-import {
-  Container,
-  Input,
-  Button,
-  Spacer, 
-  Stack,
+import { useLoaderData} from "react-router-dom";
+import { 
+  Box,
+  VStack,
+  HStack,
 } from "@chakra-ui/react";
 
-import { useInput } from "../../../../hooks/form/use-input";
-import { addNewProductFetch } from "../utils/newProduct";
-import DragAndDrop from "../DragAndDrop/DragAndDrop";
 
-
-
+import { FetchError } from "../../workspaces/Utils/singleWorkspaceLoader";
+import FetchErrorComponent from "../../../errorHandling/FetchErrorComponent";
+import { newProductConsolidatedData } from "../utils/newProductLoader";
+import VisNetwork from "../../../../hooks/form/vis-network";
+import { GeneralInfo } from "./GeneralInfo";
+import { OperationComponentAddition } from "./AddOperationComponent";
+import { OperationsList } from "./ListOfOperations";
 
 
 function AddNewProduct() {
 
-  const dataFromFetching:any = useActionData();
-  const navigate = useNavigate();
-  const navigation = useNavigation();
-  const data = useRouteLoaderData("newProduct");
-  
-
-  //list of operations for product (drag and drop)
-  const operationsForProduct = [
-    {title:`group 1`, items:[]},   
-  ]
-  //handler of list of operations
-  const [list, setList] = useState(operationsForProduct);
-
-  
-  
-  const isSubmitting = navigation.state === "submitting";
-
-  const {
-    value: enteredName, 
-    isValid: enteredNameIsValid,
-    hasError: nameInputHasError, 
-    valueChangeHandler: nameChangedHandler, 
-    inputBlurHandler: nameBlurHandler,
-    message: errorMessage
-  } = useInput([{name: 'required'}], '');
-
+  //handle fetching
+  const routeData = useLoaderData() as newProductConsolidatedData | FetchError;
     
-  let formIsValid = false;
-
-  if (enteredNameIsValid) {
-    formIsValid = true;
+  if ('error' in routeData) {
+    
+    return <FetchErrorComponent errors={routeData.error} />;
+  }
+  const { operations, products } = routeData;
+  // Check for errors within consolidated data
+  if ('error' in operations || 'error' in products) {
+    // Handle errors within consolidated data
+    const errors = [
+      'Error in stages: ' + (operations as FetchError).error,
+      'Error in workspaceTypes: ' + (products as FetchError).error
+    ];
+    return <FetchErrorComponent errors={errors} />;
   }
 
+  const [productOperations, setProductOperations] = useState<any>([]);
 
-  const cancelHandler = () => {
-    navigate("..");
-  }
+  //handle editing
+  const [editId, seteditId] = useState<string | ''>('');
+  const handleNodeClick = (nodeId: string) => {   
+    seteditId(nodeId);
+  };
 
-  
+
+  const [generalInfo, setGeneralInfo] = useState({});
+
+  const updateGeneralInfo = (info:any) => {
+    setGeneralInfo(info);
+  };
+
   return (
-     <>
-    
-    <Container mt="1rem" mb="1rem" centerContent>
-      {dataFromFetching && dataFromFetching.status && <p>{dataFromFetching.message}</p>}
-      <Form method="post">
-        <Stack minW="container.sm">
-          <Input
-            id="name"
-            type="text"
-            name="name"
-            placeholder="Name"
-            variant="outline"
-            onChange={nameChangedHandler}
-            onBlur={nameBlurHandler}
-            value={enteredName}
-          />
-          {nameInputHasError && (
-            <span>{errorMessage}</span>
-          )}
-          
-          <Input
-            id="comment"
-            type="text"
-            name="comment"
-            placeholder="comment"
-            variant="outline"
-          />
-
-          <Input
-            type="hidden"
-            name="operationsForProduct"
-            value={JSON.stringify(list)}
-          
-          />
-
-        
-
-          <Spacer />
-
-          <button type="submit" disabled={!formIsValid}>
-            ADD
-          </button>
-
-          <Button
-            type="button"
-            onClick={cancelHandler}
-            disabled={isSubmitting}
-            variant="outline"
-            colorScheme="purple"
-          >
-            Cancel
-          </Button>
-        </Stack>
-      </Form>
-      <DragAndDrop operations={data} list={list} setList={setList} />
-    </Container>
-    
-    </>
+    <VStack>
+      <HStack width="100%" spacing="24px">
+        <Box flex="1">
+          <GeneralInfo updateGeneralInfo={updateGeneralInfo} />
+        </Box>
+        <Box flex="2">
+          <VisNetwork productOperations={productOperations} onNodeClick={handleNodeClick}/>
+        </Box>
+      </HStack>
+      <HStack width="100%" spacing="24px">
+        <Box flex="2">
+          <OperationComponentAddition editId={editId} setEditId={seteditId} operations={operations} productOperations={productOperations} components={products} setProductOperations={setProductOperations} />
+        </Box>
+        <Box flex="1">
+          <OperationsList operations={productOperations} />
+        </Box>
+      </HStack>
+    </VStack>
   );
-}
+};
 
 export default AddNewProduct;
 
-export async function action({ request }: { request: Request }) {
+/* export async function action({ request }: { request: Request }) {
   
   const data = await request.formData();
   
@@ -143,17 +97,6 @@ export async function action({ request }: { request: Request }) {
 
   return redirect("/administration/products");
   //return redirect("/administration/workspaces/" + resData);
-}
+} */
 
-
-export const newProductLoader = async (): Promise<any> => {
-    const token = localStorage.getItem("token");
-    const response = await fetch("http://localhost:3000/operations", {
-      headers: {
-        Authorization: "Bearer "+token
-      }
-    });
-    const data = await response.json();
-    return data;
-  };
 

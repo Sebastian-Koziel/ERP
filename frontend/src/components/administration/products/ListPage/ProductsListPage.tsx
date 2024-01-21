@@ -1,26 +1,45 @@
-import { useRouteLoaderData } from "react-router-dom";
+import { Link, useLoaderData} from "react-router-dom";
 import { Product } from "../Interfaces/Products.interface";
-import ProductsList from "../List/ProductsList";
+import FetchErrorComponent from "../../../errorHandling/FetchErrorComponent";
+import { FetchError } from "../../workspaces/Utils/singleWorkspaceLoader";
+import { Box, Button } from "@chakra-ui/react";
+import DataTable from "../../../../utils/datatable";
 
 
 
 function ProductsListPage() {
-  const products = useRouteLoaderData("products");
-  return <ProductsList products={products} />;
+  //handle fetching
+  const routeData = useLoaderData() as Product[] | FetchError;
+      
+if('error' in routeData){
+  return (
+    <FetchErrorComponent errors={routeData.error}/>
+  );
+}
+
+const products = routeData;
+
+const columnsSetup = [
+  {header: "name", accessor: "name"},
+  {header: "comment", accessor: "comment"},
+  { header: "Actions", accessor: "actions", edit: true }
+]
+
+return (
+  <>
+  <Box>
+  <Button as={Link} to="new" variant="solid" colorScheme="purple">
+    Add new product
+  </Button>
+  </Box>
+
+<DataTable columns={columnsSetup} data={products} />
+</>
+)
+
 }
 
 export default ProductsListPage;
 
 
-
-export const productsLoader = async (): Promise<Product[]> => {
-  const token = localStorage.getItem("token");
-  const response = await fetch("http://localhost:3000/products", {
-    headers: {
-      Authorization: "Bearer "+token
-    }
-  });
-  const data = await response.json();
-  return data;
-};
 

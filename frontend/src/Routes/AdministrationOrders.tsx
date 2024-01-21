@@ -2,7 +2,7 @@ import OrdersListPage from "../components/administration/orders/ListPage/OrdersL
 import OrdersRoot from "../components/administration/orders/Root/OrdersRoot";
 import { ordersLoader } from "../components/administration/orders/ListPage/OrdersListPage";
 import AddNewOrder, {action as addNewOrderAction} from "../components/administration/orders/new/AddOrder";
-import { productsLoader } from "../components/administration/products/ListPage/ProductsListPage";
+
 import OrderDetailsRoot, { orderByIdLoader } from "../components/administration/orders/Details/OrderDetails";
 
 const ordersRoutes: any = {
@@ -19,7 +19,7 @@ const ordersRoutes: any = {
         path: "new",
         element: <AddNewOrder />,
         action: addNewOrderAction,
-        loader: productsLoader
+        //loader: productsLoader
       },
       
       {

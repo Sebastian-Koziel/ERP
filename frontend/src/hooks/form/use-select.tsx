@@ -1,18 +1,12 @@
 import { useState} from 'react';
 import { required, isNumber } from './inputValidationRules';
 
-interface Option {
-    _id: string;
-    name: string;
-    // ... other properties if needed
-  }
-
 type ValidatorRule = {
     name: string
 };
 type ValidationRules = ValidatorRule[];
 
-export const useSelect = (optionsArray: Option[], validators:ValidationRules, prePopolutate:any) => {
+export const useSelect = (optionsArray: any, validators:ValidationRules, prePopolutate:any) => {
     const [enteredValue, setEnteredValue] = useState(prePopolutate);
     const [isTouched, setIsTouched] = useState(false); 
     

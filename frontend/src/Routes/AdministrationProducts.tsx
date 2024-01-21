@@ -1,8 +1,9 @@
 
-import AddNewProduct, { action as AddNewProductAction } from "../components/administration/products/New/AddNewProduct";
-import ProductsListPage, { productsLoader } from "../components/administration/products/ListPage/ProductsListPage";
-import { newProductLoader } from "../components/administration/products/New/AddNewProduct";
+import AddNewProduct from "../components/administration/products/New/AddNewProduct";
+import ProductsListPage from "../components/administration/products/ListPage/ProductsListPage";
 import ProductsRoot from "../components/administration/products/Root/ProductsRoot";
+import { fetchAllProducts } from "../components/administration/products/utils/fetchAllProducts";
+import { newProductLoader } from "../components/administration/products/utils/newProductLoader";
 
 const productsRoutes = {
     path: "products",
@@ -12,13 +13,13 @@ const productsRoutes = {
         index: true,
         id: "products",
         element: <ProductsListPage />,
-        loader: productsLoader,
+        loader: fetchAllProducts,
       },
       {
         path: "new",
         id:"newProduct",
         element: <AddNewProduct />,
-        action: AddNewProductAction,
+        //action: AddNewProductAction,
         loader: newProductLoader
       },
       {
