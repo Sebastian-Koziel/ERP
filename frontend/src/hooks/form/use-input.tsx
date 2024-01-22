@@ -29,6 +29,7 @@ export const useInput = (validators:ValidationRules, prePopolutate:any) => {
 
     const inputBlurHandler = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setIsTouched(true);
+        
     }
 
     const reset = () => {

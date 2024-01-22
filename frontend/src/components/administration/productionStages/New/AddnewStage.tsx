@@ -137,7 +137,7 @@ if (enteredNameIsValid && enteredCommentIsValid) {
 
           <Button 
           type="submit" 
-          isDisabled = {!formIsValid}
+          isDisabled = {!formIsValid || isSubmitting}
           >
             ADD
           </Button>

@@ -87,7 +87,7 @@ export const AddOperationForm: React.FC<AddOperationFormProps> = ({operations, p
   return (
     <Box>
     <Form onSubmit={formSubmitHandler}>
-        <FormControl>
+        <FormControl isRequired>
         <FormLabel>Pick operation to add</FormLabel>
           <Select
             id="operation"
@@ -96,6 +96,7 @@ export const AddOperationForm: React.FC<AddOperationFormProps> = ({operations, p
             onChange={operationChangedHandler}
             onBlur={operationBlurHandler}
             placeholder="Select operation"
+            required
             >
           {operationsGenerateOptions()}   
           </Select>
@@ -128,7 +129,7 @@ export const AddOperationForm: React.FC<AddOperationFormProps> = ({operations, p
                 )}
        
       </FormControl>
-    <FormControl>
+    <FormControl isRequired>
     <FormLabel>Time per tick</FormLabel>
     <Input
             id="timePerUnit"
@@ -137,6 +138,7 @@ export const AddOperationForm: React.FC<AddOperationFormProps> = ({operations, p
             onChange={timePerUnitChangedHandler}
             onBlur={timePerUnitBlurHandler}
             value={enteredTimePerUnit}
+            required
           />
           {!timePerUnitInputHasError? (
                 <FormHelperText>
