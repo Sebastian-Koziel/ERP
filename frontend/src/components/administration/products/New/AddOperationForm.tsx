@@ -24,7 +24,7 @@ export const AddOperationForm: React.FC<AddOperationFormProps> = ({operations, p
         generateOptions: operationsGenerateOptions,
         message: operationErrorMessage,
         reset: operationReset
-      } = useSelect(operations,[], '');
+      } = useSelect(operations,[{name: 'required'}], '');
 
       const { 
         value: enteredName,
@@ -138,7 +138,7 @@ export const AddOperationForm: React.FC<AddOperationFormProps> = ({operations, p
             onChange={timePerUnitChangedHandler}
             onBlur={timePerUnitBlurHandler}
             value={enteredTimePerUnit}
-            required
+            
           />
           {!timePerUnitInputHasError? (
                 <FormHelperText>

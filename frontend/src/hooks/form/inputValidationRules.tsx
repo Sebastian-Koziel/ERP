@@ -1,15 +1,17 @@
 
 export const required = (enteredValue: any) => {
+    
     return {
-        result: enteredValue.trim() !== '',
+        result: enteredValue !== null && enteredValue !== undefined && enteredValue.toString().trim() !== '',
         message: 'This field is required'
     } 
 }
 
 export const isNumber = (enteredValue: any) => {
-    const valueAsNumber = parseFloat(enteredValue);
+    
+    // Use isNaN to check if the value is not a number
     return {
-        result: !isNaN(valueAsNumber),
-        message: `It is not a valid number`
-    } 
-}
+      result: !isNaN(enteredValue),
+      message: 'Please enter a valid number'
+    };
+  };

@@ -22,7 +22,6 @@ export const EditOperationForm: React.FC<AddOperationFormProps> = ({operations, 
     
 
     const handleRemoveClick = () => {
-        console.log('Remove button clicked');
         remove(operationToEdit._id);
       };
 

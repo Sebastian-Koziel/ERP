@@ -10,6 +10,7 @@ import {
   FormHelperText,
   FormErrorMessage,
   Button,
+  useToast,
 } from "@chakra-ui/react";
 
 
@@ -20,9 +21,11 @@ import VisNetwork from "../../../../hooks/form/vis-network";
 import { OperationComponentAddition } from "./AddOperationComponent";
 import { OperationsList } from "./ListOfOperations";
 import { useInput } from "../../../../hooks/form/use-input";
+import { addNewProductFetch } from "../utils/newProduct";
 
 
 function AddNewProduct() {
+  const toast = useToast();
   const navigate = useNavigate();
   const navigation = useNavigation();
 
@@ -51,6 +54,7 @@ function AddNewProduct() {
   }
 
   const [productOperations, setProductOperations] = useState<any>([]);
+  const [productComponents, setProductproductComponents] = useState<any>([]);
 
   //handle editing
   const [editId, seteditId] = useState<string | ''>('');
@@ -82,12 +86,45 @@ if (enteredNameIsValid && enteredCommentIsValid) {
   formIsValid = true;
 }
   
+const handleSubmit = async (event:React.FormEvent<HTMLFormElement>) => {
+  event.preventDefault();
+  const formData = new FormData(event.currentTarget);
+  
+const newProductdata = {
+  name: formData.get("workspaceName") as string,
+  comment: formData.get("workspaceComment") as string,
+  stage_id: formData.get("stage") as string,
+  workspaceType_id: formData.get("workspacetype") as string,
+};
+
+  try {
+    const response = await addNewProductFetch(newProductdata);
+    toast({
+      title: "Stage added",
+      description: "Product has been successfully added",
+      status: "success",
+      duration: 5000,
+      position: 'top',
+      isClosable: true
+    });
+    navigate("..");
+  } catch (error:any) {
+    toast({
+      title: "Error.",
+      description: error.message || "Something went wrong with adding this product",
+      status: "error",
+      position: 'top',
+      duration: 5000,
+      isClosable: true
+    });
+  }
+}
 
   return (
     <VStack>
       <HStack width="100%" spacing="24px">
         <Box flex="1">
-          <Form>
+          <Form onSubmit={handleSubmit}>
             <FormControl isRequired isInvalid={nameInputHasError}>
                 <FormLabel>
                   Name:
@@ -148,15 +185,23 @@ if (enteredNameIsValid && enteredCommentIsValid) {
           </Form>
         </Box>
         <Box flex="2">
-          <VisNetwork productOperations={productOperations} onNodeClick={handleNodeClick}/>
+          <VisNetwork productComponents={productComponents} productOperations={productOperations} onNodeClick={handleNodeClick}/>
         </Box>
       </HStack>
       <HStack width="100%" spacing="24px">
         <Box flex="2">
-          <OperationComponentAddition editId={editId} setEditId={seteditId} operations={operations} productOperations={productOperations} components={products} setProductOperations={setProductOperations} />
+          <OperationComponentAddition 
+          editId={editId} 
+          setEditId={seteditId} 
+          operations={operations} 
+          productOperations={productOperations} 
+          components={products} 
+          productComponents={productComponents}
+          setProductOperations={setProductOperations} 
+          setProductComponents={setProductproductComponents} />
         </Box>
         <Box flex="1">
-          <OperationsList operations={productOperations} />
+          <OperationsList operations={productOperations} components={productComponents}/>
         </Box>
       </HStack>
     </VStack>

@@ -3,5 +3,4 @@ export interface ProductComponent {
     component_id: string
     name:string
     parent_id: string
-    fromStock: boolean
 }

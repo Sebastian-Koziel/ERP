@@ -1,8 +1,19 @@
-import { Box, Button, FormControl, FormErrorMessage, FormHelperText, FormLabel, Radio, RadioGroup, Select, Stack, Text } from '@chakra-ui/react';
+import { Box, Button, FormControl, FormErrorMessage, FormHelperText, FormLabel, Input, Radio, RadioGroup, Select, Stack, Text } from '@chakra-ui/react';
 import { Form } from 'react-router-dom';
 import { useSelect } from '../../../../hooks/form/use-select';
+import { ProductComponent } from '../Interfaces/ProductComponent';
+import { ProductOperation } from '../Interfaces/ProductOperation';
+import { Product } from '../Interfaces/Products.interface';
+import { generateTimestampId } from '../../../../utils/utils';
+import { useInput } from '../../../../hooks/form/use-input';
 
-const AddComponentForm = ({components, productOperations}) => {
+interface AddOperationFormProps {
+  components: Product[];
+  productOperations: ProductOperation[];
+  addComponent: (component: ProductComponent) => void;
+}
+
+const AddComponentForm:React.FC<AddOperationFormProps> = ({components, productOperations, addComponent}) => {
   
     const {
         value: enteredComponent, 
@@ -11,9 +22,20 @@ const AddComponentForm = ({components, productOperations}) => {
         valueChangeHandler: componentChangedHandler, 
         inputBlurHandler: componentBlurHandler,
         generateOptions: componentGenerateOptions,
-        message: componentErrorMessage
-      } = useSelect(components,[], '');
-    
+        message: componentErrorMessage,
+        reset: enteredComponentReset
+      } = useSelect(components,[{name: 'required'}], '');
+
+      const { 
+        value: enteredName,
+        isValid: enteredNameIsValid,
+        hasError: nameInputHasError, 
+        valueChangeHandler: nameChangedHandler, 
+        inputBlurHandler: nameBlurHandler,
+        message: nameErrorMessage,
+        reset: nameReset
+      } = useInput([], '');
+
       const {
         value: enteredParent, 
         isValid: enteredParentIsValid,
@@ -21,14 +43,37 @@ const AddComponentForm = ({components, productOperations}) => {
         valueChangeHandler: parentChangedHandler, 
         inputBlurHandler: parentBlurHandler,
         generateOptions: parentGenerateOptions,
-        message: parentErrorMessage
+        message: parentErrorMessage,
+        reset: parentReset
       } = useSelect(productOperations,[], '');
 
+    //form validation
+    let formIsValid = false;
+
+    if (enteredComponentIsValid && enteredParentIsValid && enteredNameIsValid) {
+      formIsValid = true;
+    }
+  
+    const formSubmitHandler = (event:React.FormEvent<HTMLFormElement>) => {
+      event.preventDefault(); 
+      const componentData:ProductComponent= {
+        _id: generateTimestampId(),
+        name: enteredName,
+        component_id: enteredComponent,
+        parent_id: enteredParent
+      };
+  
+      enteredComponentReset();
+      parentReset();
+      nameReset();
+  
+      addComponent(componentData);
+    };
 
   return (
     <Box>
-    <Form>
-        <FormControl>
+    <Form onSubmit={formSubmitHandler}>
+        <FormControl isRequired>
         <FormLabel>Pick component to add</FormLabel>
           <Select
             id="enteredComponent"
@@ -36,7 +81,7 @@ const AddComponentForm = ({components, productOperations}) => {
             value={enteredComponent}
             onChange={componentChangedHandler}
             onBlur={componentBlurHandler}
-            placeholder="Select operation"
+            placeholder="Select component"
             >
           {componentGenerateOptions()}   
           </Select>
@@ -48,6 +93,29 @@ const AddComponentForm = ({components, productOperations}) => {
                 <FormErrorMessage>{componentErrorMessage}</FormErrorMessage>
                 )}      
     </FormControl>
+
+    <FormControl>
+            <FormLabel>
+              Name:
+            </FormLabel>
+              <Input
+                value={enteredName}
+                id="productOperationName"
+                type="text"
+                name="productOperationName"
+                onChange={nameChangedHandler}
+                onBlur={nameBlurHandler}
+              />
+            {!nameInputHasError? (
+                <FormHelperText>
+                enter name
+                </FormHelperText>
+                ) : (
+                <FormErrorMessage>{nameErrorMessage}</FormErrorMessage>
+                )}
+       
+      </FormControl>
+
     <FormControl>
         <FormLabel>Pick a component to be used in this product</FormLabel>
           <Select
@@ -68,17 +136,9 @@ const AddComponentForm = ({components, productOperations}) => {
                 <FormErrorMessage>{parentErrorMessage}</FormErrorMessage>
                 )}      
     </FormControl>
-    <FormControl as="fieldset">
-          <FormLabel as="legend">Component Source</FormLabel>
-          <RadioGroup defaultValue="manufactured">
-            <Stack direction="row">
-              <Radio value="manufactured" >Manufactured</Radio>
-              <Radio value="fromStock">From Stock</Radio>
-            </Stack>
-          </RadioGroup>
-    </FormControl>
+      <Button disabled={formIsValid} type="submit" >Add Component</Button>
     </Form>
-      <Button onClick={() => {}}>Add Component</Button>
+      
     </Box>
   );
 };

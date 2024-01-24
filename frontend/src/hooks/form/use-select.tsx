@@ -58,6 +58,7 @@ export const useSelect = (optionsArray: any, validators:ValidationRules, prePopo
 
 
 const checkValidation = (enteredValue:any, validators:ValidationRules) => { 
+    
     for(let i=0;i<validators.length;i++){
         let f;
         if(validators[i].name === 'required'){
