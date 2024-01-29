@@ -1,4 +1,4 @@
-import { Product } from "../Interfaces/Products.interface";
+import { Product } from "../Interfaces/Product.interface";
 
 const addComponent = (component:Product) => {
     //if there no provided name - use the one of the operation

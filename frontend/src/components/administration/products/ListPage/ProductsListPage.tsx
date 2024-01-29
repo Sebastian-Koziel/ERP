@@ -1,5 +1,5 @@
 import { Link, useLoaderData} from "react-router-dom";
-import { Product } from "../Interfaces/Products.interface";
+import { Product } from "../Interfaces/Product.interface";
 import FetchErrorComponent from "../../../errorHandling/FetchErrorComponent";
 import { FetchError } from "../../workspaces/Utils/singleWorkspaceLoader";
 import { Box, Button } from "@chakra-ui/react";

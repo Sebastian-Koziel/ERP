@@ -8,7 +8,7 @@ import {
     Stack,
     Select,
   } from "@chakra-ui/react";
-import { Product } from "../../products/Interfaces/Products.interface";
+import { Product } from "../../products/Interfaces/Product.interface";
 import { useState } from "react";
 import { startOrder } from "../utils/postStartOrder";
 

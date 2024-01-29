@@ -5,7 +5,6 @@ export interface Product {
     _id: string
     name : string
     comment: string
-    qty: number
     productType_id: string
     
     operations :  Operation[]

@@ -1,14 +1,17 @@
-import { Operation } from "../../operations/Interfaces/Operations.interface";
+import { ProductComponent } from "./ProductComponent";
+import { ProductOperation } from "./ProductOperation";
+
 
 export interface CreateProduct {
     
     name : string,
     comment: string,
-    qty: number,
-    productType_id: string,
     operations : [
-        Operation
+        ProductOperation
     ],
+    components: [
+        ProductComponent
+    ]
     
     
 }

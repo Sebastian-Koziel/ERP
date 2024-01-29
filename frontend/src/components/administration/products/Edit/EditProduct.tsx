@@ -16,15 +16,15 @@ import {
 
 import { FetchError } from "../../workspaces/Utils/singleWorkspaceLoader";
 import FetchErrorComponent from "../../../errorHandling/FetchErrorComponent";
-import { newProductConsolidatedData } from "../utils/newProductLoader";
 import VisNetwork from "../../../../hooks/form/vis-network";
-import { OperationComponentAddition } from "./AddOperationComponent";
-import { OperationsList } from "./ListOfOperations";
 import { useInput } from "../../../../hooks/form/use-input";
 import { addNewProductFetch } from "../utils/newProduct";
+import { editProductConsolidatedData } from "../utils/editProductLoader";
+import { OperationComponentAddition } from "../New/AddOperationComponent";
+import { OperationsList } from "../New/ListOfOperations";
 
 
-function AddNewProduct() {
+function EditProduct() {
   const toast = useToast();
   const navigate = useNavigate();
   const navigation = useNavigation();
@@ -36,22 +36,25 @@ function AddNewProduct() {
   }
 
   //handle fetching
-  const routeData = useLoaderData() as newProductConsolidatedData | FetchError;
+  const routeData = useLoaderData() as editProductConsolidatedData | FetchError;
     
   if ('error' in routeData) {
     
     return <FetchErrorComponent errors={routeData.error} />;
   }
-  const { operations, products } = routeData;
+  const { operations, products, product } = routeData;
   // Check for errors within consolidated data
-  if ('error' in operations || 'error' in products) {
+  if ('error' in operations || 'error' in products || 'error' in product) {
     // Handle errors within consolidated data
     const errors = [
-      'Error in stages: ' + (operations as FetchError).error,
-      'Error in workspaceTypes: ' + (products as FetchError).error
+      'Error in operations: ' + (operations as FetchError).error,
+      'Error in products: ' + (products as FetchError).error,
+      'Error in product: ' + (product as FetchError).error
     ];
     return <FetchErrorComponent errors={errors} />;
   }
+
+  const productToEdit = product;
 
   const [productOperations, setProductOperations] = useState<any>([]);
   const [productComponents, setProductproductComponents] = useState<any>([]);
@@ -203,7 +206,7 @@ const newProductdata = {
       </HStack>
       <HStack width="100%" spacing="24px">
         <Box flex="2">
-          <OperationComponentAddition 
+          <OperationComponentAddition
           editId={editId} 
           setEditId={seteditId} 
           operations={operations} 
@@ -221,30 +224,7 @@ const newProductdata = {
   );
 };
 
-export default AddNewProduct;
+export default EditProduct;
 
-/* export async function action({ request }: { request: Request }) {
-  
-  const data = await request.formData();
-  
-  const product = {
-    name: data.get("name"),
-    comment: data.get("comment"), 
-    operations: JSON.parse(data.get("operationsForProduct"))[0].items 
-  };
-
-  console.log(product);
-
-  try {
-    await addNewProductFetch(product);
-  } catch (err) {
-    return err;
-  }
-  
-  //const resData: string = await response.json();
-
-  return redirect("/administration/products");
-  //return redirect("/administration/workspaces/" + resData);
-} */
 
 

@@ -13,7 +13,7 @@ import {
 import { useInput } from "../../../../hooks/form/use-input";
 import { addNewOrderFetch } from "../utils/newOrder";
 import { NewOrder } from "../Interfaces/CreateOrder.interface";
-import { Product } from "../../products/Interfaces/Products.interface";
+import { Product } from "../../products/Interfaces/Product.interface";
 import { getObjectById } from "../../../../utils/utils";
 
 

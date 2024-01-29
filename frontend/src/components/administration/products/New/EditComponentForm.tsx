@@ -5,7 +5,7 @@ import { useInput } from '../../../../hooks/form/use-input';
 import { ProductOperation } from '../Interfaces/ProductOperation';
 import { generateTimestampId, getObjectById } from '../../../../utils/utils';
 import { Operation } from '../../operations/Interfaces/Operations.interface';
-import { Product } from '../Interfaces/Products.interface';
+import { Product } from '../Interfaces/Product.interface';
 import { ProductComponent } from '../Interfaces/ProductComponent';
 
 

@@ -3,7 +3,7 @@ import { Form } from 'react-router-dom';
 import { useSelect } from '../../../../hooks/form/use-select';
 import { ProductComponent } from '../Interfaces/ProductComponent';
 import { ProductOperation } from '../Interfaces/ProductOperation';
-import { Product } from '../Interfaces/Products.interface';
+import { Product } from '../Interfaces/Product.interface';
 import { generateTimestampId } from '../../../../utils/utils';
 import { useInput } from '../../../../hooks/form/use-input';
 

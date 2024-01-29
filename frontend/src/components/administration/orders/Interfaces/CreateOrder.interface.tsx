@@ -1,4 +1,4 @@
-import { Product } from "../../products/Interfaces/Products.interface"
+import { Product } from "../../products/Interfaces/Product.interface"
 
 export interface NewOrder extends Document {
     name: string

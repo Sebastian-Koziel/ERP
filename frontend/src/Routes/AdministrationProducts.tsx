@@ -4,6 +4,7 @@ import ProductsListPage from "../components/administration/products/ListPage/Pro
 import ProductsRoot from "../components/administration/products/Root/ProductsRoot";
 import { fetchAllProducts } from "../components/administration/products/utils/fetchAllProducts";
 import { newProductLoader } from "../components/administration/products/utils/newProductLoader";
+import { editProductLoader } from "../components/administration/products/utils/editProductLoader";
 
 const productsRoutes = {
     path: "products",
@@ -23,19 +24,9 @@ const productsRoutes = {
         loader: newProductLoader
       },
       {
-        /* path: ":stageId",
-        id: "stagesLoader",
-        loader: singleStagesLoader,
-        children: [
-          {
-            path: "",
-            element: <SingleStagePage />,
-          },
-          {
-            path: "edit",
-            element: <EditStage />,
-          },
-        ], */
+        path: ":stageId",
+        loader: editProductLoader,
+         
       },
     ],
   };

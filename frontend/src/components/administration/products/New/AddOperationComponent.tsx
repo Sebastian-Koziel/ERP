@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Box, HStack, Switch } from '@chakra-ui/react';
 import { AddOperationForm } from './AddOperationForm';
 import AddComponentForm from './AddComponentForm';
-import { Product } from '../Interfaces/Products.interface';
+import { Product } from '../Interfaces/Product.interface';
 import { Operation } from '../../operations/Interfaces/Operations.interface';
 import { ProductOperation } from '../Interfaces/ProductOperation';
 import { getObjectById } from '../../../../utils/utils';
