@@ -1,8 +1,12 @@
 
-import OperationsListPage, { operationsLoader } from "../components/administration/operations/ListPage/OperationsListPage";
+import EditOperationComponent from "../components/administration/operations/Edit/EditOperation";
+import OperationsListPage from "../components/administration/operations/ListPage/OperationsListPage";
 import OperationsRoot from "../components/administration/operations/Root/OperationsRoot";
-import AddNewOperation, { newOperationLoader } from "../components/administration/operations/new/AddNewOperation";
-import { action as AddNewOperationAction } from "../components/administration/operations/new/AddNewOperation";
+import { editOperationLoader } from "../components/administration/operations/Utils/editOperationLoader";
+import { fetchAllOperations } from "../components/administration/operations/Utils/fetchAllOperations";
+import { newOperationLoader } from "../components/administration/operations/Utils/newOperationLoader";
+import AddNewOperation from "../components/administration/operations/new/AddNewOperation";
+
 
 const operationsRoutes = {
     path: "operations",
@@ -10,31 +14,18 @@ const operationsRoutes = {
     children: [
       {
         index: true,
-        id: "operations",
         element: <OperationsListPage />,
-        loader: operationsLoader,
+        loader: fetchAllOperations,
       },
       {
         path: "new",
-        id:"newOperation",
         element: <AddNewOperation />,
-        action: AddNewOperationAction,
         loader: newOperationLoader
       },
       {
-        /* path: ":stageId",
-        id: "stagesLoader",
-        loader: singleStagesLoader,
-        children: [
-          {
-            path: "",
-            element: <SingleStagePage />,
-          },
-          {
-            path: "edit",
-            element: <EditStage />,
-          },
-        ], */
+        path: ":operationId",
+        element: <EditOperationComponent />,
+        loader: editOperationLoader, 
       },
     ],
   };

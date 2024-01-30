@@ -1,27 +1,39 @@
-import { useRouteLoaderData } from "react-router-dom";
+import { Link, useLoaderData} from "react-router-dom";
+import DataTable from "../../../../utils/datatable";
+import FetchErrorComponent from "../../../errorHandling/FetchErrorComponent";
 import { Operation } from "../Interfaces/Operations.interface";
-import OperaionsList from "../List/OperationsList";
+import { FetchError } from "../Utils/newOperationLoader";
+import { Button } from "@chakra-ui/react";
 
 
 
 function OperationsListPage() {
-  const operations = useRouteLoaderData("operations");
+  //handle fetching
+  const routeData = useLoaderData() as Operation[] | FetchError;
+  
+  if('error' in routeData){
+    return (
+      <FetchErrorComponent errors={routeData.error}/>
+    );
+  }
+const operations = routeData;
 
-  return <OperaionsList operations={operations} />;
+  const columnsSetup = [
+    {header: "name", accessor: "name"},
+    {header: "comment", accessor: "comment"},
+    { header: "Actions", accessor: "actions", edit: true }
+  ]
+
+  return (
+    <>
+    <Button as={Link} to="new" variant="solid" colorScheme="purple">
+    Add new operation
+  </Button>
+  <DataTable columns={columnsSetup} data={operations} />
+  </>
+  )
 }
 
 export default OperationsListPage;
 
-
-
-export const operationsLoader = async (): Promise<Operation[]> => {
-  const token = localStorage.getItem("token");
-  const response = await fetch("http://localhost:3000/operations", {
-    headers: {
-      Authorization: "Bearer "+token
-    }
-  });
-  const data = await response.json();
-  return data;
-};
 

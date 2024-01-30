@@ -40,6 +40,7 @@ export class ProductsController {
     updateUser(@Body() body: UpdateProductData) {
         return this.productsService.update(body.id, body.attr);
     }
+    
     @Access_decorator(Access.companySetup)
     @UseGuards(AuthGuard, AccessGuard)
     @Delete('/:id')

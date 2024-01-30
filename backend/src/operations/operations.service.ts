@@ -25,4 +25,14 @@ export class OperationsService {
         return this.operationModel.deleteOne(filter);
     }
 
+    //update
+    async update(id: string, attrs: Partial<Operation>){
+        let operationForChange = await this.operationModel.findById(id);
+        if(!operationForChange){
+            throw new Error(`UPDATE - no operation with this number`)
+        }
+        Object.assign(operationForChange, attrs);
+        return operationForChange.save();
+    }
+
 }

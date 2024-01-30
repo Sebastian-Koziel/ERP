@@ -8,24 +8,8 @@ export class CreateOperationDto {
   comments: string;
 
   @IsString()
-  units_type: string;
+  workSpaceTypeId: string;
 
-  @IsNumber()
-  units: number;
-
-  @IsNumber()
-  timePerUnit: number;
-
-  @IsString()
-  stage_id: string;
-
-  @IsString()
-  workSpace_type: string;
-
-  @IsBoolean()
-  active: boolean;
-
-  @IsArray()
-  @IsString({ each: true }) // Ensure each element in the array is a string
-  active_in: string[];
+  @IsString({ each: true })
+  usedIn: string[];
 }

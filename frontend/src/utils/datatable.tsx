@@ -28,7 +28,7 @@ interface DataRow {
 
 interface DataTableProps {
   columns: Column[];
-  data: DataRow[];
+  data: any;
 }
 
 const DataTable: React.FC<DataTableProps> = ({ columns, data} ) => {

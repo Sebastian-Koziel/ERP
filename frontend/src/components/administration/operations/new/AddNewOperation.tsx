@@ -6,71 +6,195 @@ import {
   Select,
   Spacer,
   Stack,
+  useToast,
+  FormErrorMessage,
+  FormHelperText,
+  Textarea,
+  FormLabel,
+  FormControl,
+  Box,
 } from "@chakra-ui/react";
-import { Stage } from "../../productionStages/interfaces/Stage.interface";
-import { storageGetToken } from "../../../../utils/localhostHandlers";
+
 import { WorkspaceType } from "../../workspaceTypes/Interfaces/WorkspaceType";
+import { FetchError, newOperationConsolidatedData } from "../Utils/newOperationLoader";
+import FetchErrorComponent from "../../../errorHandling/FetchErrorComponent";
+import { addNewOperationFetcher } from "../Utils/addNewOperation";
+import { useInput } from "../../../../hooks/form/use-input";
+import { useSelect } from "../../../../hooks/form/use-select";
 import { CreateOperation } from "../Interfaces/CreateOperation.interface";
 
 
 function AddNewOperation() {
+  const toast = useToast();
   const navigate = useNavigate();
   const navigation = useNavigation();
-  const fetchedData:any = useLoaderData();
-  const workspaceTypes = fetchedData.workSpaceTypes;
-  const stages = fetchedData.stages;
-  
+
   const isSubmitting = navigation.state === "submitting";
 
   function cancelHandler() {
     navigate("..");
   }
 
+  //handle fetching
+  const routeData = useLoaderData() as newOperationConsolidatedData | FetchError;
+    
+  if ('error' in routeData) {
+    
+    return <FetchErrorComponent errors={routeData.error} />;
+  }
+  const { workspaceTypes } = routeData;
+  // Check for errors within consolidated data
+  if ('error' in workspaceTypes) {
+    // Handle errors within consolidated data
+    const errors = [
+      'Error in workspaceTypes: ' + (workspaceTypes as FetchError).error
+    ];
+    return <FetchErrorComponent errors={errors} />;
+  }
+
+  //handling submit
+const handleSubmit = async (event:React.FormEvent<HTMLFormElement>) => {
+  event.preventDefault();
+  const formData = new FormData(event.currentTarget);
+  
+const newOperationData:CreateOperation = {
+  name: formData.get("operationName") as string, 
+  comment: formData.get("operationComment")as string,
+  workSpaceTypeId: formData.get("workspacetype")as string
+};
+
+  try {
+    const response = await addNewOperationFetcher(newOperationData);
+    toast({
+      title: "Operation added",
+      description: "Operation has been successfully added",
+      status: "success",
+      duration: 5000,
+      position: 'top',
+      isClosable: true
+    });
+    navigate("..");
+  } catch (error:any) {
+    toast({
+      title: "Error.",
+      description: error.message || "Something went wrong with adding this operation",
+      status: "error",
+      position: 'top',
+      duration: 5000,
+      isClosable: true
+    });
+  }
+}
+
+//input handlers
+const {
+  value: enteredName, 
+  isValid: enteredNameIsValid,
+  hasError: nameInputHasError, 
+  valueChangeHandler: nameChangedHandler, 
+  inputBlurHandler: nameBlurHandler,
+  message: nameErrorMessage
+} = useInput([{name: 'required'}], '');
+
+const {
+  value: enteredComment, 
+  isValid: enteredCommentIsValid,
+  hasError: commentInputHasError, 
+  valueChangeHandler: commentChangedHandler, 
+  inputBlurHandler: commentBlurHandler,
+  message: commentErrorMessage
+} = useInput([], '');
+
+
+const {
+  value: enteredWorkspaceType, 
+  isValid: enteredWorkspaceTypeIsValid,
+  hasError: workSpaceTypeInputHasError, 
+  valueChangeHandler: workSpaceTypeChangedHandler, 
+  inputBlurHandler: workSpaceTypeBlurHandler,
+  generateOptions: workSpaceTypeGenerateOptions,
+  message: workSpaceTypeErrorMessage
+} = useSelect(workspaceTypes,[], '');
+
+//form overall validation
+let formIsValid = false;
+
+if (enteredNameIsValid && enteredCommentIsValid && enteredWorkspaceTypeIsValid) {
+  formIsValid = true;
+}
+
 
   return (
-    <Container mt="1rem" mb="1rem" centerContent>
-      <Form method="post">
-        <Stack minW="container.sm">
-          <Input
-            id="name"
-            type="text"
-            name="name"
-            required
-            placeholder="Name"
-            variant="outline"
-          />
-          
-          <Input
-            id="comment"
-            type="text"
-            name="comment"
-            placeholder="comment"
-            variant="outline"
-          />
+    <>
+      <Container mt="1rem" mb="1rem" centerContent>
+      <Box>
+        <Form onSubmit={handleSubmit}>
+          <FormControl isInvalid={nameInputHasError} isRequired>
+            <FormLabel>
+              Name:
+            </FormLabel>
+              <Input
+                id="operationName"
+                type="text"
+                name="operationName"
+                onChange={nameChangedHandler}
+                onBlur={nameBlurHandler}
+                value={enteredName}
+                
+              />
 
-          <label htmlFor="workspaceType_id">Main work space type for this operation:</label>
-          <Select id="workspaceType_id" name="workspaceType_id" required>
-            <option value="" disabled>Pick a stage for this operation</option>
-            {workspaceTypes.map((type:WorkspaceType) => (
-              <option key={type._id} value={type._id}>
-                {type.name}
-              </option>
-            ))}
+                {!nameErrorMessage? (
+                <FormHelperText>
+                enter name
+                </FormHelperText>
+                ) : (
+                <FormErrorMessage>{nameErrorMessage}</FormErrorMessage>
+                )}
+          </FormControl>
+
+    <FormControl isInvalid={commentInputHasError}>
+      <FormLabel>
+        Comment:
+      </FormLabel>
+        <Textarea
+          id="operationComment"
+          name="operationComment"
+          onChange={commentChangedHandler}
+          onBlur={commentBlurHandler}
+          value={enteredComment}
+        />
+                {!commentInputHasError? (
+                <FormHelperText>
+                enter name
+                </FormHelperText>
+                ) : (
+                <FormErrorMessage>{commentErrorMessage}</FormErrorMessage>
+                )}      
+    </FormControl>
+    <FormControl isRequired>
+      <FormLabel>Workspace type for this operation</FormLabel>
+          <Select 
+            id="workspacetype"
+            name="workspacetype" 
+            value={enteredWorkspaceType}
+            onChange={workSpaceTypeChangedHandler}
+            onBlur={workSpaceTypeBlurHandler}
+            placeholder="Select workspace type"
+            >
+          {workSpaceTypeGenerateOptions()}   
           </Select>
-
-          <label htmlFor="workspaceType_id">Stage for this operation:</label>
-          <Select id="stage_id" name="stage_id" required>
-            <option value="" disabled>Pick a stage for this operation</option>
-            {stages.map((type:Stage) => (
-              <option key={type._id} value={type._id}>
-                {type.name}
-              </option>
-            ))}
-          </Select>
-
-          <Spacer />
-
-          <Button type="submit" variant="solid" colorScheme="purple">
+          {!workSpaceTypeInputHasError? (
+                <FormHelperText>
+                Pick a workspace type
+                </FormHelperText>
+                ) : (
+                <FormErrorMessage>{workSpaceTypeErrorMessage}</FormErrorMessage>
+                )}      
+    </FormControl>
+    <Button 
+          type="submit" 
+          isDisabled = {!formIsValid}
+          >
             ADD
           </Button>
 
@@ -83,58 +207,15 @@ function AddNewOperation() {
           >
             Cancel
           </Button>
-        </Stack>
-      </Form>
+    </Form>
+    </Box>
     </Container>
+    </>
   );
 }
 
 export default AddNewOperation;
 
-export async function action({ request }: { request: Request }) {
-  const data = await request.formData();
-  const token = localStorage.getItem("token");
-  
-  const authData = {
-    name: data.get("name"), 
-    comment: data.get("comment"),
-    workSpace_type: data.get("workspaceType_id"),
-    stage_id: data.get('stage_id')
-  };
-  
-  const response = await fetch("http://localhost:3000/operations/create", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: "Bearer "+ token
-    },
-    body: JSON.stringify(authData),
-  });
 
-  return redirect("/administration/operations");
-  //return redirect("/administration/workspaces/" + resData);
-}
  
-export const newOperationLoader = async (): Promise<any> => {
 
-  const token = storageGetToken();
-
-  const stages = await fetch("http://localhost:3000/stages", {
-    headers: {
-      Authorization: "Bearer "+token
-    }
-  }).then(response => response.json());
-
-  const workSpaces = await fetch("http://localhost:3000/workspace/types", {
-    headers: {
-      Authorization: "Bearer "+token
-    }
-  }).then(response => response.json());
-
-  const [data1, data2] = await Promise.all([stages, workSpaces]);
-  const consolidatedData = {
-    stages: data1,
-    workSpaceTypes: data2
-  };
-  return consolidatedData;
-};
