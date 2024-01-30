@@ -33,7 +33,7 @@ export class ProductsService {
         Object.assign(ProductForChange, attrs);
         return ProductForChange.save();
     }
-
+    //delete
     async remove(id:string){
         const filter = {_id : id}
         return this.productModel.deleteOne(filter);

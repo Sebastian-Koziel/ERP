@@ -40,4 +40,10 @@ export class ProductsController {
     updateUser(@Body() body: UpdateProductData) {
         return this.productsService.update(body.id, body.attr);
     }
+    @Access_decorator(Access.companySetup)
+    @UseGuards(AuthGuard, AccessGuard)
+    @Delete('/:id')
+    async remove(@Param('id') id:string){
+        this.productsService.remove(id);
+    }
 }

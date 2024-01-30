@@ -31,7 +31,7 @@ export const useSelect = (optionsArray: any, validators:ValidationRules, prePopo
           ))
     }
     const valueChangeHandler = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        console.log(`change ${event.target.value}`)
+        
         setEnteredValue(event.target.value);
     };
 

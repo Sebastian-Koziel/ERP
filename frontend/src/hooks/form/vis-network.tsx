@@ -1,4 +1,4 @@
-import { forwardRef, useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import { DataSet, Network } from 'vis-network/standalone/umd/vis-network.min.js';
 import 'vis-network/styles/vis-network.css';
 import { ProductOperation } from '../../components/administration/products/Interfaces/ProductOperation';
@@ -9,15 +9,16 @@ interface VisNetworkProps {
   productOperations: ProductOperation[];
   productComponents: ProductComponent[];
   onNodeClick: (nodeId: string) => void;
+  setAllConnected: (value: boolean) => void;
 }
 
-const VisNetwork: React.FC<VisNetworkProps> = ({productComponents, productOperations, onNodeClick}) => {
+const VisNetwork: React.FC<VisNetworkProps> = ({productComponents, productOperations, onNodeClick, setAllConnected}) => {
     
 
 
     useEffect(() => {
       // create an array with nodes
-      const nodes = new DataSet(returnNodes(productOperations,productComponents ));
+      const nodes = new DataSet<any>(returnNodes(productOperations,productComponents));
 
       const edges = new DataSet<any>(createEdges(productOperations,productComponents));
       // create a network
@@ -48,7 +49,7 @@ const VisNetwork: React.FC<VisNetworkProps> = ({productComponents, productOperat
       network.on("click", (params) => {
         if (params.nodes.length > 0) {
           const nodeId = params.nodes[0];
-          console.log(`${nodeId} clicked `)
+          //console.log(`${nodeId} clicked `)
           onNodeClick(nodeId);
 
         }
@@ -56,6 +57,12 @@ const VisNetwork: React.FC<VisNetworkProps> = ({productComponents, productOperat
       network.on("deselectNode", () => {
           onNodeClick('');
       });
+      
+      //check if all nodes are connected
+      const nodesArray = nodes.get({ returnType: 'Array' });
+      const edgesArray = edges.get({ returnType: 'Array' });
+      setAllConnected(checkAllNodesConnected(nodesArray, edgesArray));
+      
 
       // Cleanup
       return () => {
@@ -84,3 +91,44 @@ const VisNetwork: React.FC<VisNetworkProps> = ({productComponents, productOperat
     components.filter(op => op.parent_id).map(op => (edges.push({ from: op.parent_id, to: op._id })))
     return edges;
   }
+
+  //help function for checking if all node are connected
+  const createAdjacencyList = (edges: any[]): Record<string, string[]> => {
+    const adjacencyList: Record<string, string[]> = {};
+    edges.forEach(edge => {
+      if (!adjacencyList[edge.from]) {
+        adjacencyList[edge.from] = [];
+      }
+      adjacencyList[edge.from].push(edge.to);
+  
+      if (!adjacencyList[edge.to]) {
+        adjacencyList[edge.to] = [];
+      }
+      adjacencyList[edge.to].push(edge.from);
+    });
+    return adjacencyList;
+  };
+
+  const checkAllNodesConnected = (nodes: any[], edges: any[]): boolean => {
+    const adjacencyList = createAdjacencyList(edges);
+    let visited = new Set<string>();
+    // Start from the first node
+    let startNode = nodes.length > 0 ? nodes[0].id : null; 
+  
+    const dfs = (nodeId: string) => {
+      visited.add(nodeId);
+      const neighbors = adjacencyList[nodeId] || [];
+      neighbors.forEach(neighbor => {
+        if (!visited.has(neighbor)) {
+          dfs(neighbor);
+        }
+      });
+    };
+  
+    if (startNode) {
+      dfs(startNode); // Perform DFS from the start node
+    }
+  
+    // Check if all nodes were visited
+    return nodes.every(node => visited.has(node.id));
+  };

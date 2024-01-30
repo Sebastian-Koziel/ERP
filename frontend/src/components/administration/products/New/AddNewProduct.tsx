@@ -53,6 +53,8 @@ function AddNewProduct() {
     ];
     return <FetchErrorComponent errors={errors} />;
   }
+  //for checking if all node are connected
+  const [allConnected, setAllConnected] = useState<boolean>(false);
 
   const [productOperations, setProductOperations] = useState<any>([]);
   const [productComponents, setProductproductComponents] = useState<any>([]);
@@ -91,7 +93,7 @@ if (enteredNameIsValid && enteredCommentIsValid) {
 const handleSubmit = async (event:React.FormEvent<HTMLFormElement>) => {
   event.preventDefault();
   const formData = new FormData(event.currentTarget);
-  
+  console.log(allConnected)
 //check if at least 1 operation added if not return error
 if(productOperations.length < 1){
   toast({
@@ -104,7 +106,18 @@ if(productOperations.length < 1){
   });
   return;
 }
-
+//check if all nodes are connected
+if(!allConnected){
+  toast({
+    title: "Not connected",
+    description: "Some of your nodes are not connected",
+    status: "error",
+    duration: 5000,
+    position: 'top',
+    isClosable: true
+  });
+  return;
+}
 const newProductdata: CreateProduct = {
   name: formData.get("productName") as string,
   comment: formData.get("productComment") as string,
@@ -122,7 +135,7 @@ const newProductdata: CreateProduct = {
       position: 'top',
       isClosable: true
     });
-    console.log(response);
+    
     navigate("..");
   } catch (error:any) {
     toast({
@@ -201,7 +214,7 @@ const newProductdata: CreateProduct = {
           </Form>
         </Box>
         <Box flex="2">
-          <VisNetwork productComponents={productComponents} productOperations={productOperations} onNodeClick={handleNodeClick}/>
+          <VisNetwork productComponents={productComponents} productOperations={productOperations} onNodeClick={handleNodeClick} setAllConnected={setAllConnected}/>
         </Box>
       </HStack>
       <HStack width="100%" spacing="24px">

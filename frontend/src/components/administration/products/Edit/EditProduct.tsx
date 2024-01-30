@@ -18,12 +18,14 @@ import { FetchError } from "../../workspaces/Utils/singleWorkspaceLoader";
 import FetchErrorComponent from "../../../errorHandling/FetchErrorComponent";
 import VisNetwork from "../../../../hooks/form/vis-network";
 import { useInput } from "../../../../hooks/form/use-input";
-import { addNewProductFetch } from "../utils/newProduct";
 import { editProductConsolidatedData } from "../utils/editProductLoader";
 import { OperationComponentAddition } from "../New/AddOperationComponent";
 import { OperationsList } from "../New/ListOfOperations";
 import { UpdateProductData } from "../Interfaces/updateProduct.interface";
 import { updateProduct } from "../utils/editProduct";
+
+import useConfirmationDialog from "../../../../hooks/AlertDialog";
+import { deleteProduct } from "../utils/deleteProduct";
 
 
 function EditProduct() {
@@ -57,12 +59,15 @@ function EditProduct() {
   }
 
   const productToEdit = product;
-
+  //check if product is in use in orders
   const productInUse = productToEdit.usedIn.length ? true : false;
+  //check if all nodes are connected
+  const [allConnected, setAllConnected] = useState<boolean>();
   const [productOperations, setProductOperations] = useState<any>(productToEdit.operations);
-  const [productComponents, setProductproductComponents] = useState<any>(productToEdit.components);
+  const [productComponents, setProductComponents] = useState<any>(productToEdit.components);
+  
 
-  //handle editing
+  //handle editing node
   const [editId, seteditId] = useState<string | ''>('');
   const handleNodeClick = (nodeId: string) => {   
     seteditId(nodeId);
@@ -96,20 +101,26 @@ if (enteredNameIsValid && enteredCommentIsValid) {
   formIsValid = true;
 }
 
-//edit handle
+//product edit handle
 //set up state
 const [editing, setEditing] = useState(false);
+const [operationsBeforeEditing, setOperationsBeforeEditing] = useState(productOperations);
+const [componentsBeforeEditing, setComponentsBeforeEditing] = useState(productComponents);
 
 const editButtonHandler = () =>{
   //cancel editing
   if(editing){
     nameCancelEdit();
     commentCancelEdit();
+    setProductOperations(operationsBeforeEditing);
+    setProductComponents(componentsBeforeEditing);
   }
   //check if product is not used in orders
   if(!productInUse){
   //go into editing if not editing
   setEditing(!editing);
+  setOperationsBeforeEditing(productOperations);
+  setComponentsBeforeEditing(productComponents);
   }
   else{
     toast({
@@ -125,6 +136,32 @@ const editButtonHandler = () =>{
 
 //handle submiting edited product
 const handleSubmit = async (event:React.FormEvent<HTMLFormElement>) => {
+  
+  //check if at least 1 operation added if not return error
+if(productOperations.length < 1){
+  toast({
+    title: "Not enough operations!",
+    description: "You need at least 1 operation for your product",
+    status: "error",
+    duration: 5000,
+    position: 'top',
+    isClosable: true
+  });
+  return;
+}
+  //check if all nodes are connected
+  if(!allConnected){
+    toast({
+      title: "Not connected",
+      description: "Some of your nodes are not connected",
+      status: "error",
+      duration: 5000,
+      position: 'top',
+      isClosable: true
+    });
+    return;
+  }
+
   //set new data
   const data: UpdateProductData = {
     id: productToEdit._id,
@@ -145,8 +182,6 @@ const handleSubmit = async (event:React.FormEvent<HTMLFormElement>) => {
       position: 'top',
       isClosable: true
     });
-    //fix state without fetching
-    //setWorkspace({...workspace, ...data.attr});
     //turn off editing
     setEditing(!editing);
   } catch (err: any) {
@@ -160,8 +195,54 @@ const handleSubmit = async (event:React.FormEvent<HTMLFormElement>) => {
     });
   }
 }
+//delete handler
+const { getConfirmation, ConfirmationDialog } = useConfirmationDialog();
+const deleteHandler = () => {
+  //if product in use - you cant delete
+  if(productInUse){
+    toast({
+      title: "Product in use!",
+      description: "Product is already in use - you can`t delete it",
+      status: "error",
+      duration: 5000,
+      position: 'top',
+      isClosable: true
+    });
+    return
+  }
+  else{
+    //double check if to proceed
+    getConfirmation(
+      async ()=>{
+        try {
+          const response = await deleteProduct(productToEdit._id);
+          toast({
+            title: "Product deleted",
+            description: "Product has been successfully deleted",
+            status: "success",
+            duration: 5000,
+            position: 'top',
+            isClosable: true
+          });
+          //nav awai
+          navigate("..");
+        } catch (err: any) {
+          toast({
+            title: "Error.",
+            description: err.message || "Something went wrong with deleting this product",
+            status: "error",
+            duration: 5000,
+            position: 'top',
+            isClosable: true
+          });
+        }
+      }
+    )
+  }
+}
 
   return (
+    <>
     <VStack>
       <HStack width="100%" spacing="24px">
         <Box flex="1">
@@ -224,7 +305,7 @@ const handleSubmit = async (event:React.FormEvent<HTMLFormElement>) => {
             variant="outline" 
             colorScheme="purple">
               {!editing ? 'Edit' : 'Cancel'}
-            </Button>
+          </Button>
           <Button
             type="button"
             onClick={cancelHandler}
@@ -234,10 +315,16 @@ const handleSubmit = async (event:React.FormEvent<HTMLFormElement>) => {
           >
             Go back
           </Button>
+          <Button 
+            onClick={deleteHandler}
+             
+            colorScheme="red">
+              remove
+            </Button>
           </Form>
         </Box>
         <Box flex="2">
-          <VisNetwork productComponents={productComponents} productOperations={productOperations} onNodeClick={handleNodeClick}/>
+          <VisNetwork productComponents={productComponents} productOperations={productOperations} onNodeClick={handleNodeClick} setAllConnected={setAllConnected}/>
         </Box>
       </HStack>
       <HStack width="100%" spacing="24px">
@@ -251,7 +338,7 @@ const handleSubmit = async (event:React.FormEvent<HTMLFormElement>) => {
           components={products} 
           productComponents={productComponents}
           setProductOperations={setProductOperations} 
-          setProductComponents={setProductproductComponents} />
+          setProductComponents={setProductComponents} />
         </Box>
         )}
         <Box flex="1">
@@ -259,6 +346,11 @@ const handleSubmit = async (event:React.FormEvent<HTMLFormElement>) => {
         </Box>
       </HStack>
     </VStack>
+    <ConfirmationDialog 
+        title="Delete product" 
+        message="Are you sure you want to delete this product? You can't undo this action afterwards." 
+    />
+    </>
   );
 };
 

@@ -24,7 +24,7 @@ interface AddOperationFormProps {
 export const OperationComponentAddition: React.FC<AddOperationFormProps> = ({editId, setEditId, operations, productOperations, components, productComponents, setProductOperations, setProductComponents }) => {
   
    
-    const [isShowingOperations, setIsShowingOperations] = useState(true);  
+    const [isShowingOperations, setIsShowingOperations] = useState(false);  
     const handleToggle = () => {setIsShowingOperations(!isShowingOperations);};
 
 //component list handlers
@@ -63,7 +63,7 @@ export const OperationComponentAddition: React.FC<AddOperationFormProps> = ({edi
   if(operation.name === ``){
     operation.name = getObjectById(operations, operation.operation_id).name;
   }
-  console.log(operation)
+  
   setProductOperations([...productOperations, operation]);
   };
 
