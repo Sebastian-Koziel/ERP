@@ -39,7 +39,7 @@ export class OrdersService {
             console.log('no order with this no')
         }
         
-        product.qty = addProduct.qty;
+        
         order.products.push(product);
         order.save();
     }

@@ -4,6 +4,10 @@ import { Body, Controller, Post, Get, Param, UseGuards, Delete } from '@nestjs/c
 import { AuthGuard } from '../auth/auth.guard';
 import { Product } from './interfaces/product.interface';
 import { CreateProductDto } from './dtos/create-product.dtos';
+import { Access_decorator } from 'src/auth/access.decorator';
+import { Access } from 'src/auth/access.enum';
+import { AccessGuard } from 'src/auth/access.guard';
+import { UpdateProductData } from './interfaces/updateProduct.interface';
 
 
 @Controller('products')
@@ -11,23 +15,29 @@ export class ProductsController {
     constructor(
         private productsService: ProductsService
     ){}
-
-    @UseGuards(AuthGuard)
+    @Access_decorator(Access.companySetup)
+    @UseGuards(AuthGuard, AccessGuard)
     @Post('create')
     async createProduct(@Body() body: CreateProductDto) {
-        console.log('trying to add product')
         return this.productsService.create(body);    
     }
-
-    @UseGuards(AuthGuard)
+    @Access_decorator(Access.companySetup)
+    @UseGuards(AuthGuard, AccessGuard)
     @Get()
     async findAll(): Promise<Product[]> {
         return this.productsService.findAll();
     }
-
-    @UseGuards(AuthGuard)
+    @Access_decorator(Access.companySetup)
+    @UseGuards(AuthGuard, AccessGuard)
     @Get('/:id')
     async findOne(@Param('id') id:string): Promise<Product>{
         return this.productsService.findOne(id);
+    }
+
+    @Access_decorator(Access.companySetup)
+    @UseGuards(AuthGuard, AccessGuard)
+    @Post('update')
+    updateUser(@Body() body: UpdateProductData) {
+        return this.productsService.update(body.id, body.attr);
     }
 }

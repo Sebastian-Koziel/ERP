@@ -22,6 +22,7 @@ import { OperationComponentAddition } from "./AddOperationComponent";
 import { OperationsList } from "./ListOfOperations";
 import { useInput } from "../../../../hooks/form/use-input";
 import { addNewProductFetch } from "../utils/newProduct";
+import { CreateProduct } from "../Interfaces/CreateProduct";
 
 
 function AddNewProduct() {
@@ -104,10 +105,11 @@ if(productOperations.length < 1){
   return;
 }
 
-const newProductdata = {
+const newProductdata: CreateProduct = {
   name: formData.get("productName") as string,
   comment: formData.get("productComment") as string,
-  
+  operations: productOperations,
+  components: productComponents
 };
 
   try {
@@ -120,6 +122,7 @@ const newProductdata = {
       position: 'top',
       isClosable: true
     });
+    console.log(response);
     navigate("..");
   } catch (error:any) {
     toast({

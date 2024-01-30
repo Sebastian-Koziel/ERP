@@ -22,6 +22,8 @@ import { addNewProductFetch } from "../utils/newProduct";
 import { editProductConsolidatedData } from "../utils/editProductLoader";
 import { OperationComponentAddition } from "../New/AddOperationComponent";
 import { OperationsList } from "../New/ListOfOperations";
+import { UpdateProductData } from "../Interfaces/updateProduct.interface";
+import { updateProduct } from "../utils/editProduct";
 
 
 function EditProduct() {
@@ -56,8 +58,9 @@ function EditProduct() {
 
   const productToEdit = product;
 
-  const [productOperations, setProductOperations] = useState<any>([]);
-  const [productComponents, setProductproductComponents] = useState<any>([]);
+  const productInUse = productToEdit.usedIn.length ? true : false;
+  const [productOperations, setProductOperations] = useState<any>(productToEdit.operations);
+  const [productComponents, setProductproductComponents] = useState<any>(productToEdit.components);
 
   //handle editing
   const [editId, seteditId] = useState<string | ''>('');
@@ -66,21 +69,25 @@ function EditProduct() {
   };
 
   //inputs
-  const { 
+  const {
+    value: enteredName, 
     isValid: enteredNameIsValid,
     hasError: nameInputHasError, 
     valueChangeHandler: nameChangedHandler, 
     inputBlurHandler: nameBlurHandler,
-    message: nameErrorMessage
-  } = useInput([{name: 'required'}], '');
+    message: nameErrorMessage,
+    cancelEdit: nameCancelEdit,
+  } = useInput([{name: 'required'}], productToEdit.name);
 
-  const { 
+  const {
+    value: enteredComment, 
     isValid: enteredCommentIsValid,
     hasError: commentInputHasError, 
     valueChangeHandler: commentChangedHandler, 
     inputBlurHandler: commentBlurHandler,
-    message: commentErrorMessage
-  } = useInput([], '');
+    message: commentErrorMessage,
+    cancelEdit: commentCancelEdit, 
+  } = useInput([], productToEdit.comment);
   
 //form overall validation
 let formIsValid = false;
@@ -89,48 +96,66 @@ if (enteredNameIsValid && enteredCommentIsValid) {
   formIsValid = true;
 }
 
-//handle submiting new product
-const handleSubmit = async (event:React.FormEvent<HTMLFormElement>) => {
-  event.preventDefault();
-  const formData = new FormData(event.currentTarget);
-  
-//check if at least 1 operation added if not return error
-if(productOperations.length < 1){
-  toast({
-    title: "Not enough operations!",
-    description: "You need at least 1 operation for your product",
-    status: "error",
-    duration: 5000,
-    position: 'top',
-    isClosable: true
-  });
-  return;
+//edit handle
+//set up state
+const [editing, setEditing] = useState(false);
+
+const editButtonHandler = () =>{
+  //cancel editing
+  if(editing){
+    nameCancelEdit();
+    commentCancelEdit();
+  }
+  //check if product is not used in orders
+  if(!productInUse){
+  //go into editing if not editing
+  setEditing(!editing);
+  }
+  else{
+    toast({
+      title: "Product in use!",
+      description: "Product is already in use - you can`t edit it",
+      status: "error",
+      duration: 5000,
+      position: 'top',
+      isClosable: true
+    });
+  }
 }
 
-const newProductdata = {
-  name: formData.get("productName") as string,
-  comment: formData.get("productComment") as string,
-  
-};
-
+//handle submiting edited product
+const handleSubmit = async (event:React.FormEvent<HTMLFormElement>) => {
+  //set new data
+  const data: UpdateProductData = {
+    id: productToEdit._id,
+    attr : {
+      name: enteredName,
+      comment: enteredComment,
+      operations: productOperations,
+      components: productComponents
+    }
+  }
   try {
-    const response = await addNewProductFetch(newProductdata);
+    const response = await updateProduct(data);
     toast({
-      title: "Stage added",
-      description: "Product has been successfully added",
+      title: "Product updated",
+      description: "Product has been successfully updated",
       status: "success",
       duration: 5000,
       position: 'top',
       isClosable: true
     });
-    navigate("..");
-  } catch (error:any) {
+    //fix state without fetching
+    //setWorkspace({...workspace, ...data.attr});
+    //turn off editing
+    setEditing(!editing);
+  } catch (err: any) {
     toast({
       title: "Error.",
-      description: error.message || "Something went wrong with adding this product",
+      description: err.message || "Something went wrong with updating this product",
       status: "error",
-      position: 'top',
       duration: 5000,
+      position: 'top',
       isClosable: true
     });
   }
@@ -151,6 +176,8 @@ const newProductdata = {
                     name="productName"
                     onChange={nameChangedHandler}
                     onBlur={nameBlurHandler}
+                    value={enteredName}
+                    readOnly={!editing}
                   />
                 {!nameErrorMessage? (
                     <FormHelperText>
@@ -172,6 +199,8 @@ const newProductdata = {
                       name="productComment"
                       onChange={commentChangedHandler}
                       onBlur={commentBlurHandler}
+                      value={enteredComment}
+                      readOnly={!editing}
                     />
                   {!commentInputHasError? (
                       <FormHelperText>
@@ -182,13 +211,20 @@ const newProductdata = {
                       )}
             
             </FormControl>
+            {editing && (
             <Button 
           type="submit" 
           isDisabled = {!formIsValid || isSubmitting}
           >
-            SAVE PRODUCT
+            SAVE 
           </Button>
-
+            )}
+          <Button 
+            onClick={editButtonHandler}
+            variant="outline" 
+            colorScheme="purple">
+              {!editing ? 'Edit' : 'Cancel'}
+            </Button>
           <Button
             type="button"
             onClick={cancelHandler}
@@ -196,7 +232,7 @@ const newProductdata = {
             variant="outline"
             colorScheme="purple"
           >
-            Cancel
+            Go back
           </Button>
           </Form>
         </Box>
@@ -205,6 +241,7 @@ const newProductdata = {
         </Box>
       </HStack>
       <HStack width="100%" spacing="24px">
+      {editing && (
         <Box flex="2">
           <OperationComponentAddition
           editId={editId} 
@@ -216,6 +253,7 @@ const newProductdata = {
           setProductOperations={setProductOperations} 
           setProductComponents={setProductproductComponents} />
         </Box>
+        )}
         <Box flex="1">
           <OperationsList operations={productOperations} components={productComponents}/>
         </Box>

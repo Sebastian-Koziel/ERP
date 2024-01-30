@@ -7,6 +7,7 @@ interface FetchError {
 }
 
 export const fetchProductById = async (product_id: string): Promise<Product | FetchError> => {
+  console.log(product_id);
     const token = storageGetToken();
 try{
     const response = await fetch("http://localhost:3000/products/" +product_id, {

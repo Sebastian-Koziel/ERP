@@ -27,10 +27,10 @@ async createGraphForProduct(product:Product, orderId:string){
         OperationHandler.product_id = product._id;
 
         //set qty - TO DO - think over - czasami będzie w mb, m2, szt
-        OperationHandler.qty = product.qty;
+        //OperationHandler.qty = product.qty;
         //find best workSpace TO DO (future)
-        OperationHandler.stage_id = product.operations[i].stage_id;
-        OperationHandler.workSpace_id = product.operations[i].workSpace_type;
+       // OperationHandler.stage_id = product.operations[i].stage_id;
+        //OperationHandler.workSpace_id = product.operations[i].workSpace_type;
 
         //set relationships
         if(previousOperationHandler_id === null){

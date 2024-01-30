@@ -6,7 +6,7 @@ import { fetchAllProducts } from "./fetchAllProducts";
 import { fetchProductById } from "./fetchProductById";
 
 interface MyLoaderProps {
-  productId: string;
+  product_id: string;
 }
 
 export interface FetchError {
@@ -20,7 +20,7 @@ export interface editProductConsolidatedData {
   }
   
   export const editProductLoader = async ({params}: {params: MyLoaderProps}): Promise<editProductConsolidatedData | FetchError> => {
-    const _id = params.productId;
+    const _id = params.product_id;
     try {
       const operationsPromise = fetchAllOperations();
       const productsPromise = fetchAllProducts();

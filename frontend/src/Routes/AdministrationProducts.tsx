@@ -5,6 +5,7 @@ import ProductsRoot from "../components/administration/products/Root/ProductsRoo
 import { fetchAllProducts } from "../components/administration/products/utils/fetchAllProducts";
 import { newProductLoader } from "../components/administration/products/utils/newProductLoader";
 import { editProductLoader } from "../components/administration/products/utils/editProductLoader";
+import EditProduct from "../components/administration/products/Edit/EditProduct";
 
 const productsRoutes = {
     path: "products",
@@ -24,9 +25,9 @@ const productsRoutes = {
         loader: newProductLoader
       },
       {
-        path: ":stageId",
+        path: ":product_id",
         loader: editProductLoader,
-         
+        element: <EditProduct />,
       },
     ],
   };

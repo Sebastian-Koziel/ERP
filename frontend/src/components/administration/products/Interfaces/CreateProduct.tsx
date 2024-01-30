@@ -13,5 +13,4 @@ export interface CreateProduct {
         ProductComponent
     ]
     
-    
 }

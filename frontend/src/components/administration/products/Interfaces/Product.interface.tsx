@@ -1,11 +1,13 @@
-import { Operation } from "../../operations/Interfaces/Operations.interface";
+
+import { ProductComponent } from "./ProductComponent";
+import { ProductOperation } from "./ProductOperation";
 
 
 export interface Product {
     _id: string
     name : string
     comment: string
-    productType_id: string
-    
-    operations :  Operation[]
+    operations :  ProductOperation[]
+    components : ProductComponent[]
+    usedIn: [string]
 }

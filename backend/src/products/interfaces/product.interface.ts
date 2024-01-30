@@ -1,13 +1,16 @@
 import { Document } from "mongoose";
-import { Operation } from "src/operations/interfaces/operation.interface";
+import { ProductComponent, ProductOperation } from "../dtos/create-product.dtos";
 
 export interface Product extends Document {
+    _id: string,
     name : string,
     comment: string,
-    qty: number,
-    productType_id: string,
     operations : [
-        Operation
+        ProductOperation
     ],
+    components: [
+        ProductComponent
+    ],
+    usedIn: [string]
     
 }

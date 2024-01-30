@@ -18,13 +18,20 @@ export class ProductsService {
     }
 
     async findOne(id:string): Promise<Product>{
-        console.log(`szukam produku`)
         return await this.productModel.findById(id);
     }
 
     async findOneWithOutId(id:string): Promise<Product>{
-        console.log(`szukam produku bez id`)
         return await this.productModel.findById(id).select('-_id');
+    }
+    //update
+    async update(id: string, attrs: Partial<Product>){
+        let ProductForChange = await this.productModel.findById(id);
+        if(!ProductForChange){
+            throw new Error(`UPDATE - no product with this number`)
+        }
+        Object.assign(ProductForChange, attrs);
+        return ProductForChange.save();
     }
 
     async remove(id:string){
