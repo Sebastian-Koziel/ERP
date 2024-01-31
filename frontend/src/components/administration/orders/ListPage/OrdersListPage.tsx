@@ -1,26 +1,39 @@
-import { useLoaderData } from "react-router-dom";
-import OrderesList from "../List/OrdersList";
+import { Link, useLoaderData } from "react-router-dom";
+import { FetchError } from "../utils/newOrderLoader";
+import { Order } from "../Interfaces/Order.interface";
+import FetchErrorComponent from "../../../errorHandling/FetchErrorComponent";
+import { Button } from "@chakra-ui/react";
+import DataTable from "../../../../utils/datatable";
+
 
 function OrdersListPage() {
-  const orders = useLoaderData();
-  return (
-    <OrderesList orders={orders} />
+ //handle fetching
+ const routeData = useLoaderData() as Order[] | FetchError;
   
-  );
-}
+ if('error' in routeData){
+   return (
+     <FetchErrorComponent errors={routeData.error}/>
+   );
+ }
+const orders = routeData;
 
+ const columnsSetup = [
+   {header: "name", accessor: "name"},
+   {header: "order no", accessor: "externalOrderNo"},
+   {header: "comment", accessor: "comment"},
+   { header: "Actions", accessor: "actions", edit: true }
+ ]
+
+ return (
+   <>
+   <Button as={Link} to="new" variant="solid" colorScheme="purple">
+   place new order
+ </Button>
+ <DataTable columns={columnsSetup} data={orders} />
+ </>
+ )
+}
 export default OrdersListPage;
 
 
-
-export const ordersLoader = async (): Promise<[]> => {
-  const token = localStorage.getItem("token");
-  const response = await fetch("http://localhost:3000/orders", {
-    headers: {
-      Authorization: "Bearer "+token
-    }
-  });
-  const data = await response.json();
-  return data;
-};
 
