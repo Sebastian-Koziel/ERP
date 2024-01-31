@@ -6,4 +6,7 @@ export class CreateStageDto {
 
   @IsString()
   comment: string;
+
+  @IsString({ each: true })
+  usedIn: string[];
 }

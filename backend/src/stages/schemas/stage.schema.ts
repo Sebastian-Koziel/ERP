@@ -7,6 +7,10 @@ export const StageSchema = new mongoose.Schema({
     },
     comment: {
         type: String
+    },
+    usedIn: {
+        type: Array,
+        default: []
     }
 
 });

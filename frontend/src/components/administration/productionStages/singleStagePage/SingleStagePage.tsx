@@ -1,10 +1,12 @@
-import { useRouteLoaderData, Link, Form } from "react-router-dom";
+import { useRouteLoaderData, Link, Form, Navigate, useNavigate } from "react-router-dom";
 import { Container, Heading, Button, Stack, FormControl, FormLabel, Input, Box, FormErrorMessage, FormHelperText, Textarea, useToast } from "@chakra-ui/react";
 import { Stage, updateStageData } from "../interfaces/Stage.interface";
 import { useState } from "react";
 import { useInput } from "../../../../hooks/form/use-input";
 import { updateStage } from "../utils/updateStage";
 import FetchErrorComponent from "../../../errorHandling/FetchErrorComponent";
+import useConfirmationDialog from "../../../../hooks/AlertDialog";
+import { deleteStage } from "../utils/deleteStage";
 
 interface ErrorResponse {
   error: string;
@@ -12,7 +14,7 @@ interface ErrorResponse {
 type RouteLoaderData = Stage | ErrorResponse;
 
 function SingleStagePage() {
-
+  const navigate = useNavigate();
 //handle error from router fetching
   const routeData = useRouteLoaderData("singleStageLoader") as RouteLoaderData;
   
@@ -26,6 +28,7 @@ function SingleStagePage() {
 
   // data set up
   const [stage, setStage] = useState(routeData);
+  const stageInUse = stage.usedIn.length ? true : false;
   //for error and confirmation displaying
   const toast = useToast();
 
@@ -106,16 +109,51 @@ const submitFormHandler = async () => {
   }
 }
 
-
-  function startDeleteHandler() {
-    const proceed = window.confirm("are ju siur?");
-
-    if (proceed) {
-      //powinna być osobny component na to
-      //nie wiem jak dodac kilka akcji do 1 sciezki
-      console.log(`gonna delete ${stage._id}`);
-    }
+//delete handler
+const { getConfirmation, ConfirmationDialog } = useConfirmationDialog();
+const startDeleteHandler = () => {
+//if product in use - you cant delete
+if(stageInUse){
+    toast({
+      title: "Product in use!",
+      description: "Product is already in use - you can`t delete it",
+      status: "error",
+      duration: 5000,
+      position: 'top',
+      isClosable: true
+    });
+    return
   }
+  else{
+    //double check if to proceed
+    getConfirmation(
+      async ()=>{
+        try {
+          const response = await deleteStage(stage._id);
+          toast({
+            title: "Product deleted",
+            description: "Product has been successfully deleted",
+            status: "success",
+            duration: 5000,
+            position: 'top',
+            isClosable: true
+          });
+          //nav awai
+          navigate("..");
+        } catch (err: any) {
+          toast({
+            title: "Error.",
+            description: err.message || "Something went wrong with deleting this product",
+            status: "error",
+            duration: 5000,
+            position: 'top',
+            isClosable: true
+          });
+        }
+      }
+    )
+  }
+}
 
   return (
     <>
@@ -201,7 +239,10 @@ const submitFormHandler = async () => {
             <Button>Go back</Button>
           </Link>
         </Box>
-
+      <ConfirmationDialog 
+        title="Delete product" 
+        message="Are you sure you want to delete this product? You can't undo this action afterwards." 
+    />
       </Container>
     </>
   );

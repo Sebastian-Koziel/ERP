@@ -2,6 +2,7 @@ export interface Stage {
     _id: string
     name: string
     comment: string
+    usedIn: string[]
 }
 
 export interface CreateStage {

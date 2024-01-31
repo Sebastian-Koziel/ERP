@@ -3,6 +3,7 @@ import DataTable from "../../../../utils/datatable";
 import { Box, Button, Center, Text } from "@chakra-ui/react";
 import { Stage } from "../interfaces/Stage.interface";
 import FetchErrorComponent from "../../../errorHandling/FetchErrorComponent";
+import { FetchError } from "../../workspaces/Utils/singleWorkspaceLoader";
 
 interface ErrorResponse {
   error: string;
@@ -12,16 +13,15 @@ type RouteLoaderData = Stage[] | ErrorResponse;
 
 function StagesListPage() {
 
-//handle error from router fetching
-  const routeData = useRouteLoaderData("stages") as RouteLoaderData;
+//handle fetching
+const routeData = useRouteLoaderData('stages') as Stage[] | FetchError;
   
-  if('error' in routeData){
-    return (
-      <FetchErrorComponent error={routeData.error}/>
-    );
-  }
-
-//if there is no error from router fetching
+if('error' in routeData){
+  return (
+    <FetchErrorComponent errors={routeData.error}/>
+  );
+}
+const stages = routeData;
 
   
   const columnsSetup = [
@@ -38,7 +38,7 @@ function StagesListPage() {
     </Button>
     </Box>
     
-    <DataTable columns={columnsSetup} data={routeData} />
+    <DataTable columns={columnsSetup} data={stages} />
     
     </>
   )

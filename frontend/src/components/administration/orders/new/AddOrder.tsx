@@ -1,164 +1,235 @@
 import { useState } from "react";
-import { Form, redirect, useActionData, useLoaderData, useNavigate, useNavigation, useRouteLoaderData} from "react-router-dom";
+import { Form, useLoaderData, useNavigate, useNavigation} from "react-router-dom";
 import {
   Container,
   Input,
+  Box,
   Button,
-  Spacer, 
-  Stack,
-  Select,
-  OrderedList
+  FormErrorMessage,
+  Textarea,
+  FormControl,
+  FormLabel,
+  FormHelperText,
+  useToast
 } from "@chakra-ui/react";
 
 import { useInput } from "../../../../hooks/form/use-input";
-import { addNewOrderFetch } from "../utils/newOrder";
-import { NewOrder } from "../Interfaces/CreateOrder.interface";
-import { Product } from "../../products/Interfaces/Product.interface";
-import { getObjectById } from "../../../../utils/utils";
+import { CreateOrderData } from "../Interfaces/CreateOrder.interface";
+import { useDateInput } from "../../../../hooks/form/use-datePicker";
+import { addNewOrderFetcher } from "../utils/postNewOrder";
+import FetchErrorComponent from "../../../errorHandling/FetchErrorComponent";
+import { FetchError, newOrderConsolidatedData } from "../utils/newOrderLoader";
+import AddProductToOrder from "./AddProductToOrder";
 
+//TO DO - adding a new product to the list will be a whole new fitcher
+//TO DO - listing a products
 
 function AddNewOrder() {
-
-  const dataFromFetching:any = useActionData();
+  const toast = useToast();
   const navigate = useNavigate();
   const navigation = useNavigation();
-  const productsList:any = useLoaderData();
+  
   const isSubmitting = navigation.state === "submitting";
 
-  const [pickedProducts, setPickedProducts] = useState([]);
-
-  console.log(productsList)
-
-  const {
-    value: enteredName, 
-    isValid: enteredNameIsValid,
-    hasError: nameInputHasError, 
-    valueChangeHandler: nameChangedHandler, 
-    inputBlurHandler: nameBlurHandler,
-    message: errorMessage
-  } = useInput([{name: 'required'}], '');
-
+//handle fetching
+const routeData = useLoaderData() as newOrderConsolidatedData | FetchError;
     
-  let formIsValid = false;
+if ('error' in routeData) {
+  
+  return <FetchErrorComponent errors={routeData.error} />;
+}
+const { products } = routeData;
+// Check for errors within consolidated data
+if ('error' in products) {
+  // Handle errors within consolidated data
+  const errors = [
+    'Error in workspaceTypes: ' + (products as FetchError).error
+  ];
+  return <FetchErrorComponent errors={errors} />;
+}
 
-  if (enteredNameIsValid) {
-    formIsValid = true;
+const [productsforOrder, setProductsforOrder] = useState<any[]>([]);
+
+const AddProductToTheList = (product:any) => {
+  setProductsforOrder([...productsforOrder, product]);
+  console.log(productsforOrder);
+}
+
+  //inputs handlers
+    //name
+    const {
+      value: enteredName, 
+      isValid: enteredNameIsValid,
+      hasError: nameInputHasError, 
+      valueChangeHandler: nameChangedHandler, 
+      inputBlurHandler: nameBlurHandler,
+      message: nameErrorMessage
+    } = useInput([{name: 'required'}], '');
+    //comment
+    const {
+      value: enteredComment, 
+      isValid: enteredCommentIsValid,
+      hasError: commentInputHasError, 
+      valueChangeHandler: commentChangedHandler, 
+      inputBlurHandler: commentBlurHandler,
+      message: commentErrorMessage
+    } = useInput([], '');
+    //external number
+    const {
+      value: enteredExternalNo, 
+      isValid: enteredExternalNoIsValid,
+      hasError: externalNoInputHasError, 
+      valueChangeHandler: externalNoChangedHandler, 
+      inputBlurHandler: externalNoBlurHandler,
+      message: externalNoErrorMessage
+    } = useInput([], '');
+    //req delivery date
+    const {
+      selectedDate,
+      isValid: dateIsValid,
+      hasError: dateInputHasError,
+      dateChangeHandler,
+      message: dateErrorMessage,
+    } = useDateInput([], null);
+  
+    const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      // When using standard input of type 'date', the value is always a string in the format 'YYYY-MM-DD'
+      dateChangeHandler(new Date(event.target.value));
+    };
+  
+//handling submit
+const handleSubmit = async (event:React.FormEvent<HTMLFormElement>) => {
+  event.preventDefault();
+  const formData = new FormData(event.currentTarget);
+  
+const newOrderData:CreateOrderData = {
+  name: formData.get("operationName") as string, 
+  comment: formData.get("operationComment")as string,
+  externalOrderNo: formData.get("workspacetype")as string,
+  reqDeliveryDate: formData.get("workspacetype")as string,
+  products: ['sd'] as string[]
+};
+
+  try {
+    const response = await addNewOrderFetcher(newOrderData);
+    toast({
+      title: "Order added",
+      description: "order has been successfully added",
+      status: "success",
+      duration: 5000,
+      position: 'top',
+      isClosable: true
+    });
+    navigate("..");
+  } catch (error:any) {
+    toast({
+      title: "Error.",
+      description: error.message || "Something went wrong with adding this order",
+      status: "error",
+      position: 'top',
+      duration: 5000,
+      isClosable: true
+    });
   }
+}
 
   const cancelHandler = () => {
     navigate("..");
   }
 
-  const addProductHandler = () => {
-    const productIdElement = document.getElementById("product_id") as HTMLInputElement;
-    const productQtyElement = document.getElementById("productQty")as HTMLInputElement;
-  
-    if (productIdElement && productQtyElement) {
-      
-        const isProductAlreadyPicked = pickedProducts.some(product => product.productType_id === productIdElement.value);
+  //form overall validation
+let formIsValid = false;
 
-        if(isProductAlreadyPicked){
-            alert('product already picked');
-            return;
-        }
+if (enteredNameIsValid && enteredCommentIsValid && dateIsValid && enteredExternalNoIsValid) {
+  formIsValid = true;
+}
 
-      const product = JSON.parse(JSON.stringify(getObjectById(productsList, productIdElement.value)));
-      const qty = Number(productQtyElement.value);
-  
-      product.qty = qty;
-      product.productType_id = product._id;
-      delete product._id;
-
-      setPickedProducts((OldList)=>{
-        let newList = JSON.parse(JSON.stringify(OldList));
-        newList.push(product);
-        return newList;
-      })
-    }
-  };
   
   return (
      <>
     
     <Container mt="1rem" mb="1rem" centerContent>
-      {dataFromFetching && dataFromFetching.status && <p>{dataFromFetching.message}</p>}
-      <Form method="post">
-        <Stack minW="container.sm">
-          <Input
-            id="name"
-            type="text"
-            name="name"
-            placeholder="Name"
-            variant="outline"
-            onChange={nameChangedHandler}
-            onBlur={nameBlurHandler}
-            value={enteredName}
-          />
-          {nameInputHasError && (
-            <span>{errorMessage}</span>
-          )}
-          
-        <Input
-            id="comment"
-            type="text"
-            name="comment"
-            placeholder="comment"
-            variant="outline"
+    <Box>
+        <Form onSubmit={handleSubmit}>
+          <FormControl isInvalid={nameInputHasError} isRequired>
+            <FormLabel>
+              Name:
+            </FormLabel>
+              <Input
+                id="operationName"
+                type="text"
+                name="operationName"
+                onChange={nameChangedHandler}
+                onBlur={nameBlurHandler}
+                value={enteredName}
+                
+              />
+
+                {!nameErrorMessage? (
+                <FormHelperText>
+                enter name
+                </FormHelperText>
+                ) : (
+                <FormErrorMessage>{nameErrorMessage}</FormErrorMessage>
+                )}
+          </FormControl>
+
+    <FormControl isInvalid={commentInputHasError}>
+      <FormLabel>
+        Comment:
+      </FormLabel>
+        <Textarea
+          id="operationComment"
+          name="operationComment"
+          onChange={commentChangedHandler}
+          onBlur={commentBlurHandler}
+          value={enteredComment}
         />
-
+                {!commentInputHasError? (
+                <FormHelperText>
+                enter name
+                </FormHelperText>
+                ) : (
+                <FormErrorMessage>{commentErrorMessage}</FormErrorMessage>
+                )}      
+    </FormControl>
+    <FormControl isInvalid={commentInputHasError}>
+      <FormLabel>
+        external order no:
+      </FormLabel>
         <Input
-            id="orderNo"
-            type="text"
-            name="orderNo"
-            placeholder="orderNo"
-            variant="outline"
+          id="externalOrderNo"
+          name="externalOrderNo"
+          onChange={externalNoChangedHandler}
+          onBlur={externalNoBlurHandler}
+          value={enteredExternalNo}
         />
-
-        <Input
-            type="hidden"
-            name="listOfProducts"
-            value={JSON.stringify(pickedProducts)}
-          
-          />
-
-        <div>
-            Products:
-        <ul>
-            {pickedProducts.map((product:Product) => (
-                <li key={Math.random()}>
-                    {product.name} - {product.qty}
-                </li>
-            ))}
-        </ul>
-        </div>
-
-          <Spacer />
-
-          <label htmlFor="stage">Pick a product:</label>
-          <Select id="product_id" name="product_id" required>
-            {productsList.map((product:Product) => (
-              <option key={product._id} value={product._id}>
-                {product.name}
-              </option>
-            ))}
-          </Select>
-          <Input
-            id="productQty"
-            type="number"
-            name="productQty"
-            placeholder="qty"
-            variant="outline"
-            /> 
-            <Button
-            type="button"
-            onClick={addProductHandler}
-            variant="outline"
-            colorScheme="purple"
-            >Add product
-            </Button>
-          <button type="submit" disabled={!formIsValid}>
+                {!externalNoInputHasError? (
+                <FormHelperText>
+                enter external no if needed
+                </FormHelperText>
+                ) : (
+                <FormErrorMessage>{externalNoErrorMessage}</FormErrorMessage>
+                )}      
+    </FormControl>
+    <FormControl isInvalid={dateInputHasError}>
+      <FormLabel htmlFor="date-input">Select a required delivery date</FormLabel>
+      <Input
+        id="date-input"
+        type="date"
+        value={selectedDate ? selectedDate.toISOString().substring(0, 10) : ''}
+        onChange={handleDateChange}
+        onBlur={() => {}}
+        placeholder="Select date"
+      />
+      {dateInputHasError && <FormErrorMessage>{dateErrorMessage}</FormErrorMessage>}
+    </FormControl>
+    <Button 
+          type="submit" 
+          isDisabled = {!formIsValid}
+          >
             ADD
-          </button> 
+          </Button>
 
           <Button
             type="button"
@@ -169,49 +240,15 @@ function AddNewOrder() {
           >
             Cancel
           </Button>
-        </Stack>
-      </Form>
-      
+    </Form>
+    </Box>
+    <AddProductToOrder products={products} AddProductToTheList={AddProductToTheList}/>
     </Container>
     
     </>
   );
 }
 
-export default AddNewOrder;
-
-export async function action({ request }: { request: Request }) {
-  
-  const data = await request.formData();
-  
-  const nameValue = data.get("name")
-  const name: string = nameValue !== null ? nameValue.toString() : ""
-
-  const commentValue = data.get("comment")
-  const comment: string = commentValue !== null ? commentValue.toString() : ""
-
-  const orderNoValue = data.get("orderNo")
-  const orderNo: string = orderNoValue !== null ? orderNoValue.toString() : ""
-
-  const order = {
-    name: name,
-    comment: comment,
-    orderNo: orderNo,
-    products: JSON.parse(data.get("listOfProducts"))
-  };
-  
-  console.log(order);
-
-  try {
-    await addNewOrderFetch(order);
-  } catch (err) {
-    return err;
-  }
-  
-  //const resData: string = await response.json();
-
-  return redirect("/administration/orders");
-  //return redirect("/administration/workspaces/" + resData);
-}
+export default AddNewOrder
 
 
