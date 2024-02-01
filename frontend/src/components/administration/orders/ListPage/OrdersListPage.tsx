@@ -27,7 +27,7 @@ const orders = routeData;
  return (
    <>
    <Button as={Link} to="new" variant="solid" colorScheme="purple">
-   place new order
+   Create new order
  </Button>
  <DataTable columns={columnsSetup} data={orders} />
  </>

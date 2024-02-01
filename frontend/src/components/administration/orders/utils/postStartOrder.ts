@@ -1,13 +1,10 @@
 import { storageGetToken } from "../../../../utils/localhostHandlers";
-import { StartOrder } from "../Details/Interfaces/StartOrder.interface";
+import { StartOrder } from "../Interfaces/StartOrder.interface";
 
-export async function startOrder(orderID:string) {
+
+export async function startOrder(data: StartOrder) {
 
     const token = storageGetToken();
-
-    const data: StartOrder = {
-        order_id: orderID
-    }
 
     const response = await fetch("http://localhost:3000/orders/start", {
     method: "POST",
@@ -19,7 +16,9 @@ export async function startOrder(orderID:string) {
   });
 
   if(!response.ok) {
-    throw { message: `Could not start an order ${orderID}`, status: 500}
+    const errorData = await response.json();
+    const errorMessage = errorData.message || 'Something went wrong with starting this order';
+    throw new Error(errorMessage);
   }
 
 }

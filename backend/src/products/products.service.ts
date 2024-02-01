@@ -21,6 +21,12 @@ export class ProductsService {
         return await this.productModel.findById(id);
     }
 
+    async findMany(ids: string[]): Promise<Product[]> {
+        return await this.productModel.find({
+          _id: { $in: ids },
+        });
+      }
+
     async findOneWithOutId(id:string): Promise<Product>{
         return await this.productModel.findById(id).select('-_id');
     }

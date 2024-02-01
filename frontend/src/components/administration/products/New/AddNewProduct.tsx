@@ -118,6 +118,7 @@ if(!allConnected){
   });
   return;
 }
+
 const newProductdata: CreateProduct = {
   name: formData.get("productName") as string,
   comment: formData.get("productComment") as string,

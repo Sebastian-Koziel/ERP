@@ -6,7 +6,13 @@ type ValidatorRule = {
 type ValidationRules = ValidatorRule[];
 
 export const useDateInput = (validators: ValidationRules, prePopulate: Date | null) => {
-    const [selectedDate, setSelectedDate] = useState<Date | null>(prePopulate);
+    const parsedDate = prePopulate ? new Date(prePopulate) : new Date();
+    const isValidDate = parsedDate.toString() !== 'Invalid Date';
+
+    const [selectedDate, setSelectedDate] = useState<Date | null>(
+        isValidDate ? parsedDate : null
+    );
+    
     const [isTouched, setIsTouched] = useState(false);
 
     const { valid: dateIsValid, message } = checkDateValidation(selectedDate, validators);

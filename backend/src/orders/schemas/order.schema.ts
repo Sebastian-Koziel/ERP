@@ -1,16 +1,26 @@
 import * as mongoose from 'mongoose';
-import { ProductSchema } from 'src/products/schemas/product.schema';
-
 
 export const OrderSchema = new mongoose.Schema({
 
     name: {
         type: String
     },
-    orderNo: {
+    comment: {
+        type: String
+    },
+    reqDeliveryDate: {
+        type: Date
+    },
+    externalOrderNo: {
         type: String
     },
     products: [
-        ProductSchema
-    ]    
+        {productId: {
+            type: String
+        },
+         qty: {
+            type: Number
+        }
+        }
+    ]
 });

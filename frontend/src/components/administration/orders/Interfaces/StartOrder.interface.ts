@@ -1,3 +1,3 @@
 export interface StartOrder {
-    order_id: string;  
+    orderId: string    
 }

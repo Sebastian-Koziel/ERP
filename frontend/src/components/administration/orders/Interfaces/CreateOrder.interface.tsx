@@ -1,10 +1,11 @@
-import { Product } from "../../products/Interfaces/Product.interface"
+
+import { ProductForOrder } from "./ProductForOrder"
 
 export interface CreateOrderData {
     name: string
     comment: string
     externalOrderNo: string
-    reqDeliveryDate: string
-    products: string[]
+    reqDeliveryDate: Date | null
+    products: ProductForOrder[]
     
 }

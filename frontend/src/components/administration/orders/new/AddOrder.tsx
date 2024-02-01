@@ -20,6 +20,7 @@ import { addNewOrderFetcher } from "../utils/postNewOrder";
 import FetchErrorComponent from "../../../errorHandling/FetchErrorComponent";
 import { FetchError, newOrderConsolidatedData } from "../utils/newOrderLoader";
 import AddProductToOrder from "./AddProductToOrder";
+import { ProductForOrder } from "../Interfaces/ProductForOrder";
 
 //TO DO - adding a new product to the list will be a whole new fitcher
 //TO DO - listing a products
@@ -48,11 +49,10 @@ if ('error' in products) {
   return <FetchErrorComponent errors={errors} />;
 }
 
-const [productsforOrder, setProductsforOrder] = useState<any[]>([]);
+const [productsforOrder, setProductsforOrder] = useState<ProductForOrder[]>([]);
 
-const AddProductToTheList = (product:any) => {
+const AddProductToTheList = (product:ProductForOrder) => {
   setProductsforOrder([...productsforOrder, product]);
-  console.log(productsforOrder);
 }
 
   //inputs handlers
@@ -93,7 +93,6 @@ const AddProductToTheList = (product:any) => {
     } = useDateInput([], null);
   
     const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-      // When using standard input of type 'date', the value is always a string in the format 'YYYY-MM-DD'
       dateChangeHandler(new Date(event.target.value));
     };
   
@@ -102,14 +101,17 @@ const handleSubmit = async (event:React.FormEvent<HTMLFormElement>) => {
   event.preventDefault();
   const formData = new FormData(event.currentTarget);
   
+const reqDeliveryDateValue = formData.get('reqDeliveryDate');
+const reqDeliveryDate = reqDeliveryDateValue ? new Date(reqDeliveryDateValue as string) : null;
+
 const newOrderData:CreateOrderData = {
   name: formData.get("operationName") as string, 
   comment: formData.get("operationComment")as string,
-  externalOrderNo: formData.get("workspacetype")as string,
-  reqDeliveryDate: formData.get("workspacetype")as string,
-  products: ['sd'] as string[]
+  externalOrderNo: formData.get("externalOrderNo")as string,
+  reqDeliveryDate: reqDeliveryDate,
+  products: productsforOrder as ProductForOrder[]
 };
-
+console.log(newOrderData);
   try {
     const response = await addNewOrderFetcher(newOrderData);
     toast({
@@ -217,6 +219,7 @@ if (enteredNameIsValid && enteredCommentIsValid && dateIsValid && enteredExterna
       <Input
         id="date-input"
         type="date"
+        name="reqDeliveryDate"
         value={selectedDate ? selectedDate.toISOString().substring(0, 10) : ''}
         onChange={handleDateChange}
         onBlur={() => {}}

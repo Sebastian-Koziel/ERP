@@ -1,5 +1,5 @@
 import { Order } from "../Interfaces/Order.interface";
-import { useLoaderData, Form } from "react-router-dom";
+import { useLoaderData, Form, useNavigate, useNavigation } from "react-router-dom";
 import {
     Container,
     Input,
@@ -7,148 +7,218 @@ import {
     Spacer, 
     Stack,
     Select,
+    useToast,
+    FormErrorMessage,
+    FormLabel,
+    FormControl,
+    FormHelperText,
+    Textarea,
+    Box,
   } from "@chakra-ui/react";
-import { Product } from "../../products/Interfaces/Product.interface";
 import { useState } from "react";
 import { startOrder } from "../utils/postStartOrder";
+import FetchErrorComponent from "../../../errorHandling/FetchErrorComponent";
+import { FetchError } from "../utils/newOrderLoader";
+import { ProductForOrder } from "../Interfaces/ProductForOrder";
+import { editOrderConsolidatedData } from "../utils/orderDetailsLoader";
+import { useDateInput } from "../../../../hooks/form/use-datePicker";
+import { useInput } from "../../../../hooks/form/use-input";
+import { StartOrder } from "../Interfaces/StartOrder.interface";
 
-function OrderDetailsRoot() {
-  const order: any | Order = useLoaderData();
-  console.log(order);
-  const [pickedProducts, setPickedProducts] = useState(order.products);
+function OrderDetails() {
+  const toast = useToast();
+  const navigate = useNavigate();
+  const navigation = useNavigation();
+  
+  const isSubmitting = navigation.state === "submitting";
 
+//handle fetching
+const routeData = useLoaderData() as editOrderConsolidatedData | FetchError;
+    
+if ('error' in routeData) {
+  
+  return <FetchErrorComponent errors={routeData.error} />;
+}
+const { order, products } = routeData;
+// Check for errors within consolidated data
+if ('error' in order || 'error' in products) {
+  // Handle errors within consolidated data
+  const errors = [
+    'Error in products: ' + (products as FetchError).error,
+    'Error in order: ' + (order as FetchError).error
+  ];
+  return <FetchErrorComponent errors={errors} />;
+}
+
+const [orderToEdit, setOrderToEdit] = useState(order);
+const [productsforOrder, setProductsforOrder] = useState<ProductForOrder[]>(orderToEdit.products);
+
+
+//inputs handlers
+    //name
+    const {
+      value: enteredName, 
+      isValid: enteredNameIsValid,
+      hasError: nameInputHasError, 
+      valueChangeHandler: nameChangedHandler, 
+      inputBlurHandler: nameBlurHandler,
+      message: nameErrorMessage
+    } = useInput([{name: 'required'}], orderToEdit.name);
+    //comment
+    const {
+      value: enteredComment, 
+      isValid: enteredCommentIsValid,
+      hasError: commentInputHasError, 
+      valueChangeHandler: commentChangedHandler, 
+      inputBlurHandler: commentBlurHandler,
+      message: commentErrorMessage
+    } = useInput([], orderToEdit.comment);
+    //external number
+    const {
+      value: enteredExternalNo, 
+      isValid: enteredExternalNoIsValid,
+      hasError: externalNoInputHasError, 
+      valueChangeHandler: externalNoChangedHandler, 
+      inputBlurHandler: externalNoBlurHandler,
+      message: externalNoErrorMessage
+    } = useInput([], orderToEdit.externalOrderNo);
+    //req delivery date
+    const {
+      selectedDate,
+      isValid: dateIsValid,
+      hasError: dateInputHasError,
+      dateChangeHandler,
+      message: dateErrorMessage,
+    } = useDateInput([], orderToEdit.reqDeliveryDate);
+  
+    const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      dateChangeHandler(new Date(event.target.value));
+    };
+
+    const editing = false;
   const startOrderHandler = async () => {
-      try {
-        await startOrder(order._id)
-        console.log('order started')
-      } catch (error) {
-          return error
-      }
+    let data: StartOrder = {
+      orderId: orderToEdit._id
+    }
+    try {
+      await startOrder(data);
+      toast({
+        title: "Order staerted",
+        description: "All products are in production now and order is active",
+        status: "success",
+        duration: 5000,
+        position: 'top',
+        isClosable: true
+      });
+      //if editing - edit off
+      //fix dispaly of status - now active
+    } catch (error:any) {
+      toast({
+        title: "Error.",
+        description: error.message || "Something went wrong with starting your order",
+        status: "error",
+        position: 'top',
+        duration: 5000,
+        isClosable: true
+      });
+    }
   }
+  const handleSubmit = async () => {
+    
+}
 
   return (
     <>
-        <Container mt="1rem" mb="1rem" centerContent>
-        <Button
-            type="button"
-            variant="outline"
-            colorScheme="purple"
-            onClick={startOrderHandler}
-            >Start order</Button>
-      <Form method="post">
-        <Stack minW="container.sm">
-          <Input
-            id="name"
-            type="text"
-            name="name"
-            placeholder="Name"
-            variant="outline"
-            value={order.name}
-          />
-          
-        <Input
-            id="comment"
-            type="text"
-            name="comment"
-            placeholder="comment"
-            variant="outline"
-            value={order.comment}
+      <Container mt="1rem" mb="1rem" centerContent>
+        <Button onClick={startOrderHandler}>Start order</Button>
+      <Box>
+        <Form onSubmit={handleSubmit}>
+          <FormControl isInvalid={nameInputHasError} isRequired>
+            <FormLabel>
+              Name:
+            </FormLabel>
+              <Input
+                id="operationName"
+                type="text"
+                name="operationName"
+                onChange={nameChangedHandler}
+                onBlur={nameBlurHandler}
+                value={enteredName}
+                readOnly={!editing}
+                
+              />
+
+                {!nameErrorMessage? (
+                <FormHelperText>
+                enter name
+                </FormHelperText>
+                ) : (
+                <FormErrorMessage>{nameErrorMessage}</FormErrorMessage>
+                )}
+          </FormControl>
+
+    <FormControl isInvalid={commentInputHasError}>
+      <FormLabel>
+        Comment:
+      </FormLabel>
+        <Textarea
+          id="operationComment"
+          name="operationComment"
+          onChange={commentChangedHandler}
+          onBlur={commentBlurHandler}
+          value={enteredComment}
+          readOnly={!editing}
         />
-
+                {!commentInputHasError? (
+                <FormHelperText>
+                enter name
+                </FormHelperText>
+                ) : (
+                <FormErrorMessage>{commentErrorMessage}</FormErrorMessage>
+                )}      
+    </FormControl>
+    <FormControl isInvalid={commentInputHasError}>
+      <FormLabel>
+        external order no:
+      </FormLabel>
         <Input
-            id="orderNo"
-            type="text"
-            name="orderNo"
-            placeholder="orderNo"
-            variant="outline"
-            value={order.orderNo}
+          id="externalOrderNo"
+          name="externalOrderNo"
+          onChange={externalNoChangedHandler}
+          onBlur={externalNoBlurHandler}
+          value={enteredExternalNo}
+          readOnly={!editing}
         />
+                {!externalNoInputHasError? (
+                <FormHelperText>
+                enter external no if needed
+                </FormHelperText>
+                ) : (
+                <FormErrorMessage>{externalNoErrorMessage}</FormErrorMessage>
+                )}      
+    </FormControl>
+    <FormControl isInvalid={dateInputHasError}>
+      <FormLabel htmlFor="date-input">Select a required delivery date</FormLabel>
+      <Input
+        id="date-input"
+        type="date"
+        name="reqDeliveryDate"
+        value={selectedDate ? selectedDate.toISOString().substring(0, 10) : ''}
+        onChange={handleDateChange}
+        onBlur={() => {}}
+        placeholder="Select date"
+        readOnly={!editing}
+      />
+      {dateInputHasError && <FormErrorMessage>{dateErrorMessage}</FormErrorMessage>}
+    </FormControl>
+    </Form>
+    </Box>
 
-        <Input
-            type="hidden"
-            name="listOfProducts"
-            value={JSON.stringify(pickedProducts)}
-          
-          />
-
-        <div>
-            Products:
-        <ul>
-            {pickedProducts.map((product:Product) => (
-                <li key={Math.random()}>
-                    {product.name} - {product.qty}
-                </li>
-            ))}
-        </ul>
-        </div>
-
-          <Spacer />
-
-          {/* <label htmlFor="stage">Pick a product:</label>
-          <Select id="product_id" name="product_id" required>
-            {productsList.map((product:Product) => (
-              <option key={product._id} value={product._id}>
-                {product.name}
-              </option>
-            ))}
-          </Select>
-          <Input
-            id="productQty"
-            type="number"
-            name="productQty"
-            placeholder="qty"
-            variant="outline"
-            /> 
-            <Button
-            type="button"
-            onClick={addProductHandler}
-            variant="outline"
-            colorScheme="purple"
-            >Add product
-            </Button> */}
-
-          <button type="submit">
-            Save
-          </button>
-
-          <Button
-            type="button"
-            variant="outline"
-            colorScheme="purple"
-          >
-            Cancel
-          </Button>
-        </Stack>
-      </Form>
-      ZROBIC:
-      naprawić formularz (validacja itp.),
-      edycja tylko jezeli nie uruchomione,
-      dodawanie usuwanie produktów jeżeli nie uruchomione,
-
-      po uruchomieniu dodać jakieś okno gdzie jest dostepna lista operacji i można sledzić postep
-    </Container>
+      </Container>
     </>
   );
 }
 
-export default OrderDetailsRoot;
+export default OrderDetails;
 
-interface MyLoaderProps {
-    orderId: string;
-}
 
-export const orderByIdLoader = async ({params,}: {params: MyLoaderProps;}): Promise<Order> => {
-  const orderId = params.orderId;
-  const token = localStorage.getItem("token");
-  //console.log(`front probuje wbic na usera ${userId}`)
-
-  const response = await fetch("http://localhost:3000/orders/" + orderId, {
-    headers: {
-      Authorization: "Bearer "+token
-    }
-  });
-
-  const data = await response.json();
-
-  return data;
-};

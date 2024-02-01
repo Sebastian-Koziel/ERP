@@ -1,5 +1,7 @@
 import { Connection } from 'mongoose';
-import { OperationHandlerSchema } from './schemas/operation-handler.schema';
+import { OperationHandlerSchema } from './schemas/operationHandler.schema';
+
+
 
 
 export const operationsHandlersProviders = [

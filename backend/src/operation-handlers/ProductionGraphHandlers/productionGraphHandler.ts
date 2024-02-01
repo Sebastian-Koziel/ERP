@@ -2,8 +2,9 @@ import { Injectable } from "@nestjs/common/decorators";
 import { OperationHandlersService } from "../operation-handlers.service";
 import { Product } from "src/products/interfaces/product.interface";
 import { CreateOperationHandlerDto } from "../dtos/createOperationHandler.dtos";
-import { OperationHandler } from "../interfaces/operation-handler.interface";
+import { OperationHandler } from "../interfaces/operationHandler.interface";
 import { UpdateOperationHandlerDto } from "../dtos/updateOperationHandler.dtos";
+import { ProductsService } from "src/products/products.service";
 
 
 
@@ -11,145 +12,111 @@ import { UpdateOperationHandlerDto } from "../dtos/updateOperationHandler.dtos";
 export class ProductionGraphService {
 constructor(
     private readonly OperationHandlersService: OperationHandlersService,
+    private productService: ProductsService
     ){}
 
+addProductsToProduction = async (products) => {
+    // Extract product IDs from the order
+  const productIds = products.map(p => p.productId);
+  
+    // Retrieve product details
+  const productsDetails = await this.productService.findMany(productIds);
 
-async createGraphForProduct(product:Product, orderId:string){
-    console.log('jestem w module graph')
-    //keep record of last op to set relationships
-    let previousOperationHandler_id: string | null = null;
-    //for each operation
-    for(let i=0;i<product.operations.length;i++){
-        //create new operation for production
-        let OperationHandler = new CreateOperationHandlerDto ;
-        OperationHandler.name = product.operations[i].name;
-        OperationHandler.order_id = orderId;
-        OperationHandler.product_id = product._id;
+    // Combine products with their quantities
+  const productsToAdd = productsDetails.map(product => {
+    const orderProduct = products.find(p => p.productId === product._id.toString());
+    return {
+      ...product.toJSON(), 
+      qty: orderProduct?.qty || 0,
+    };
+  });
 
-        //set qty - TO DO - think over - czasami będzie w mb, m2, szt
-        //OperationHandler.qty = product.qty;
-        //find best workSpace TO DO (future)
-       // OperationHandler.stage_id = product.operations[i].stage_id;
-        //OperationHandler.workSpace_id = product.operations[i].workSpace_type;
+  productsToAdd.forEach(product => {
+    this.createOperationsTreeForProduct(product, '')
+  });
 
-        //set relationships
-        if(previousOperationHandler_id === null){
-            //if operation is first
-            OperationHandler.previousOperation_id = 'root';
-            //set it ready to be done
-            OperationHandler.avaiable = true;
-            //add operation handler to DB to get its ID
-            const savedOperationHandler = await this.OperationHandlersService.create(OperationHandler);
-            //set last operation handler id
-            previousOperationHandler_id = savedOperationHandler._id;
-            
-        }
-        else{
-            //if its not first, set previous op id
-            OperationHandler.previousOperation_id = previousOperationHandler_id;
-            //save this one and get its id
-            const savedOperationHandlerId = await this.OperationHandlersService.create(OperationHandler);
-            //go into previousOperationHandler and set next op there to this id TO DO - change to update
-            const previousOperationHandler = await this.OperationHandlersService.findOneAndChangeNextOp(previousOperationHandler_id, savedOperationHandlerId._id);
-            //set previousOperationHandler_id to this id
-            previousOperationHandler_id = savedOperationHandlerId._id;
-        }
-    }
-}
-async changeQtyInBranch(startingOperationHanlder:OperationHandler, qty:number){
-    let nodesToBeChanged = [];
-
-    nodesToBeChanged.push(startingOperationHanlder);
-
-    while(nodesToBeChanged){
-        let currentNode = nodesToBeChanged.pop();
-        
-    }
+    return {
+        statusCode: 200,
+        message: 'Products were successfully added to production.',
+      };
 }
 
+async createOperationsTreeForProduct(product, parentId:string){
+    //add children array to each operation
+    product.operations = this.addChildrenArrayToEachOperation(product.operations);
+    //find last operation
+    const finalOperation = product.operations.find((o) => o.parent_id === '');
+    //setup operation pool and push last operation
+    let opPool = [];
+    opPool.push({op:finalOperation, parentOH_id: parentId});
 
-async splitBranchForProduct(operationHandler:OperationHandler, qtyDone: number){
-    //first deal with starting operation
-    let attrs = new UpdateOperationHandlerDto;
-        attrs.qtyDone += qtyDone;
-        //update history TO DO
-        this.OperationHandlersService.update(operationHandler._id, attrs);
-    
-    let operationHandlerToBeSplitted = null;
+    while(opPool.length > 0){
+        let currentNode = opPool.pop();
+        //opration to be done
+        let operation = currentNode.op;
+        //id of parent operation handler
+        let parentOH_id = currentNode.parentOH_id;
+        //create and add to DB new operation handler with basic data
+        const newOperationHandler:any = await this.createNewOperationHandler(operation, 'order_id','orderLine_id', parentOH_id, product.qty);
+         //if it there is a parent to the current operation handler
+        if(parentOH_id !== ''){
+        //add this operation handler ID to parent previousOperations array
+            this.findOperationHandlerAndAddThisAsChild(parentOH_id, newOperationHandler._id)   
+        }
+        //if operation has children
+        if(operation.children.length > 0){
+            operation.children.forEach(child_id => {
+                const child = product.operations.find((o) => o._id === child_id);
+                //add child to the pool
+                opPool.push({op:child, parentOH_id: newOperationHandler._id })
+            });
+        }
 
-    //if its not the last op
-    if(operationHandler.nextOperation_id){   
-    operationHandlerToBeSplitted = await this.OperationHandlersService.findOne(operationHandler.nextOperation_id);
+        }
+}
+addChildrenArrayToEachOperation = (operations) => {
+    const operationsWithChildren = operations.map(op => ({ ...op, children: [] }));
+
+// create a map for quick access to the operation by its _id.
+const operationMap = new Map(operationsWithChildren.map(op => [op._id, op]));
+
+// populate the children arrays.
+operationsWithChildren.forEach(op => {
+    // If the operation has a parent_id, find the parent and add this operation to its children array.
+    if (op.parent_id) {
+        const parentOp:any = operationMap.get(op.parent_id);
+        if (parentOp) {
+            parentOp.children.push(op._id);
+        }
     }
-    //variable to help with setting avaible on first copy
-    let firstCopy = true;
-    let idOfNewParent = null;
+});
+return operationsWithChildren;
+}
 
-    while(operationHandlerToBeSplitted){
-        //create a copy of operation handler
-        let newOperationHandler = JSON.parse(JSON.stringify(operationHandlerToBeSplitted));
-        //set new values
-        newOperationHandler.qty = qtyDone;
-        newOperationHandler.nextOperation_id = '';
+findOperationHandlerAndAddThisAsChild = async (parentOperationHandler_id: string, currentOperationHandler_id: string) => {
+    return await this.OperationHandlersService.findOneAndChangeNextOp(parentOperationHandler_id, currentOperationHandler_id);
+}
 
-        if(firstCopy){
-            newOperationHandler.avaiable = true;
-            firstCopy = false;
-        }
-        //if there is no newly created parent set old branch
-        if(!idOfNewParent){
-            newOperationHandler.previousOperation_id = operationHandlerToBeSplitted.previousOperation_id;
-        }
-        else{
-            newOperationHandler.previousOperation_id = idOfNewParent;
-        }
-        //create operationhandler
-        const savedOperationHandlerId = await this.OperationHandlersService.create(newOperationHandler);
-        //set new parent id
-        idOfNewParent = savedOperationHandlerId._id;
-        }
-        //if there is next step
-        if(operationHandlerToBeSplitted.nextOperation_id !== ''){
-            operationHandlerToBeSplitted = await this.OperationHandlersService.findOne(operationHandlerToBeSplitted.nextOperation_id);
-        }
+createNewOperationHandler = async (operation, order_id: string, orderLine_id: string, parentOH_id: string, qty: number) => {
+    const newOperationHandler = new CreateOperationHandlerDto;
+    newOperationHandler.orderLine_id = orderLine_id;
+    newOperationHandler.order_id = order_id;
+    newOperationHandler.name = operation.name;
+    newOperationHandler.totalQty = qty;
+    newOperationHandler.parentOperationHandler_id = parentOH_id;
+
+    const savedOperationHandler = await this.OperationHandlersService.create(newOperationHandler);
+    return savedOperationHandler;
 }
 
 
-async moveUpOnTheSameBranch(currentOperationHandler:OperationHandler){
-    //check if operation ready to be done
-    if(!currentOperationHandler.avaiable){
-        throw new Error(`JOBDONE - operation with this id is not ready to be done`);
-    }
-    let attrs = new UpdateOperationHandlerDto;
-    attrs.avaiable = false;
-    attrs.doneAt = new Date().getTime();
-    this.OperationHandlersService.update(currentOperationHandler._id, attrs);
-
-    //if there is next op
-    if(currentOperationHandler.nextOperation_id){
-    attrs = new UpdateOperationHandlerDto;
-    attrs.avaiable = true;
-    this.OperationHandlersService.update(currentOperationHandler.nextOperation_id, attrs);
-    }
-    else{
-        //product finished TO DO
-    }
 }
 
-//function thats is starting job closing and decide the logic
-    registerJobDoneRoot(operationHandler: OperationHandler, qtySubmitted: number){
-        //double check if submitted qty is ok
-        if(qtySubmitted > 0 && (operationHandler.qty-operationHandler.qtyDone) >= qtySubmitted){
-        //check if the whole operation was done
-        if((operationHandler.qty-operationHandler.qtyDone) === qtySubmitted){
-            this.moveUpOnTheSameBranch(operationHandler);
-        }
-        else{
-            this.splitBranchForProduct(operationHandler, qtySubmitted);
-        }
-        }else{
-            //throw error incorrect qty TO DO
-        }
-    }
 
-}
+
+
+
+
+
+
+

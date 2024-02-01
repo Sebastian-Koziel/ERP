@@ -17,7 +17,6 @@ export class OrdersService {
         return this.orderModel.find().exec();
     }
 
-    
     async create(createOrderDto: CreateOrderDto): Promise<Order>{
         const createdOrder = this.orderModel.create(createOrderDto);
         return createdOrder;
@@ -30,17 +29,5 @@ export class OrdersService {
     async remove(id:string){
         const filter = {_id : id}
         return this.orderModel.deleteOne(filter);
-    }
-
-    async addProduct(addProduct: addProductDto, product: Product){
-        const order = await this.orderModel.findById(addProduct.order_id);
-        if(!order){
-            //TO DO - add proper error
-            console.log('no order with this no')
-        }
-        
-        
-        order.products.push(product);
-        order.save();
     }
 }

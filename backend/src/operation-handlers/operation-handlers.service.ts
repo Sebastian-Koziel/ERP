@@ -1,6 +1,6 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { Model } from 'mongoose';
-import { OperationHandler } from './interfaces/operation-handler.interface';
+import { OperationHandler } from './interfaces/operationHandler.interface';
 import { CreateOperationHandlerDto } from 'src/operation-handlers/dtos/createOperationHandler.dtos';
 import { Product } from 'src/products/interfaces/product.interface';
 
@@ -27,9 +27,9 @@ export class OperationHandlersService {
     }
 
     //do wymiany na update ponizej
-    async findOneAndChangeNextOp(id:string, nextOperationHandler_id: string): Promise<OperationHandler>{
-        let op = await this.operationHandler.findById(id);
-        op.nextOperation_id = nextOperationHandler_id;
+    async findOneAndChangeNextOp(parentOperationHandler_id:string, currentOperationHandler_id: string): Promise<OperationHandler>{
+        let op = await this.operationHandler.findById(parentOperationHandler_id);
+        op.childrenOperationHandlers.push(currentOperationHandler_id);
         await op.save();
         return op;
     }

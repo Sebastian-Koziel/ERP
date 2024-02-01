@@ -4,23 +4,21 @@ export class OperationHandler extends Document{
     _id: string
     order_id: string
   
-    product_id:  string
+    orderLine_id:  string
    
     name:  string
    
-    qty:  number
+    totalQty:  number
 
-    qtyDone: number
+    
   
     stage_id:  string
    
     workSpace_id:  string
    
-    nextOperation_id: string
+    parentOperationHandler_id: string
    
-    previousOperation_id: string
+    childrenOperationHandlers: string[]
     
-    avaiable: boolean
-
-    doneAt: number
+    
 };

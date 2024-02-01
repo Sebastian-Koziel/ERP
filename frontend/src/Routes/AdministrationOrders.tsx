@@ -1,10 +1,11 @@
 import OrdersListPage from "../components/administration/orders/ListPage/OrdersListPage";
 import OrdersRoot from "../components/administration/orders/Root/OrdersRoot";
-import { ordersLoader } from "../components/administration/orders/ListPage/OrdersListPage";
 
-import OrderDetailsRoot, { orderByIdLoader } from "../components/administration/orders/Details/OrderDetails";
 import { newOrderLoader } from "../components/administration/orders/utils/newOrderLoader";
 import AddNewOrder from "../components/administration/orders/new/AddOrder";
+import { fetchAllOrders } from "../components/administration/orders/utils/fetchAllOrders";
+import { editOrderLoader } from "../components/administration/orders/utils/orderDetailsLoader";
+import OrderDetails from "../components/administration/orders/Details/OrderDetails";
 
 const ordersRoutes: any = {
     path: "orders",
@@ -12,7 +13,7 @@ const ordersRoutes: any = {
     children: [
       {
         index: true,
-        loader: ordersLoader,
+        loader: fetchAllOrders,
         element: <OrdersListPage />,
       
       },
@@ -24,8 +25,8 @@ const ordersRoutes: any = {
       
       {
         path: ":orderId",
-        element: <OrderDetailsRoot />,
-        loader: orderByIdLoader, 
+        element: <OrderDetails />,
+        loader: editOrderLoader, 
       }, 
     ],
   };
