@@ -4,27 +4,27 @@ import { Stage } from "../../../productionStages/interfaces/Stage.interface";
 import { User } from "../../Interfaces/user.interface";
 import { UpdateUserStagesAccess } from "../../Interfaces/updateStagesAccess";
 import { updateUser } from "../../Utils/postUpdateOnUser";
-import { Select } from "@chakra-ui/react";
+import { Box, Button, Checkbox, FormControl, FormLabel, Select, VStack } from "@chakra-ui/react";
 import { moveIdTo0Index } from "../../Utils/utils";
 
-/* TO DO
-update local storage after submit with user so you dont have to logout for some components to change
+interface userAccesProps {
+  user: User
+  setUser:React.Dispatch<React.SetStateAction<any>>
+  stages: Stage[]
+}
 
+ const UserProductionSettings:React.FC<userAccesProps> = ({user, setUser, stages}) => {
 
-*/
-
- const UserProductionSettings = (props:any) => {
-
-  const [user, setUser] = useState<User>(props.user)
+  //const [user, setUser] = useState<User>(props.user)
   //fetched stages from DB
-  const [stages, setStages] = useState<Stage[]>([]);
-  
+  //const [stages, setStages] = useState<Stage[]>([]);
+  stages = []
   useEffect(()=>{
     const fetchData = async() => {
       try {
       const fetchedStages = await fetchAllStages()
       
-      setStages(fetchedStages);
+      //setStages(fetchedStages);
       
       }catch(err){
         return err
@@ -100,22 +100,25 @@ update local storage after submit with user so you dont have to logout for some 
   }
 
 return (
-    <div>
-      <h2>Select Stages</h2>
+    <Box>
       
-        {stages.map((stage) => (
-          <li key={stage._id}>
-            <input
-              type="checkbox"
-              id={stage._id}
-              value={stage._id}
-              checked={selectedStages.includes(stage._id)}
-              onChange={() => handleCheckboxChange(stage._id)}
-              disabled={!editing}
-            />
-            <label htmlFor={stage._id}>{stage.name}</label>
-          </li>
-        ))}
+      <FormControl>
+        <FormLabel>Select Stages</FormLabel>
+        <VStack align="flex-start">
+          {stages.map((stage) => (
+            <Box key={stage._id}>
+              <Checkbox
+                id={stage._id}
+                isChecked={selectedStages.includes(stage._id)}
+                onChange={() => handleCheckboxChange(stage._id)}
+                isDisabled={!editing}
+              >
+                {stage.name}
+              </Checkbox>
+            </Box>
+          ))}
+        </VStack>
+      </FormControl>
       
       <div>
         <h2>Select Main Stage (if you don`t select it will pick first one)</h2>
@@ -132,9 +135,14 @@ return (
           ))}
         </Select>
       </div>
-      <button onClick={editButtonHandler}>{!editing? 'Edit' : 'cancel' }</button>
-            {editing && (<button  onClick={submitFormHandler}>save</button>)}
-    </div>
+      <Button onClick={editButtonHandler}>
+        {!editing ? "Edit" : "Cancel"}
+      </Button>
+      {editing && (
+        <Button onClick={submitFormHandler} colorScheme="purple">
+          Save
+        </Button>)}
+      </Box>
   );
 
 

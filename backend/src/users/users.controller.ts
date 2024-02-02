@@ -29,6 +29,14 @@ export class UsersController {
         return this.usersService.update(body.id, body.attr);
     }
 
+    //special end point for changing access set for user - so only admin can do that
+    @Access_decorator(Access.canChangeUserAccess)
+    @UseGuards(AuthGuard, AccessGuard)
+    @Post('updateAccess')
+    updateUserAccess(@Body() body: UpdateUser) {
+        return this.usersService.update(body.id, body.attr);
+    }
+
     @Post('login')
     logIn(@Body() body: CreateUserDto) {
         return this.authService.logIn(body.login, body.password)

@@ -60,13 +60,13 @@ function UsersDetailsRoot() {
 
         <TabPanels>
           <TabPanel>
-            <UserGeneralInfo user={userToBeEdited} />
+            <UserGeneralInfo user={userToBeEdited} setUser={setUserToBeEdited} />
           </TabPanel>
           <TabPanel>
             <UserProductionSettings user={userToBeEdited} />
           </TabPanel>
           <TabPanel>
-            <UserAccess user={userToBeEdited} />
+            <UserAccess user={userToBeEdited} setUser={setUserToBeEdited}/>
           </TabPanel>
         </TabPanels>
       </Tabs>

@@ -1,8 +1,8 @@
 export enum Access {
     role,
     //users
-    usersTab_access = 'access.users.usersTab_access', 
-    usersTab_addingUser = 'access.users.usersTab_addingUser', 
+    canChangeUserAccess = 'access.administration.editUserAcces',
+    canAddEditUsers = 'access.administration.addAndEditUsers',
     
     //administration
     companySetup = 'access.administration.companySetup',
