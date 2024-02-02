@@ -1,4 +1,3 @@
-import { Form, useNavigate } from "react-router-dom";
 import {
   Flex,
   Center,
@@ -7,27 +6,37 @@ import {
   Text,
   Box,
   Spacer,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+  IconButton,
 } from "@chakra-ui/react";
 import { storageGetUser } from "../../../utils/localhostHandlers";
-import monitorIcon from '../../../assets/monitor.png';
-import './tobbar.css'
 import { useState } from "react";
-
-/* TO DO
-change drop down manu and show only views that user can access
-
-*/
+import { useNavigate } from "react-router-dom";
+import { ViewIcon } from "@chakra-ui/icons";
+import { storagelogOut } from "../../../services/auth";
 
 function TopBar() {
-
-  const views = [{path:"/client", name:'client'}, {path:"/production", name:'production'}, {path:"/administration", name:'administration'}, {path:"/canvas", name:'canvas'}];
-  const [dropDownOpen, setDropDownOpen] = useState(false); 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const views = [
+    { path: "/client", name: 'client' },
+    { path: "/production", name: 'production' },
+    { path: "/administration", name: 'administration' },
+    { path: "/canvas", name: 'canvas' }
+  ];
+  const [dropDownOpen, setDropDownOpen] = useState(false);
   const user = storageGetUser();
 
-  const dropDownLinkClickedHandler = (path:string) => {
+  const dropDownLinkClickedHandler = (path: string) => {
     setDropDownOpen(false);
-    navigate(path);  
+    navigate(path);
+  }
+
+  const logoutHandler = ()=>{
+    storagelogOut();
+    navigate("/");
   }
 
   return (
@@ -48,35 +57,32 @@ function TopBar() {
         <Spacer />
         <Center>
           <Box>
-            <>
-              <Text color='aliceblue'>Hey {user.name}</Text>
-            </>
+            <Text color='aliceblue'>Hey {user.name}</Text>
           </Box>
-          
-         <Box>
-            <div className="monitor-icon-container">
-          <img onClick={(e)=>setDropDownOpen(!dropDownOpen)} src={monitorIcon} alt="Monitor" />
-          
-          {dropDownOpen && 
-            <div className="dropdown">
-              <ul>
-                {views.map((menu) => (
-                  <li onClick={(e)=>{dropDownLinkClickedHandler(menu.path)}} className="dropdownElement" key={menu.path}>{menu.name}</li>
-                ))}
-              </ul>
-            </div>
-          }
-          </div>
-          
+          <Box>
+            <Menu autoSelect={false}>
+              {({ isOpen }) => (
+                <>
+                  <MenuButton as={IconButton} colorScheme="white" aria-label="Options" icon={<ViewIcon />} onClick={() => setDropDownOpen(!dropDownOpen)} />
+                  {isOpen && (
+                    <MenuList>
+                      {views.map((menu) => (
+                        <MenuItem key={menu.path} onClick={() => dropDownLinkClickedHandler(menu.path)}>{menu.name}</MenuItem>
+                      ))}
+                    </MenuList>
+                  )}
+                </>
+              )}
+            </Menu>
           </Box>
         </Center>
         <Center>
           <Box>
-            <Form action="/logout" method="post">
-              <Button mr="0.5rem" type="submit" color='aliceblue' colorScheme="purple" variant='outline'>
+            
+              <Button onClick={logoutHandler} mr="0.5rem" type="submit" color='aliceblue' colorScheme="purple" variant='outline'>
                 Logout
               </Button>
-            </Form>
+            
           </Box>
         </Center>
       </Flex>

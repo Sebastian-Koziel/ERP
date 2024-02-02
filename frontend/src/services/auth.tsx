@@ -1,18 +1,16 @@
 import { redirect } from "react-router-dom";
-import { storageGetToken, storageGetUser } from "../utils/localhostHandlers";
+import { storageGetToken } from "../utils/localhostHandlers";
 
-export function logOut() {
+export function storagelogOut() {
   localStorage.removeItem("token");
   localStorage.removeItem("user");
-  localStorage.removeItem("access");
-  localStorage.removeItem("expiration");
   localStorage.removeItem("lastViewedStage");
-  return redirect("/");
 }
 
 export function isLogged() {
   const token = storageGetToken();
   if (!token) {
+    console.log(`not logged`);
     return false;
   }
   return true;

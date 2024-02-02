@@ -18,15 +18,19 @@ export class CreateUserDto {
   role: string;
 
   access: {
-        
-        defaultStartPage: string
-        production: {
-            generalAccess: boolean
-            stagesAccess: string[]
-        },
-        administration: {
-            generalAccess: boolean
-            companySetup: boolean
-        }
+    defaultStartPage: string
+    production: {
+        generalAccess: boolean
+        stagesAccess: string[]
+    },
+    administration: {
+        generalAccess: boolean
+        companySetup: boolean
+        addAndEditUsers: boolean
+        editUserAcces: boolean
+    },
+    orders: {
+        canPlaceOrder: boolean
     }
+}
 }

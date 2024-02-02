@@ -15,16 +15,16 @@ constructor(
     private productService: ProductsService
     ){}
 
-addProductsToProduction = async (products) => {
+addProductsToProduction = async (orderLines) => {
     // Extract product IDs from the order
-  const productIds = products.map(p => p.productId);
+  const productIds = orderLines.map(p => p.productId);
   
     // Retrieve product details
   const productsDetails = await this.productService.findMany(productIds);
 
     // Combine products with their quantities
   const productsToAdd = productsDetails.map(product => {
-    const orderProduct = products.find(p => p.productId === product._id.toString());
+    const orderProduct = orderLines.find(p => p.productId === product._id.toString());
     return {
       ...product.toJSON(), 
       qty: orderProduct?.qty || 0,
@@ -71,9 +71,10 @@ async createOperationsTreeForProduct(product, parentId:string){
                 opPool.push({op:child, parentOH_id: newOperationHandler._id })
             });
         }
-
         }
 }
+
+//building relations between operartion - adding children array into each operation
 addChildrenArrayToEachOperation = (operations) => {
     const operationsWithChildren = operations.map(op => ({ ...op, children: [] }));
 
@@ -93,10 +94,12 @@ operationsWithChildren.forEach(op => {
 return operationsWithChildren;
 }
 
+//update child list in operation handler
 findOperationHandlerAndAddThisAsChild = async (parentOperationHandler_id: string, currentOperationHandler_id: string) => {
     return await this.OperationHandlersService.findOneAndChangeNextOp(parentOperationHandler_id, currentOperationHandler_id);
 }
 
+//adds new operation handler to DB
 createNewOperationHandler = async (operation, order_id: string, orderLine_id: string, parentOH_id: string, qty: number) => {
     const newOperationHandler = new CreateOperationHandlerDto;
     newOperationHandler.orderLine_id = orderLine_id;

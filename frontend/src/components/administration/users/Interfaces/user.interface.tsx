@@ -16,6 +16,11 @@ export interface User {
         administration: {
             generalAccess: boolean
             companySetup: boolean
+            addAndEditUsers: boolean
+            editUserAcces: boolean
+        },
+        orders: {
+            canPlaceOrder: boolean
         }
     }
     

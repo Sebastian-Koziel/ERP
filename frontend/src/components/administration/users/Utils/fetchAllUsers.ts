@@ -1,6 +1,6 @@
 import { User } from "../Interfaces/user.interface";
 
-export const usersLoader = async (): Promise<User[]> => {
+export const fetchAllUsers = async (): Promise<User[]> => {
     const token = localStorage.getItem("token");
     const response = await fetch("http://localhost:3000/auth", {
       headers: {

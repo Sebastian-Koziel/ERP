@@ -5,8 +5,6 @@ import { ChakraProvider } from "@chakra-ui/react";
 //ROUTES
 //login
 import CompanyLogin from "./components/companyLogin/CompanyLogin";
-
-
 //client
 import ClientSideRoot from "./components/clientside/ClientSideRoot";
 //administration
@@ -17,7 +15,6 @@ import { userRoutes } from "./Routes/AdministratioUsers";
 //administration - stages
 import { stagesRoutes } from "./Routes/AdministrationStages";
 //auth
-import { logOut } from "./services/auth";
 import { workspacesRoutes } from "./Routes/AdministrationWorkspaces";
 import { operationsRoutes } from "./Routes/AdministrationOperations";
 import { productsRoutes } from "./Routes/AdministrationProducts";
@@ -59,10 +56,6 @@ const router = createBrowserRouter([
   {
     path: "/canvas",
     element: <CanvasRoot />,
-  },
-  {
-    path: "/logout",
-    action: logOut,
   },
   {
     path: "/administration",

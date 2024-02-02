@@ -9,14 +9,19 @@ export interface User extends Document {
     role: String
 
     access: {
-        defaultStartPage: String
+        defaultStartPage: string
         production: {
-            generalAccess: Boolean
-            stagesAccess: String[]
+            generalAccess: boolean
+            stagesAccess: string[]
         },
         administration: {
-            generalAccess: Boolean
-            companySetup: Boolean
+            generalAccess: boolean
+            companySetup: boolean
+            addAndEditUsers: boolean
+            editUserAcces: boolean
+        },
+        orders: {
+            canPlaceOrder: boolean
         }
     }
    

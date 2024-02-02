@@ -1,9 +1,9 @@
 import UsersRoot from "../components/administration/users/Root/UsersRoot";
 import UserListPage from "../components/administration/users/ListPage/UserListPage";
 import AddNewUser, {action as addNewUser,} from "../components/administration/users/New/AddNewUser";
-
-import UsersDetailsRoot, { userByIdLoader } from "../components/administration/users/Details/Root/UserDetailRoot";
-import { usersLoader } from "../components/administration/users/Utils/fetchUsers";
+import { fetchAllUsers } from "../components/administration/users/Utils/fetchAllUsers";
+import { editUserLoader } from "../components/administration/users/Utils/userDetailsLoader";
+import UsersDetailsRoot from "../components/administration/users/Details/Root/UserDetailRoot";
 
 const userRoutes: any = {
   path: "users",
@@ -12,7 +12,7 @@ const userRoutes: any = {
     {
       index: true,
       element: <UserListPage />,
-      loader: usersLoader
+      loader: fetchAllUsers
     },
     {
       path: "new",
@@ -22,7 +22,7 @@ const userRoutes: any = {
     {
       path: ":userId",
       element: <UsersDetailsRoot />,
-      loader: userByIdLoader,
+      loader: editUserLoader,
     },
   ],
 };

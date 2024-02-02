@@ -1,18 +1,21 @@
-import { useState, FormEvent } from 'react';
-import { Navigate, redirect, useNavigate } from 'react-router-dom';
+import { useState, FormEvent, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Container, Input, Button, Heading, InputGroup, Stack, Alert, AlertIcon
 } from '@chakra-ui/react';
 import { isLogged } from '../../services/auth';
-import { User } from '../administration/users/Interfaces/user.interface';
+import { login } from './utils/login';
+import { setDataAfterLogin } from './utils/setDataAfterLogin';
+import { LoginResponse } from './Interfaces/loginResponse.interface';
+import { storageGetUser } from '../../utils/localhostHandlers';
 
-interface ErrorResponse {
-  message: string;
-}
 
 function CompanyLogin() {
+  
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
+
+ 
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -23,46 +26,28 @@ function CompanyLogin() {
     };
 
     try {
-      const response = await fetch('http://localhost:3000/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(authData),
-      });
+      const response: LoginResponse = await login(authData);
+      const user = response.user;
 
-      if (!response.ok) {
-        const errorData: ErrorResponse = await response.json();
-        setError(errorData.message);
-        return;
-      }
+      setDataAfterLogin(response);
 
-      //on success
-      const resData = await response.json();
-      const token = resData.access_token;
-      const user:User = resData.user;
-      console.log(user);
-      localStorage.setItem("token", token);
-
-      const expiration = new Date();
-      expiration.setHours(expiration.getHours() + 1);
-      localStorage.setItem("expiration", expiration.toISOString());
-
-      localStorage.setItem("access", JSON.stringify(user.access));
-
-      localStorage.setItem("user", JSON.stringify(user));
-      console.log()
       navigate(user.access.defaultStartPage);
       
-
-    } catch (err) {
-      setError('Network error');
+    } catch (err:any) {
+      setError(err.message);
     }
   };
 
+  useEffect(() => {
+    if (isLogged()) {
+      // user is already logged in, redirect to their defaultStartPage
+      const user = storageGetUser();
+      navigate(user.access.defaultStartPage);
+    }
+  }, []);
+
   return (
     <>
-      {isLogged() && <Navigate to="/administration" />}
 
       <Container>
         <Heading mt="50%" mb="1.5rem" ml="2.5rem">
@@ -108,45 +93,3 @@ function CompanyLogin() {
 
 export default CompanyLogin;
 
-
-
-/* export async function action({ request }: { request: Request }) {
-  const data = await request.formData();
-  const authData = {
-    login: data.get("login"),
-    password: data.get("password"),
-  };
-  console.log(authData)
-  const response = await fetch("http://localhost:3000/auth/login", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(authData),
-  });
-
-  if (response.status === 422 || response.status === 401) {
-    return response;
-  }
-
-  if (!response.ok) {
-    throw json({ message: "Could not authenticate user." }, { status: 500 });
-  }
-
-  const resData = await response.json();
-  const token = resData.access_token;
-  const user:User = resData.user;
-  console.log(user);
-  localStorage.setItem("token", token);
-
-  const expiration = new Date();
-  expiration.setHours(expiration.getHours() + 1);
-  localStorage.setItem("expiration", expiration.toISOString());
-
-  localStorage.setItem("access", JSON.stringify(user.access));
-
-  localStorage.setItem("user", JSON.stringify(user));
-  
-  return redirect(`${user.access.defaultStartPage}`);
-
-} */

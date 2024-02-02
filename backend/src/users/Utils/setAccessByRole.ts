@@ -1,15 +1,22 @@
 
 interface Access {
-    defaultStartPage: string;
-    production: {
-        generalAccess: boolean
-        stagesAccess: string[];
-    },
-    administration: {
-        generalAccess: boolean
-        companySetup: boolean
-    }
-  }
+    
+        defaultStartPage: string
+        production: {
+            generalAccess: boolean
+            stagesAccess: string[]
+        },
+        administration: {
+            generalAccess: boolean
+            companySetup: boolean
+            addAndEditUsers: boolean
+            editUserAcces: boolean
+        },
+        orders: {
+            canPlaceOrder: boolean
+        }
+    
+}
 
 export const setAccessByRoles = (role:string) => {
     console.log(`adding role`);
@@ -21,7 +28,12 @@ export const setAccessByRoles = (role:string) => {
         },
         administration: {
             generalAccess: false,
-            companySetup: false
+            companySetup: false,
+            addAndEditUsers: false,
+            editUserAcces: false
+        },
+        orders: {
+            canPlaceOrder: false
         }
     };
 
@@ -35,7 +47,12 @@ export const setAccessByRoles = (role:string) => {
             },
             administration: {
                 generalAccess: false,
-                companySetup: false
+                companySetup: false,
+                addAndEditUsers: false,
+                editUserAcces: false
+            },
+            orders: {
+                canPlaceOrder: false
             }
         }
 
@@ -50,7 +67,12 @@ export const setAccessByRoles = (role:string) => {
             },
             administration: {
                 generalAccess: true,
-                companySetup: true
+                companySetup: true,
+                addAndEditUsers: true,
+                editUserAcces: true
+            },
+            orders: {
+                canPlaceOrder: true
             }
         }
 
