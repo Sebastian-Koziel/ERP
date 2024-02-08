@@ -1,9 +1,0 @@
-###create
-POST http://localhost:3000/components/create
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3QgZW51bSIsInN1YiI6IjY0NTM4YzAwMDY2YzZhMjg1ZTIxNzA2YSIsImlhdCI6MTY4MzE5NjkzN30.8QS4m9NjbCLIJaEp6k5yUH8TvTFx-Yj1EDmv9iRfMTA
-Content-Type: application/json
-
-{
-    "name": "component2",
-    "operations": ["6454b138702f2bd121a548e7", "6454f371487bf5889ca18dd8", "6454f381487bf5889ca18dda"]
-}

@@ -4,6 +4,7 @@ export interface Operation extends Document {
     name : String,
     comment: String,
     workSpaceTypeId: String,
-    usedIn: string[]
+    usedIn: string[],
+    timePerPiece: number
    
 }

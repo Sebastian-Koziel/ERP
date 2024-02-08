@@ -5,9 +5,11 @@ export class CreateOperationHandlerDto {
   orderLine_id: String
   name: String
   totalQty: Number
+  avaiableQty: Number
   
   //architecture
   parentOperationHandler_id: String
+  root: boolean
   
   
 

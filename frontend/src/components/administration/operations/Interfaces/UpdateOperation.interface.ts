@@ -4,6 +4,7 @@ export interface UpdateoperationData {
         name : string,
         comment: string,
         workSpaceTypeId: string
+        timePerPiece: number
         
     }
 }

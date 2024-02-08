@@ -12,4 +12,7 @@ export class CreateOperationDto {
 
   @IsString({ each: true })
   usedIn: string[];
+
+  @IsNumber()
+  timePerPiece: number
 }

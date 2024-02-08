@@ -57,10 +57,16 @@ const handleSubmit = async (event:React.FormEvent<HTMLFormElement>) => {
   event.preventDefault();
   const formData = new FormData(event.currentTarget);
   
+const timePerPiece: number | null = formData.get("timePerUnit") as number | null;
+  if(!timePerPiece){
+    throw new Error(`error`)
+  }
+
 const newOperationData:CreateOperation = {
   name: formData.get("operationName") as string, 
   comment: formData.get("operationComment")as string,
-  workSpaceTypeId: formData.get("workspacetype")as string
+  workSpaceTypeId: formData.get("workspacetype")as string,
+  timePerPiece: timePerPiece
 };
 
   try {
@@ -116,10 +122,20 @@ const {
   message: workSpaceTypeErrorMessage
 } = useSelect(workspaceTypes,[], '');
 
+const { 
+  value: enteredTimePerUnit,
+  isValid: enteredTimePerUnitIsValid,
+  hasError: timePerUnitInputHasError, 
+  valueChangeHandler: timePerUnitChangedHandler, 
+  inputBlurHandler: timePerUnitBlurHandler,
+  message: timePerUnitErrorMessage,
+  reset: timePerUnitReset
+} = useInput([{name: 'required'}], '');
+
 //form overall validation
 let formIsValid = false;
 
-if (enteredNameIsValid && enteredCommentIsValid && enteredWorkspaceTypeIsValid) {
+if (enteredNameIsValid && enteredCommentIsValid && enteredWorkspaceTypeIsValid && enteredTimePerUnitIsValid) {
   formIsValid = true;
 }
 
@@ -189,6 +205,25 @@ if (enteredNameIsValid && enteredCommentIsValid && enteredWorkspaceTypeIsValid) 
                 </FormHelperText>
                 ) : (
                 <FormErrorMessage>{workSpaceTypeErrorMessage}</FormErrorMessage>
+                )}      
+    </FormControl>
+    <FormControl isRequired>
+    <FormLabel>Time per piece</FormLabel>
+    <Input
+            id="timePerUnit"
+            type="number"
+            name="timePerUnit"
+            onChange={timePerUnitChangedHandler}
+            onBlur={timePerUnitBlurHandler}
+            value={enteredTimePerUnit}
+            
+          />
+          {!timePerUnitInputHasError? (
+                <FormHelperText>
+                Please provide a time for one piece in seconds
+                </FormHelperText>
+                ) : (
+                <FormErrorMessage>{timePerUnitErrorMessage}</FormErrorMessage>
                 )}      
     </FormControl>
     <Button 

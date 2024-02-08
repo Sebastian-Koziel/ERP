@@ -14,9 +14,28 @@ export const OperationHandlerSchema = new mongoose.Schema({
     totalQty: {
         type: Number
     },
+    avaiableQty: {
+        type: Number,
+        default: 0
+    },
+    timePerPiece: {
+        type: Number,
+        default: 0
+    },
+    workspaceType_id: {
+        type: String
+    },
 
 
-
+    //plan
+    plannedStart: {
+        type: Date,
+        default: ''
+    },
+    plannedFinish: {
+        type: Date,
+        default: ''
+    },
     stage_id: {
         type: String,
         default: ''
@@ -26,15 +45,20 @@ export const OperationHandlerSchema = new mongoose.Schema({
         default: ''
     },
 
+    
 
-
+    //architecture
     parentOperationHandler_id: {
         type: String
     },
     childrenOperationHandlers: {
         type: Array,
         default: []
-    }    
+    },
+    root: {
+        type: Boolean,
+        default: false
+    }
     
     
 });

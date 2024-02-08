@@ -18,5 +18,8 @@ export const OperationSchema = new mongoose.Schema({
     usedIn: {
         type: Array,
         default:[]
+    },
+    timePerPiece: {
+        type: Number
     }
 });

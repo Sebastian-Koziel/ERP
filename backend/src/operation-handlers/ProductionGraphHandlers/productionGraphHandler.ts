@@ -1,10 +1,8 @@
 import { Injectable } from "@nestjs/common/decorators";
 import { OperationHandlersService } from "../operation-handlers.service";
-import { Product } from "src/products/interfaces/product.interface";
 import { CreateOperationHandlerDto } from "../dtos/createOperationHandler.dtos";
-import { OperationHandler } from "../interfaces/operationHandler.interface";
-import { UpdateOperationHandlerDto } from "../dtos/updateOperationHandler.dtos";
 import { ProductsService } from "src/products/products.service";
+
 
 
 
@@ -12,7 +10,7 @@ import { ProductsService } from "src/products/products.service";
 export class ProductionGraphService {
 constructor(
     private readonly OperationHandlersService: OperationHandlersService,
-    private productService: ProductsService
+    private productService: ProductsService,
     ){}
 
 addProductsToProduction = async (orderLines) => {
@@ -107,6 +105,12 @@ createNewOperationHandler = async (operation, order_id: string, orderLine_id: st
     newOperationHandler.name = operation.name;
     newOperationHandler.totalQty = qty;
     newOperationHandler.parentOperationHandler_id = parentOH_id;
+
+    //if there are no children - first step - make it avaiable for production
+    if(operation.children.length <= 0){
+      newOperationHandler.avaiableQty = qty;
+      newOperationHandler.root = true;
+    }
 
     const savedOperationHandler = await this.OperationHandlersService.create(newOperationHandler);
     return savedOperationHandler;

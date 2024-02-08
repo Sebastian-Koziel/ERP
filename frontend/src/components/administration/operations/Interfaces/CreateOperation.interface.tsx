@@ -1,6 +1,6 @@
 export interface CreateOperation {
-    name : String,
-    comment: String,
-    workSpaceTypeId: String
-
+    name : string
+    comment: string
+    workSpaceTypeId: string
+    timePerPiece: number
 }
