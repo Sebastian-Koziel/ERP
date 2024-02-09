@@ -2,6 +2,8 @@ import { Injectable } from "@nestjs/common/decorators";
 import { OperationHandlersService } from "../operation-handlers.service";
 import { CreateOperationHandlerDto } from "../dtos/createOperationHandler.dtos";
 import { ProductsService } from "src/products/products.service";
+import { OperationsService } from "src/operations/operations.service";
+import { Operation } from "src/operations/interfaces/operation.interface";
 
 
 
@@ -9,8 +11,9 @@ import { ProductsService } from "src/products/products.service";
 @Injectable()
 export class ProductionGraphService {
 constructor(
-    private readonly OperationHandlersService: OperationHandlersService,
+    private OperationHandlersService: OperationHandlersService,
     private productService: ProductsService,
+    private operationService: OperationsService
     ){}
 
 addProductsToProduction = async (orderLines) => {
@@ -99,12 +102,16 @@ findOperationHandlerAndAddThisAsChild = async (parentOperationHandler_id: string
 
 //adds new operation handler to DB
 createNewOperationHandler = async (operation, order_id: string, orderLine_id: string, parentOH_id: string, qty: number) => {
+    const baseOperation: Operation = await this.operationService.findOne(operation.operation_id);
+
     const newOperationHandler = new CreateOperationHandlerDto;
     newOperationHandler.orderLine_id = orderLine_id;
     newOperationHandler.order_id = order_id;
     newOperationHandler.name = operation.name;
     newOperationHandler.totalQty = qty;
     newOperationHandler.parentOperationHandler_id = parentOH_id;
+    newOperationHandler.timePerPiece = baseOperation.timePerPiece;
+    newOperationHandler.workspaceType_id = baseOperation.workSpaceTypeId
 
     //if there are no children - first step - make it avaiable for production
     if(operation.children.length <= 0){
@@ -121,9 +128,6 @@ createNewOperationHandler = async (operation, order_id: string, orderLine_id: st
 
 
 
-
-
-
-
-
-
+export const getObjectById = (array: any[], id: any) => {
+  return array.find(item => item._id === id);
+}

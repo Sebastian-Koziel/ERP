@@ -6,7 +6,12 @@ export class CreateOperationHandlerDto {
   name: String
   totalQty: Number
   avaiableQty: Number
+
+  workspaceType_id: string
+  timePerPiece: number
   
+
+
   //architecture
   parentOperationHandler_id: String
   root: boolean
@@ -14,3 +19,7 @@ export class CreateOperationHandlerDto {
   
 
 }
+
+
+
+

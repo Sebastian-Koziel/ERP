@@ -9,7 +9,7 @@ export class OperationHandler extends Document{
     totalQty:  number
     avaiableQty: number
     workspaceType_id: string
-    timePerPiece: Number
+    timePerPiece: number
   
     
     //plan

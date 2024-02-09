@@ -9,6 +9,7 @@ import { UsersModule } from 'src/users/users.module';
 @Module({
   imports: [DatabaseModule, UsersModule],
   controllers: [OperationsController],
-  providers: [OperationsService, ...operationsProviders, AuthService]
+  providers: [OperationsService, ...operationsProviders, AuthService],
+  exports: [OperationsService]
 })
 export class OperationsModule {}

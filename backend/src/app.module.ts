@@ -9,11 +9,12 @@ import { OrdersModule } from './orders/orders.module';
 import { OperationHandlersModule } from './operation-handlers/operation-handlers.module';
 import { WorkspacesModule } from './workspaces/workspaces.module';
 import { WorkspaceTypesModule } from './workspace-types/workspace-types.module';
+import { PlanningModule } from './planning/planning.module';
 
 
 
 @Module({
-  imports: [UsersModule, StagesModule, OperationsModule, ProductsModule, OrdersModule, OperationHandlersModule, WorkspacesModule, WorkspaceTypesModule],
+  imports: [UsersModule, StagesModule, OperationsModule, PlanningModule, ProductsModule, OrdersModule, OperationHandlersModule, WorkspacesModule, WorkspaceTypesModule],
   controllers: [AppController],
   providers: [AppService],
 })

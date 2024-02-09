@@ -44,15 +44,6 @@ export const EditOperationForm: React.FC<AddOperationFormProps> = ({operations, 
         message: nameErrorMessage,
       } = useInput([], operationToEdit.name);
     
-      const { 
-        value: enteredTimePerUnit,
-        isValid: enteredTimePerUnitIsValid,
-        hasError: timePerUnitInputHasError, 
-        valueChangeHandler: timePerUnitChangedHandler, 
-        inputBlurHandler: timePerUnitBlurHandler,
-        message: timePerUnitErrorMessage,
-      } = useInput([{name: 'required'}], operationToEdit.timePerUnit);
-    
       const {
         value: enteredParent, 
         isValid: enteredParentIsValid,
@@ -66,7 +57,7 @@ export const EditOperationForm: React.FC<AddOperationFormProps> = ({operations, 
       //form validation
   let formIsValid = false;
 
-  if (enteredOperationIsValid && enteredTimePerUnitIsValid && enteredParentIsValid && enteredNameIsValid) {
+  if (enteredOperationIsValid && enteredParentIsValid && enteredNameIsValid) {
     formIsValid = true;
   }
 
@@ -76,7 +67,7 @@ export const EditOperationForm: React.FC<AddOperationFormProps> = ({operations, 
         _id: operationToEdit._id,
         name: enteredName,
          operation_id: enteredOperation,
-        timePerUnit: enteredTimePerUnit,
+        timePerUnit: getObjectById(operations, enteredOperation).timePerPiece,
         parent_id: enteredParent,
         root: false
     };
@@ -133,24 +124,6 @@ export const EditOperationForm: React.FC<AddOperationFormProps> = ({operations, 
                 )}
        
       </FormControl>
-    <FormControl>
-    <FormLabel>Time per tick</FormLabel>
-    <Input
-            id="timePerUnit"
-            type="number"
-            name="timePerUnit"
-            onChange={timePerUnitChangedHandler}
-            onBlur={timePerUnitBlurHandler}
-            value={enteredTimePerUnit}
-          />
-          {!timePerUnitInputHasError? (
-                <FormHelperText>
-                Please provide a time for tick in seconds
-                </FormHelperText>
-                ) : (
-                <FormErrorMessage>{timePerUnitErrorMessage}</FormErrorMessage>
-                )}      
-    </FormControl>
     <FormControl>
         <FormLabel>Pick parent for this operation</FormLabel>
           <Select

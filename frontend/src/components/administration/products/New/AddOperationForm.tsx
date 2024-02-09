@@ -3,7 +3,7 @@ import { Form } from 'react-router-dom';
 import { useSelect } from '../../../../hooks/form/use-select';
 import { useInput } from '../../../../hooks/form/use-input';
 import { ProductOperation } from '../Interfaces/ProductOperation';
-import { generateTimestampId } from '../../../../utils/utils';
+import { generateTimestampId, getObjectById } from '../../../../utils/utils';
 import { Operation } from '../../operations/Interfaces/Operations.interface';
 
 interface AddOperationFormProps {
@@ -36,16 +36,6 @@ export const AddOperationForm: React.FC<AddOperationFormProps> = ({operations, p
         reset: nameReset
       } = useInput([], '');
     
-      const { 
-        value: enteredTimePerUnit,
-        isValid: enteredTimePerUnitIsValid,
-        hasError: timePerUnitInputHasError, 
-        valueChangeHandler: timePerUnitChangedHandler, 
-        inputBlurHandler: timePerUnitBlurHandler,
-        message: timePerUnitErrorMessage,
-        reset: timePerUnitReset
-      } = useInput([{name: 'required'}], '');
-    
       const {
         value: enteredParent, 
         isValid: enteredParentIsValid,
@@ -60,7 +50,7 @@ export const AddOperationForm: React.FC<AddOperationFormProps> = ({operations, p
       //form validation
   let formIsValid = false;
 
-  if (enteredOperationIsValid && enteredTimePerUnitIsValid && enteredParentIsValid && enteredNameIsValid) {
+  if (enteredOperationIsValid && enteredParentIsValid && enteredNameIsValid) {
     formIsValid = true;
   }
 
@@ -70,7 +60,7 @@ export const AddOperationForm: React.FC<AddOperationFormProps> = ({operations, p
       _id: generateTimestampId(),
       name: enteredName,
       operation_id: enteredOperation,
-      timePerUnit: enteredTimePerUnit,
+      timePerUnit: getObjectById(operations, enteredOperation).timePerPiece,
       parent_id: enteredParent,
       root: false
     };
@@ -78,8 +68,6 @@ export const AddOperationForm: React.FC<AddOperationFormProps> = ({operations, p
     parentReset();
     nameReset();
     operationReset();
-    timePerUnitReset();
-
     addOperation(operationData);
   };
 
@@ -129,25 +117,6 @@ export const AddOperationForm: React.FC<AddOperationFormProps> = ({operations, p
                 )}
        
       </FormControl>
-    <FormControl isRequired>
-    <FormLabel>Time per tick</FormLabel>
-    <Input
-            id="timePerUnit"
-            type="number"
-            name="timePerUnit"
-            onChange={timePerUnitChangedHandler}
-            onBlur={timePerUnitBlurHandler}
-            value={enteredTimePerUnit}
-            
-          />
-          {!timePerUnitInputHasError? (
-                <FormHelperText>
-                Please provide a time for tick in seconds
-                </FormHelperText>
-                ) : (
-                <FormErrorMessage>{timePerUnitErrorMessage}</FormErrorMessage>
-                )}      
-    </FormControl>
     <FormControl>
         <FormLabel>Pick parent for this operation</FormLabel>
           <Select

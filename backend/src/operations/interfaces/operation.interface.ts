@@ -1,9 +1,9 @@
 import { Document } from "mongoose";
 
 export interface Operation extends Document {
-    name : String,
-    comment: String,
-    workSpaceTypeId: String,
+    name : string,
+    comment: string,
+    workSpaceTypeId: string,
     usedIn: string[],
     timePerPiece: number
    
