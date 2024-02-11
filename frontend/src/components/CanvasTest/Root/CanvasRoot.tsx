@@ -6,6 +6,10 @@ import TopBar from "../../administration/topbar/TopBar";
 
 function CanvasRoot() {
 
+
+console.log(Date.now())
+
+
 //stages states
 
   return (

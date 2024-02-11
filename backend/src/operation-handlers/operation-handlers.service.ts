@@ -26,6 +26,11 @@ export class OperationHandlersService {
         return await this.operationHandler.findById(id);
     }
 
+    async findMany(ids: string[]): Promise<OperationHandler[]> {
+        const promises = ids.map(id => this.operationHandler.findById(id));
+        return Promise.all(promises);
+    }
+
     //do wymiany na update ponizej
     async findOneAndChangeNextOp(parentOperationHandler_id:string, currentOperationHandler_id: string): Promise<OperationHandler>{
         let op = await this.operationHandler.findById(parentOperationHandler_id);

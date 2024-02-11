@@ -29,12 +29,12 @@ export const OperationHandlerSchema = new mongoose.Schema({
 
     //plan
     plannedStart: {
-        type: Date,
-        default: ''
+        type: Number,
+        default: null
     },
     plannedFinish: {
-        type: Date,
-        default: ''
+        type: Number,
+        default: null
     },
     stage_id: {
         type: String,
@@ -43,6 +43,10 @@ export const OperationHandlerSchema = new mongoose.Schema({
     workSpace_id: {
         type: String,
         default: ''
+    },
+    calculated: {
+        type: Boolean,
+        default: false
     },
 
     

@@ -2,8 +2,6 @@ import { Injectable, Inject } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { Order } from './interfaces/order.interface';
 import { CreateOrderDto } from './dtos/createNewOrder.dtos';
-import { addProductDto } from './dtos/addProduct.dtos';
-import { Product } from 'src/products/interfaces/product.interface';
 
 
 @Injectable()

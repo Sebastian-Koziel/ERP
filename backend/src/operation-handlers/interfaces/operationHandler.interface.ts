@@ -13,10 +13,11 @@ export class OperationHandler extends Document{
   
     
     //plan
-    plannedStart: Date
-    plannedFinish: Date
+    plannedStart: number | null
+    plannedFinish: number | null
     stage_id:  string
     workSpace_id:  string
+    calculated: boolean
 
     //architecture
     parentOperationHandler_id: string

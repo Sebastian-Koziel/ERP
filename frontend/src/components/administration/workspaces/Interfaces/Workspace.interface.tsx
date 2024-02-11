@@ -5,5 +5,8 @@ export interface Workspace {
     
     stage_id: string
     workspaceType_id: string
+
+    //plan
+    avaiableForJobAt: Date | null
 }
 

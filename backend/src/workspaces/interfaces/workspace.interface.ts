@@ -6,4 +6,7 @@ export interface Workspace extends Document {
     
     stage_id: string
     workspaceType_id: string
+
+    //plan
+    avaiableForJobAt: number
 }

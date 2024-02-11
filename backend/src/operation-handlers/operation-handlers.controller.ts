@@ -3,17 +3,12 @@ import { AuthGuard } from '../auth/auth.guard';
 import { OperationHandlersService } from './operation-handlers.service';
 import { CreateOperationHandlerDto } from 'src/operation-handlers/dtos/createOperationHandler.dtos';
 import { OperationHandler } from './interfaces/operationHandler.interface';
-import { ProductionGraphService } from './ProductionGraphHandlers/productionGraphHandler';
 
-
-
- 
 
 @Controller('operation-handlers')
 export class OperationHandlersController {
 constructor(
     private operationHandlerService: OperationHandlersService,
-    private productionGraphHandler: ProductionGraphService,
 ){}
 
 @UseGuards(AuthGuard)

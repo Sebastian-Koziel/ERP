@@ -2,19 +2,17 @@ import { Body, Controller, Post, Get, Param, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '../auth/auth.guard';
 import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dtos/createNewOrder.dtos';
-import { Order } from './interfaces/order.interface'; 
-import { addProductDto } from './dtos/addProduct.dtos';
-import { ProductsService } from 'src/products/products.service';
-import { ProductionGraphService } from 'src/operation-handlers/ProductionGraphHandlers/productionGraphHandler';
+import { Order } from './interfaces/order.interface';
 import { StartOrderDto } from './dtos/startOrder.dtos';
+import { StartOrderService } from './services/startOrder.service';
+
 
 
 @Controller('orders')
 export class OrdersController {
     constructor(
         private orderService: OrdersService,
-        private productService: ProductsService,
-        private productionGraphHandler: ProductionGraphService 
+        private startOrderService: StartOrderService, 
     ){}
 
     @UseGuards(AuthGuard)
@@ -38,9 +36,7 @@ export class OrdersController {
     @UseGuards(AuthGuard)
     @Post('start')
     async startOrder(@Body() body: StartOrderDto) {
-        const orderToStart:Order = await this.orderService.findOne(body.orderId);
-        let productsToBeMapped = JSON.parse(JSON.stringify(orderToStart.products));
-        return this.productionGraphHandler.addProductsToProduction(productsToBeMapped)
+        return this.startOrderService.startOrder(body.orderId);
     }
 }
 

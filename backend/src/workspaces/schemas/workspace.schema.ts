@@ -17,6 +17,12 @@ export const WorkspaceSchema = new mongoose.Schema({
     workspaceType_id: {
         type: String,
         require: [true, "Please provide a type for a new workspace"],
+    },
+
+    //plan
+    avaiableForJobAt: {
+        type: Number,
+        default: null
     }
 
 })

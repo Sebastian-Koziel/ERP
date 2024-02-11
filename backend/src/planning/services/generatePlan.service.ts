@@ -12,12 +12,12 @@ import { WorkspacesService } from "src/workspaces/workspaces.service";
 @Injectable()
 export class GenerateProductionPlan {
 constructor(
-    private operationHandlersService: OperationHandlersService,
-    private workSpacesService: WorkspacesService
+    
+    
     ){}
 
 generatePlan = async () => {
-    const allOperationHandlers = await this.operationHandlersService.findAll();
+    //const allOperationHandlers = await this.operationHandlersService.findAll();
     //const allWorkSpaces = await this.workSpacesService.findAll();
 
     //find all roots and push to pool
