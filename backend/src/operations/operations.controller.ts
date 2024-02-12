@@ -6,7 +6,6 @@ import { Access } from '../auth/access.enum';
 import { CreateOperationDto } from './dtos/create-operation.dtos';
 import { OperationsService } from './operations.service';
 import { Operation } from './interfaces/operation.interface';
-import { UpdateOperationHandlerDto } from 'src/operation-handlers/dtos/updateOperationHandler.dtos';
 import { UpdateOperationData } from './interfaces/updateOperation.interface';
 
 

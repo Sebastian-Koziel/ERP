@@ -7,13 +7,14 @@ import { ProductsModule } from 'src/products/products.module';
 import { OperationHandlersModule } from 'src/operation-handlers/operation-handlers.module';
 import { OperationsModule } from 'src/operations/operations.module';
 import { StartOrderService } from './services/startOrder.service';
+import { PlanningModule } from 'src/planning/planning.module';
 
 
 
 
 
 @Module({
-  imports: [DatabaseModule, ProductsModule, OperationHandlersModule, OperationsModule],
+  imports: [DatabaseModule, ProductsModule, OperationHandlersModule, OperationsModule, PlanningModule],
   controllers: [OrdersController],
   providers: [OrdersService, ...ordersProviders, StartOrderService]
 })

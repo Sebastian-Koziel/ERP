@@ -17,6 +17,7 @@ constructor(
     ){}
 
     async createOperationsTreeForProduct(product, parentId:string){
+        console.log(`creating operation handlers`)
         let createdOperationHandlers = []
         //add children array to each operation
         product.operations = this.addChildrenArrayToEachOperation(product.operations);
@@ -34,10 +35,11 @@ constructor(
             let parentOH_id = currentNode.parentOH_id;
             //create and add to DB new operation handler with basic data
             const newOperationHandler:any = await this.createNewOperationHandler(operation, 'order_id','orderLine_id', parentOH_id, product.qty);
+            createdOperationHandlers.push(newOperationHandler._id.toString());
              //if it there is a parent to the current operation handler
             if(parentOH_id !== ''){
             //add this operation handler ID to parent previousOperations array
-                this.findOperationHandlerAndAddThisAsChild(parentOH_id, newOperationHandler._id)   
+                await this.findOperationHandlerAndAddThisAsChild(parentOH_id, newOperationHandler._id)   
             }
             //if operation has children
             if(operation.children.length > 0){

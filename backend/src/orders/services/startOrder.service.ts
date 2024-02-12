@@ -3,6 +3,8 @@ import { Order } from "../interfaces/order.interface";
 import { OrdersService } from "../orders.service";
 import { ProductsService } from "src/products/products.service";
 import { createOperationHandlersForProductService } from "src/operation-handlers/services/createOperationHandlersForProduct.service";
+import { AddOperationsToPlan } from "src/planning/services/addOperationsToPlan.service";
+import { OperationHandlersService } from "src/operation-handlers/operation-handlers.service";
 
 
 @Injectable()
@@ -10,7 +12,9 @@ export class StartOrderService {
     constructor(
         private orderService: OrdersService,
         private productService: ProductsService,
-        private createOperationHandlersForProductService: createOperationHandlersForProductService
+        private createOperationHandlersForProductService: createOperationHandlersForProductService,
+        private operationHandlersService: OperationHandlersService,
+        private AddOperationsToPlanService: AddOperationsToPlan
         ){}
 
     startOrder = async (orderId: string) => {
@@ -35,9 +39,10 @@ export class StartOrderService {
         //for all products
         const promises = productsToAdd.map(async product => {
         //create operation handlers    
-        const newOperationHandlers = await this.createOperationHandlersForProductService.createOperationsTreeForProduct(product, '');
+        const newOperationHandlersIds = await this.createOperationHandlersForProductService.createOperationsTreeForProduct(product, '');
         //and add them to the plan
-
+        this.AddOperationsToPlanService.addOperationHandlersToPlan(newOperationHandlersIds);
+        
         });
 
         await Promise.all(promises);

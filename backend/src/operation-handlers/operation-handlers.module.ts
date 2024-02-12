@@ -6,6 +6,7 @@ import { DatabaseModule } from 'src/database/database.module';
 import { ProductsModule } from 'src/products/products.module';
 import { OperationsModule } from 'src/operations/operations.module';
 import { createOperationHandlersForProductService } from './services/createOperationHandlersForProduct.service';
+import { PlanningModule } from 'src/planning/planning.module';
 
 
 

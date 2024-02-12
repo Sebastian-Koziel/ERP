@@ -2,7 +2,6 @@ import { Injectable, Inject } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { OperationHandler } from './interfaces/operationHandler.interface';
 import { CreateOperationHandlerDto } from 'src/operation-handlers/dtos/createOperationHandler.dtos';
-import { Product } from 'src/products/interfaces/product.interface';
 
 @Injectable()
 export class OperationHandlersService {
@@ -27,14 +26,13 @@ export class OperationHandlersService {
     }
 
     async findMany(ids: string[]): Promise<OperationHandler[]> {
-        const promises = ids.map(id => this.operationHandler.findById(id));
-        return Promise.all(promises);
+        return await this.operationHandler.find({'_id': { $in: ids}})
     }
 
     //do wymiany na update ponizej
     async findOneAndChangeNextOp(parentOperationHandler_id:string, currentOperationHandler_id: string): Promise<OperationHandler>{
         let op = await this.operationHandler.findById(parentOperationHandler_id);
-        op.childrenOperationHandlers.push(currentOperationHandler_id);
+        op.childrenOperationHandlers.push(currentOperationHandler_id.toString());
         await op.save();
         return op;
     }

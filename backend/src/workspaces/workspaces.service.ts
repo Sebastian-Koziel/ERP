@@ -9,7 +9,12 @@ export class WorkspacesService {
 
 //get all
     async findAll(): Promise<Workspace[]> {
-        return await this.workspaceModel.find();
+        let workspaces = await this.workspaceModel.find();
+        return workspaces.map(workspace => ({
+            ...workspace.toJSON(),
+            _id: workspace._id.toString()
+        })) as Workspace[];
+        
     }
 
 //get one by ID

@@ -10,6 +10,7 @@ import { UsersModule } from 'src/users/users.module';
 @Module({
   imports: [DatabaseModule, UsersModule],
   controllers: [WorkspacesController],
-  providers: [WorkspacesService, ...workspacesProviders, AuthService]
+  providers: [WorkspacesService, ...workspacesProviders, AuthService],
+  exports: [WorkspacesService]
 })
 export class WorkspacesModule {}

@@ -13,47 +13,57 @@ import { WorkspacesService } from "src/workspaces/workspaces.service";
 export class AddOperationsToPlan {
 constructor(
     private operationHandlersService: OperationHandlersService,
-    private workspaceService: WorkspacesService,
-    private workspaces: Workspace[],
-    private operationHandlers: OperationHandler[]
+    private workspaceService: WorkspacesService
     ){}
 
 addOperationHandlersToPlan = async (operarationHandlersIds: string[]) => {
+    console.log(`adding to the plan`)
     //retrive Ohandlers
-    this.operationHandlers = await this.operationHandlersService.findMany(operarationHandlersIds);
+    const allOperationHandlers: OperationHandler[] = JSON.parse(JSON.stringify(await this.operationHandlersService.findMany(operarationHandlersIds)));
+    
+    const operationHandlers: OperationHandler[] = allOperationHandlers.filter(obj => operarationHandlersIds.includes(obj._id));
+
+    console.log(operationHandlers);    
     //retrive workspaces state
-    this.workspaces = await this.workspaceService.findAll();
+    const workspaces = await this.workspaceService.findAll();
 
     
     const allHandlersMap = new Map<string, OperationHandler>();
-    this.operationHandlers.forEach(operation => allHandlersMap.set(operation._id, operation));
+    operationHandlers.forEach(operation => allHandlersMap.set(operation._id, operation));
+
+    this.traverseOperations(operationHandlers, allHandlersMap, workspaces);
+
+    
+    console.log(allOperationHandlers);
 
 }
 
-traverseOperations = (operationsHandlers: OperationHandler[], allHandlersMap: Map<string, OperationHandler>) => {
+traverseOperations = (operationsHandlers: OperationHandler[], allHandlersMap: Map<string, OperationHandler>, workspaces:Workspace[]) => {
     operationsHandlers.forEach(operation => {
+        console.log(`op: ${operation.name}`);
         if (operation.childrenOperationHandlers && operation.childrenOperationHandlers.length > 0) {
             const childrenHandlers = operation.childrenOperationHandlers.map(id => allHandlersMap.get(id)).filter(Boolean) as OperationHandler[];
             // If the operation has children, check their completion status
             const childrenCalculated = childrenHandlers.every(child => child.calculated);
             if (!childrenCalculated) {
-                // If children are not completed, switch to them
-                this.traverseOperations(childrenHandlers, allHandlersMap);
+                console.log(`kids but not calculated`)
+                this.traverseOperations(childrenHandlers, allHandlersMap, workspaces);
             }
             else{
-                this.setUpTimesInOHandler(operation, childrenHandlers);
+                this.setUpTimesInOHandler(operation, childrenHandlers, workspaces);
             }
         } else {
-            // If it's a leaf operation, perform it
-            this.setUpTimesInOHandler(operation, null);
+            console.log(`no kids`)
+            this.setUpTimesInOHandler(operation, null, workspaces);
         }
     });
 }
 
-setUpTimesInOHandler = (oHandler: OperationHandler, children: OperationHandler[] | null) => {
+setUpTimesInOHandler = (oHandler: OperationHandler, children: OperationHandler[] | null, workspaces: Workspace[]) => {
+    console.log(`working on: ${oHandler.name}`)
     let times: number[] = []
     //pick a workspace
-    const bestWorkspace = this.findWorkspaceOfTypeAvaiableSoonest(this.workspaces, oHandler.workspaceType_id);
+    const bestWorkspace = this.findWorkspaceOfTypeAvaiableSoonest(workspaces, oHandler.workspaceType_id);
     times.push(bestWorkspace.avaiableForJobAt);
     //add times from children
     if(children){
@@ -61,6 +71,7 @@ setUpTimesInOHandler = (oHandler: OperationHandler, children: OperationHandler[]
             times.push(child.plannedFinish);
         })
     }
+    console.log(times)
     //find the soonest we can start
     let timeToStart: number = Math.max(...times);
     //calculate duration
@@ -68,9 +79,11 @@ setUpTimesInOHandler = (oHandler: OperationHandler, children: OperationHandler[]
     //set times
     oHandler.plannedStart = timeToStart;
     oHandler.plannedFinish = timeToStart + duration;
+    bestWorkspace.avaiableForJobAt = timeToStart + duration;
     //change as calculated
     oHandler.calculated = true;
-
+    oHandler.workSpace_id = bestWorkspace._id;
+    oHandler.stage_id = bestWorkspace._id;
 }
 
 
@@ -79,10 +92,11 @@ findWorkspaceOfTypeAvaiableSoonest = (workspaces: Workspace[], type: string) => 
     workspaces = workspaces.filter(obj => obj.workspaceType_id === type);
     const now = Date.now();
     //if avaiable null - set avaiable now
-    workspaces.map(workspace => ({
-        ...workspace,
-        avaiableForJobAt: workspace.avaiableForJobAt === null ? now : workspace.avaiableForJobAt
-    }));
+    workspaces.forEach(workspace => {
+        if (workspace.avaiableForJobAt === null) {
+            workspace.avaiableForJobAt = now;
+        }
+    });
     //sort
     workspaces.sort((a, b) => a.avaiableForJobAt - b.avaiableForJobAt);
     //return first

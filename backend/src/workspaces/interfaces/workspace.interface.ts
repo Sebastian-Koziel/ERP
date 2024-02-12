@@ -1,6 +1,7 @@
 import { Document } from "mongoose";
 
 export interface Workspace extends Document {
+    _id: string
     name: string
     comment:  string
     
