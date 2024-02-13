@@ -1,5 +1,6 @@
-import ProductionListPage, { productionLoader } from "../components/administration/Production/ListPage/ProductionListPage";
+import ProductionListPage from "../components/administration/Production/ListPage/ProductionListPage";
 import ProductionRoot from "../components/administration/Production/Root/ProductionRoot";
+import { fetchAllOperationHandlers } from "../components/administration/Production/Utils/fectchAllOperationHandlers";
 
 
 const productionRoutes = {
@@ -9,28 +10,9 @@ const productionRoutes = {
     {
       index: true,
       element: <ProductionListPage />,
-      loader: productionLoader,
+      loader: fetchAllOperationHandlers,
     },
-    /* {
-      path: "new",
-      element: <AddNewStage />,
-      action: addNewStage,
-    },
-    {
-      path: ":stageId",
-      id: "stagesLoader",
-      loader: singleStagesLoader,
-      children: [
-        {
-          path: "",
-          element: <SingleStagePage />,
-        },
-        {
-          path: "edit",
-          element: <EditStage />,
-        },
-      ],
-    }, */
+    
   ],
 };
 

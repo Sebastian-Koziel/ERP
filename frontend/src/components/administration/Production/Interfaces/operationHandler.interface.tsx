@@ -4,22 +4,23 @@ export interface OperationHandler {
 
     _id: string
     order_id: string
-  
-    product_id:  string
-   
+    orderLine_id:  string
     name:  string
-   
-    qty:  number
+    totalQty:  number
+    avaiableQty: number
+    workspaceType_id: string
+    timePerPiece: number
   
-    stage_id:  string
-   
-    workSpace_id:  string
-   
-    nextOperation_id: string
-   
-    previousOperation_id: string
     
-    avaiable: boolean
+    //plan
+    plannedStart: number | null
+    plannedFinish: number | null
+    stage_id:  string
+    workSpace_id:  string
+    calculated: boolean
 
-    doneAt: number
+    //architecture
+    parentOperationHandler_id: string
+    childrenOperationHandlers: string[]
+    root: Boolean
 };

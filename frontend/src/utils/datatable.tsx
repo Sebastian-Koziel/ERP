@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import moment from 'moment';
 import {
   Table,
   Thead,
@@ -13,11 +14,19 @@ import {
 } from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
 
+//** USAGE: */
+//** date if you want to display a raw string date into formated */
+//* {header: "plannedStart", accessor: "plannedStart", date:true} */
+
+//** if you got ID of, for example stage or operation and you want to display name of it or any other key: */
+//** { header: "type", accessor: "workspaceType_id", byId: true, data: workspaceTypes, key: "name" }, */
+
 interface Column {
   accessor: string;
   header: string;
   edit?: boolean;
   byId?: boolean;
+  date?: boolean;
   data?: { _id: string; [key: string]: string }[];
   key?: string
 }
@@ -44,6 +53,9 @@ const DataTable: React.FC<DataTableProps> = ({ columns, data} ) => {
     if (column.byId && column.data && column.key) {
       const matchingObject = column.data.find(obj => obj._id === row[column.accessor]);
       return matchingObject ? matchingObject[column.key] : '';
+    }
+    if (column.date){
+      return moment(row[column.accessor]).format('MM-DD HH:mm:ss')
     }
     return row[column.accessor];
   };

@@ -1,26 +1,36 @@
 import { useLoaderData } from "react-router-dom";
 import { OperationHandler } from "../Interfaces/operationHandler.interface";
-import ProductionList from "../List/ProductionList";
+import DataTable from "../../../../utils/datatable";
+import FetchErrorComponent from "../../../errorHandling/FetchErrorComponent";
+import { FetchError } from "../../workspaces/Utils/singleWorkspaceLoader";
 
 
 function ProductionListPage() {
-  const operations = useLoaderData();
-console.log(operations)
-  return <ProductionList operations={operations} />;
-}
+   //handle fetching
+   const routeData = useLoaderData() as OperationHandler[] | FetchError;
+  
+   if('error' in routeData){
+     return (
+       <FetchErrorComponent errors={routeData.error}/>
+     );
+   }
+ const operations = routeData;
+ 
+   const columnsSetup = [
+     {header: "name", accessor: "name"},
+     {header: "totalQty", accessor: "totalQty"},
+     {header: "plannedStart", accessor: "plannedStart", date:true},
+     {header: "plannedFinish", accessor: "plannedFinish", date:true},
+     { header: "Actions", accessor: "actions", edit: true }
+   ]
+ 
+   return (
+     <>
+   <DataTable columns={columnsSetup} data={operations} />
+   </>
+   )
+ }
 
 export default ProductionListPage;
 
-
-
-export const productionLoader = async (): Promise<OperationHandler[]> => {
-  const token = localStorage.getItem("token");
-  const response = await fetch("http://localhost:3000/operation-handlers", {
-    headers: {
-      Authorization: "Bearer "+token
-    }
-  });
-  const data = await response.json();
-  return data;
-};
 
