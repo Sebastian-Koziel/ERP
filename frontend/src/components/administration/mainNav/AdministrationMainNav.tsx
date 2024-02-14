@@ -29,6 +29,16 @@ function AdministrationMainNav() {
       {hasAccessToStages() && (
         <Button variant="ghost" colorScheme="purple">
           <NavLink
+            to="plan"
+            className={(navData) => (navData.isActive ? "active" : undefined)}
+          >
+            Plan
+          </NavLink>
+        </Button>
+      )},
+      {hasAccessToStages() && (
+        <Button variant="ghost" colorScheme="purple">
+          <NavLink
             to="orders"
             className={(navData) => (navData.isActive ? "active" : undefined)}
           >
