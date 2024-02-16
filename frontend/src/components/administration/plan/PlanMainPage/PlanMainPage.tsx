@@ -8,6 +8,7 @@ import {
 import { FetchError } from "../../workspaces/Utils/singleWorkspaceLoader";
 import FetchErrorComponent from "../../../errorHandling/FetchErrorComponent";
 import { planMainPageConsolidatedData } from "../Utils/planMainPageLoader";
+import TimelineComponent from "../../../../hooks/vis-timeline/vis-timeline";
 
 
 function PlanMainPage() {
@@ -34,15 +35,17 @@ function PlanMainPage() {
     // Handle errors within consolidated data
     const errors = [
       'Error in stages: ' + (operationHandlers as FetchError).error,
-      'Error in workspaceTypes: ' + (workspaces as FetchError).error
+      'Error in workspaces: ' + (workspaces as FetchError).error
     ];
     return <FetchErrorComponent errors={errors} />;
   }
   return (
     <>
-    plan
+    <TimelineComponent workspaces={workspaces} operationHandlers={operationHandlers} />
     </>
   )
 }
+
+export default PlanMainPage
 
 

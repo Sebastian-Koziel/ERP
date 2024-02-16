@@ -17,7 +17,7 @@ import {
 import { FetchError } from "../../workspaces/Utils/singleWorkspaceLoader";
 import FetchErrorComponent from "../../../errorHandling/FetchErrorComponent";
 import { newProductConsolidatedData } from "../utils/newProductLoader";
-import VisNetwork from "../../../../hooks/form/vis-network";
+import VisNetwork from "../../../../hooks/vis-network/vis-network";
 import { OperationComponentAddition } from "./AddOperationComponent";
 import { OperationsList } from "./ListOfOperations";
 import { useInput } from "../../../../hooks/form/use-input";

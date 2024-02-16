@@ -7,7 +7,7 @@ import { useEffect } from "react";
 
 
 
-function ProductsRoot() {
+function PlanRoot() {
   const user = storageGetUser();
   const toast = useToast();
   const navigate = useNavigate();
@@ -41,4 +41,4 @@ function ProductsRoot() {
   );
 }
 
-export default ProductsRoot;
+export default PlanRoot;

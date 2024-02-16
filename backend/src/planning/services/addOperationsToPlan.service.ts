@@ -45,7 +45,13 @@ addOperationHandlersToPlan = async (operarationHandlersIds: string[]) => {
         };
         await this.operationHandlersService.update(operation._id, attr);
     }
-    console.log(allOperationHandlers);
+
+    for (const workspace of workspaces) {
+        let attr: Partial<Workspace> = {
+            avaiableForJobAt: workspace.avaiableForJobAt
+        };
+        await this.workspaceService.update(workspace._id, attr);
+    }
 
 }
 
@@ -108,8 +114,8 @@ setUpTimesInOHandler = (oHandler: OperationHandler, workspaces: Workspace[], all
     let duration: number = oHandler.timePerPiece * oHandler.totalQty; 
     //set times
     oHandler.plannedStart = timeToStart;
-    oHandler.plannedFinish = timeToStart + duration;
-    bestWorkspace.avaiableForJobAt = timeToStart + duration;
+    oHandler.plannedFinish = timeToStart + duration * 1000;
+    bestWorkspace.avaiableForJobAt = oHandler.plannedFinish;
     //change as calculated
     oHandler.calculated = true;
     oHandler.workSpace_id = bestWorkspace._id;

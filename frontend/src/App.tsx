@@ -25,6 +25,7 @@ import ProductionRoot from "./components/production/Root/ProductionRoot";
 import OperationHandlerDetails, { operationHandlerLoader } from "./components/production/Details/operationHandlerDetails";
 import OperationHanldersList from "./components/production/StagePage/OperationHanldersList";
 import CanvasRoot from "./components/CanvasTest/Root/CanvasRoot";
+import { planRoutes } from "./Routes/AdministrationPlan";
 
 
 
@@ -67,6 +68,7 @@ const router = createBrowserRouter([
         element: <Summary />,
       },
       userRoutes,
+      planRoutes,
       operationsRoutes,
       stagesRoutes,
       workspacesRoutes,
