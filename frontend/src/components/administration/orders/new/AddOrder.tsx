@@ -10,7 +10,9 @@ import {
   FormControl,
   FormLabel,
   FormHelperText,
-  useToast
+  useToast,
+  List,
+  Heading
 } from "@chakra-ui/react";
 
 import { useInput } from "../../../../hooks/form/use-input";
@@ -20,10 +22,9 @@ import { addNewOrderFetcher } from "../utils/postNewOrder";
 import FetchErrorComponent from "../../../errorHandling/FetchErrorComponent";
 import { FetchError, newOrderConsolidatedData } from "../utils/newOrderLoader";
 import AddProductToOrder from "./AddProductToOrder";
-import { ProductForOrder } from "../Interfaces/ProductForOrder";
+import { ProductForOrder } from "../Interfaces/ProductForOrder.interface";
+import ProductListItem from "./ProductListItem";
 
-//TO DO - adding a new product to the list will be a whole new fitcher
-//TO DO - listing a products
 
 function AddNewOrder() {
   const toast = useToast();
@@ -53,6 +54,14 @@ const [productsforOrder, setProductsforOrder] = useState<ProductForOrder[]>([]);
 
 const AddProductToTheList = (product:ProductForOrder) => {
   setProductsforOrder([...productsforOrder, product]);
+}
+
+const RemoveProductsFromTheList = (id:number) => {
+  console.log(id)
+  console.log(productsforOrder)
+  setProductsforOrder(productsforOrder.filter(product => product.id !== id));
+  
+  
 }
 
   //inputs handlers
@@ -111,7 +120,6 @@ const newOrderData:CreateOrderData = {
   reqDeliveryDate: reqDeliveryDate,
   products: productsforOrder as ProductForOrder[]
 };
-console.log(newOrderData);
   try {
     const response = await addNewOrderFetcher(newOrderData);
     toast({
@@ -153,6 +161,22 @@ if (enteredNameIsValid && enteredCommentIsValid && dateIsValid && enteredExterna
     <Container mt="1rem" mb="1rem" centerContent>
     <Box>
         <Form onSubmit={handleSubmit}>
+        <Button 
+          type="submit" 
+          isDisabled = {!formIsValid}
+          >
+            ADD
+          </Button>
+
+          <Button
+            type="button"
+            onClick={cancelHandler}
+            disabled={isSubmitting}
+            variant="outline"
+            colorScheme="purple"
+          >
+            Cancel
+          </Button>
           <FormControl isInvalid={nameInputHasError} isRequired>
             <FormLabel>
               Name:
@@ -227,25 +251,17 @@ if (enteredNameIsValid && enteredCommentIsValid && dateIsValid && enteredExterna
       />
       {dateInputHasError && <FormErrorMessage>{dateErrorMessage}</FormErrorMessage>}
     </FormControl>
-    <Button 
-          type="submit" 
-          isDisabled = {!formIsValid}
-          >
-            ADD
-          </Button>
-
-          <Button
-            type="button"
-            onClick={cancelHandler}
-            disabled={isSubmitting}
-            variant="outline"
-            colorScheme="purple"
-          >
-            Cancel
-          </Button>
+    
     </Form>
     </Box>
+    <Heading size="md" mt={"20px"}>Add products:</Heading>
     <AddProductToOrder products={products} AddProductToTheList={AddProductToTheList}/>
+    {productsforOrder.length > 0 && (<Heading size="md" mt={"20px"}>Products in your order:</Heading>)}
+    <List>
+        {productsforOrder.map((product: ProductForOrder) => (
+          <ProductListItem key={product.id} product={product} editing={false} inProduction={false} products={products} RemoveProductsFromTheList={RemoveProductsFromTheList}/>
+        ))}
+      </List>
     </Container>
     
     </>

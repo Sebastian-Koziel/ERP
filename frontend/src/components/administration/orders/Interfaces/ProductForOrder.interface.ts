@@ -1,5 +1,6 @@
 export interface ProductForOrder {
-    producId: string
+    id: number
+    productId: string
     qty: string
     
 }

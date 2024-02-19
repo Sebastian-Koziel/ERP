@@ -1,4 +1,4 @@
-import { ProductForOrder } from "./ProductForOrder"
+import { ProductForOrder } from "./ProductForOrder.interface"
 
 export interface Order {
     _id: string
@@ -7,5 +7,6 @@ export interface Order {
     externalOrderNo: string
     reqDeliveryDate: Date
     products: ProductForOrder[]
+    inProduction: boolean
     
 }

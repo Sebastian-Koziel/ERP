@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Get, Param, UseGuards } from '@nestjs/common';
+import { Body, Controller, Post, Get, Param, UseGuards, Delete } from '@nestjs/common';
 import { AuthGuard } from '../auth/auth.guard';
 import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dtos/createNewOrder.dtos';
@@ -37,6 +37,11 @@ export class OrdersController {
     @Post('start')
     async startOrder(@Body() body: StartOrderDto) {
         return this.startOrderService.startOrder(body.orderId);
+    }
+
+    @Delete('/:id')
+    async remove(@Param('id') id:string){
+        this.orderService.remove(id);
     }
 }
 

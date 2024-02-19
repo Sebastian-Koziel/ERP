@@ -1,5 +1,5 @@
 
-import { ProductForOrder } from "./ProductForOrder"
+import { ProductForOrder } from "./ProductForOrder.interface"
 
 export interface CreateOrderData {
     name: string

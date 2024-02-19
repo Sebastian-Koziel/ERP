@@ -240,28 +240,4 @@ const newProductdata: CreateProduct = {
 
 export default AddNewProduct;
 
-/* export async function action({ request }: { request: Request }) {
-  
-  const data = await request.formData();
-  
-  const product = {
-    name: data.get("name"),
-    comment: data.get("comment"), 
-    operations: JSON.parse(data.get("operationsForProduct"))[0].items 
-  };
-
-  console.log(product);
-
-  try {
-    await addNewProductFetch(product);
-  } catch (err) {
-    return err;
-  }
-  
-  //const resData: string = await response.json();
-
-  return redirect("/administration/products");
-  //return redirect("/administration/workspaces/" + resData);
-} */
-
 

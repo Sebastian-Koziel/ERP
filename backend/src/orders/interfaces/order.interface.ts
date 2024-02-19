@@ -13,5 +13,6 @@ export interface Order extends Document {
         {productId: string
          qty: number }
     ]
+    inProduction: boolean
     
 }

@@ -22,5 +22,10 @@ export const OrderSchema = new mongoose.Schema({
             type: Number
         }
         }
-    ]
+    ],
+    inProduction : {
+        type: Boolean,
+        default: false
+    }
+
 });
