@@ -46,7 +46,9 @@ export class StartOrderService {
         });
 
         await Promise.all(promises);
-
+        //change order status to inproduction
+        const attr = {inProduction: true};
+        await this.orderService.update(orderId, attr);
 
         return {
         statusCode: 200,

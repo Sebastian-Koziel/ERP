@@ -259,7 +259,7 @@ if (enteredNameIsValid && enteredCommentIsValid && dateIsValid && enteredExterna
     {productsforOrder.length > 0 && (<Heading size="md" mt={"20px"}>Products in your order:</Heading>)}
     <List>
         {productsforOrder.map((product: ProductForOrder) => (
-          <ProductListItem key={product.id} product={product} editing={false} inProduction={false} products={products} RemoveProductsFromTheList={RemoveProductsFromTheList}/>
+          <ProductListItem key={product.id} product={product} editing={true} inProduction={false} products={products} RemoveProductsFromTheList={RemoveProductsFromTheList}/>
         ))}
       </List>
     </Container>

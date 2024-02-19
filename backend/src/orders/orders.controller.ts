@@ -5,6 +5,7 @@ import { CreateOrderDto } from './dtos/createNewOrder.dtos';
 import { Order } from './interfaces/order.interface';
 import { StartOrderDto } from './dtos/startOrder.dtos';
 import { StartOrderService } from './services/startOrder.service';
+import { UpdateOrderData } from './interfaces/updateOrder.interface';
 
 
 
@@ -37,6 +38,11 @@ export class OrdersController {
     @Post('start')
     async startOrder(@Body() body: StartOrderDto) {
         return this.startOrderService.startOrder(body.orderId);
+    }
+
+    @Post('update')
+    updateOrder(@Body() body: UpdateOrderData) {
+        return this.orderService.update(body.id, body.attr);
     }
 
     @Delete('/:id')

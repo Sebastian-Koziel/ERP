@@ -61,6 +61,7 @@ if ('error' in order || 'error' in products) {
 const [orderToEdit, setOrderToEdit] = useState(order);
 const [productsforOrder, setProductsforOrder] = useState<ProductForOrder[]>(orderToEdit.products);
 
+
 const AddProductToTheList = (product:ProductForOrder) => {
   setProductsforOrder([...productsforOrder, product]);
 }
@@ -72,6 +73,7 @@ const RemoveProductsFromTheList = (id:number) => {
 //edit handle
 //set up state
 const [editing, setEditing] = useState(false);
+const [productsPreEdit, setProductsPreEdit] = useState(productsforOrder);
 
 const editButtonHandler = () =>{
   //cancel editing
@@ -79,10 +81,14 @@ const editButtonHandler = () =>{
     nameReset();
     commentReset();
     externalNoReset();
+    setProductsforOrder(productsPreEdit)
+    
   }
   if(!orderToEdit.inProduction){
   //go into editing if not editing
   setEditing(!editing);
+  setProductsPreEdit(productsforOrder);
+  
   }
     else{
     toast({
@@ -122,8 +128,7 @@ const submitFormHandler = async () => {
       duration: 5000,
       isClosable: true
     });
-    //fix state without fetching
-    //setOperationToBeEdited({...operation, ...data.attr});
+    
     //turn off editing
     setEditing(!editing);
   } catch (err: any) {
@@ -197,7 +202,8 @@ const submitFormHandler = async () => {
         position: 'top',
         isClosable: true
       });
-      //if editing - edit off
+      //fix state without fetching
+      setOrderToEdit({ ...orderToEdit, inProduction: true });
     } catch (error:any) {
       toast({
         title: "Error.",

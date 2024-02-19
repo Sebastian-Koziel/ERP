@@ -15,7 +15,6 @@ import {
   Box,
 } from "@chakra-ui/react";
 
-import { WorkspaceType } from "../../workspaceTypes/Interfaces/WorkspaceType";
 import { FetchError, newOperationConsolidatedData } from "../Utils/newOperationLoader";
 import FetchErrorComponent from "../../../errorHandling/FetchErrorComponent";
 import { addNewOperationFetcher } from "../Utils/addNewOperation";

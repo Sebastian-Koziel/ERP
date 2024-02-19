@@ -94,7 +94,8 @@ const submitFormHandler = async () => {
     attr : {
       name: enteredName,
       comment: enteredComment,
-      workSpaceTypeId: enteredWorkspaceType
+      workSpaceTypeId: enteredWorkspaceType,
+      timePerPiece: enteredTimePerUnit
     }
   }
   try {
@@ -104,10 +105,11 @@ const submitFormHandler = async () => {
       description: "operation has been successfully updated",
       status: "success",
       duration: 5000,
+      position: 'top',
       isClosable: true
     });
     //fix state without fetching
-    setOperationToBeEdited({...operation, ...data.attr});
+    setOperationToBeEdited({...operationToBeEdited, ...data.attr});
     //turn off editing
     setEditing(!editing);
   } catch (err: any) {
@@ -116,6 +118,7 @@ const submitFormHandler = async () => {
       description: err.message || "Something went wrong with updating this operation",
       status: "error",
       duration: 5000,
+      position: 'top',
       isClosable: true
     });
   }
@@ -154,10 +157,20 @@ const {
   cancelEdit: workspaceTypeCancelEdit,
 } = useSelect(workspaceTypes,[], operationToBeEdited.workSpaceTypeId);
 
+const { 
+  value: enteredTimePerUnit,
+  isValid: enteredTimePerUnitIsValid,
+  hasError: timePerUnitInputHasError, 
+  valueChangeHandler: timePerUnitChangedHandler, 
+  inputBlurHandler: timePerUnitBlurHandler,
+  message: timePerUnitErrorMessage,
+  cancelEdit: timePerUnitReset
+} = useInput([{name: 'required'}], operationToBeEdited.timePerPiece);
+
 //form overall validation
 let formIsValid = false;
 
-if (enteredNameIsValid && enteredCommentIsValid && enteredWorkspaceTypeIsValid) {
+if (enteredNameIsValid && enteredCommentIsValid && enteredWorkspaceTypeIsValid && enteredTimePerUnitIsValid) {
   formIsValid = true;
 }
 //delete handler
@@ -272,6 +285,25 @@ if(operationInUse){
                 </FormHelperText>
                 ) : (
                 <FormErrorMessage>{workSpaceTypeErrorMessage}</FormErrorMessage>
+                )}      
+    </FormControl>
+    <FormControl isRequired>
+    <FormLabel>Time per piece</FormLabel>
+    <Input
+            id="timePerUnit"
+            type="number"
+            name="timePerUnit"
+            onChange={timePerUnitChangedHandler}
+            onBlur={timePerUnitBlurHandler}
+            value={enteredTimePerUnit}
+            disabled={!editing}
+          />
+          {!timePerUnitInputHasError? (
+                <FormHelperText>
+                Please provide a time for one piece in seconds
+                </FormHelperText>
+                ) : (
+                <FormErrorMessage>{timePerUnitErrorMessage}</FormErrorMessage>
                 )}      
     </FormControl>
     <Button 
