@@ -2,7 +2,6 @@ import { useState } from "react";
 import UserGeneralInfo from "../GeneralInfo/UserGeneralInfo";
 import UserProductionSettings from "../Production/userProductionSettings";
 import UserAccess from "../AccessAndRoles/userAccessAndRoles";
-import { fetchUserById } from "../../Utils/fetchUserByID";
 import { useLoaderData, useNavigate, useNavigation } from "react-router-dom";
 import {
   Tabs,
@@ -12,9 +11,12 @@ import {
   TabPanel,
   useToast,
 } from "@chakra-ui/react";
-import { editUserConsolidatedData } from "../../Utils/userDetailsLoader";
+
 import { FetchError } from "../../../workspaces/Utils/singleWorkspaceLoader";
 import FetchErrorComponent from "../../../../errorHandling/FetchErrorComponent";
+import { UpdateUserData } from "../../Interfaces/updateUser.interface";
+import { updateUser } from "../../Utils/updateUser";
+import { editUserConsolidatedData } from "../../Utils/editUserLoader";
 
 function UsersDetailsRoot() {
   const toast = useToast();
@@ -23,10 +25,6 @@ function UsersDetailsRoot() {
 
   const isSubmitting = navigation.state === "submitting";
 
-  function cancelHandler() {
-    navigate("..");
-  }
-
   //handle fetching
   const routeData = useLoaderData() as editUserConsolidatedData | FetchError;
     
@@ -34,19 +32,47 @@ function UsersDetailsRoot() {
     
     return <FetchErrorComponent errors={routeData.error} />;
   }
-  const { user } = routeData;
+  const { user, stages } = routeData;
   // Check for errors within consolidated data
-  if ('error' in user) {
+  if ('error' in user || 'error' in stages) {
     // Handle errors within consolidated data
     const errors = [
-      'Error in workspaceTypes: ' + (user as FetchError).error,
+      'Error in users: ' + (user as FetchError).error,
+      'Error in stages: ' + (stages as FetchError).error,
     ];
     return <FetchErrorComponent errors={errors} />;
   }
 
-
   const [userToBeEdited, setUserToBeEdited] = useState(user);
   const [tab, setTab] = useState('general');
+
+  //handle saving changes
+  const handleSave = async (data: UpdateUserData) => {
+   
+  try {
+    const response = await updateUser(data);
+    toast({
+      title: "User updated",
+      description: "User data has been updated",
+      status: "success",
+      duration: 5000,
+      position: 'top',
+      isClosable: true
+    });
+    
+  } catch (err: any) {
+    toast({
+      title: "Error.",
+      description: err.message || "Something went wrong",
+      status: "error",
+      position: 'top',
+      duration: 5000,
+      isClosable: true
+    });
+  }
+    
+  };
+
 
   return (
     <>
@@ -63,7 +89,7 @@ function UsersDetailsRoot() {
             <UserGeneralInfo user={userToBeEdited} setUser={setUserToBeEdited} />
           </TabPanel>
           <TabPanel>
-            <UserProductionSettings user={userToBeEdited} />
+            <UserProductionSettings user={userToBeEdited} setUser={setUserToBeEdited} stages={stages} handleSave={handleSave}/>
           </TabPanel>
           <TabPanel>
             <UserAccess user={userToBeEdited} setUser={setUserToBeEdited}/>

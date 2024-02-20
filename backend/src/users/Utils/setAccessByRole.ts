@@ -5,6 +5,7 @@ interface Access {
         production: {
             generalAccess: boolean
             stagesAccess: string[]
+            mainStage: string
         },
         administration: {
             generalAccess: boolean
@@ -24,7 +25,8 @@ export const setAccessByRoles = (role:string) => {
         defaultStartPage: '',
         production: {
             generalAccess: false,
-            stagesAccess: []
+            stagesAccess: [],
+            mainStage: ''
         },
         administration: {
             generalAccess: false,
@@ -43,7 +45,8 @@ export const setAccessByRoles = (role:string) => {
             defaultStartPage: '/production',
             production: {
                 generalAccess: true,
-                stagesAccess: []
+                stagesAccess: [],
+                mainStage: ''
             },
             administration: {
                 generalAccess: false,
@@ -63,7 +66,8 @@ export const setAccessByRoles = (role:string) => {
             defaultStartPage: '/administration',
             production: {
                 generalAccess: true,
-                stagesAccess: []
+                stagesAccess: [],
+                mainStage: ''
             },
             administration: {
                 generalAccess: true,

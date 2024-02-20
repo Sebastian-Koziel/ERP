@@ -1,9 +1,11 @@
-export const moveIdTo0Index = (id:string, array:string[]) => {
-    const index = array.indexOf(id);
-    if (index !== -1) {
-      // If the main stage ID is found in the array, move it to the beginning.
-      const mainStage = array.splice(index, 1)[0]; // Remove the main stage from its current position
-      array.unshift(mainStage); // Add the main stage to the beginning
-    }
-    return array;
-  }
+import { Stage } from "../../productionStages/interfaces/Stage.interface";
+
+export const mapIdsToStages = (stageIds:string[], allStages:Stage[]) => {
+  return stageIds.map(stageId => {
+      const stage = allStages.find(stage => stage._id === stageId);
+      if (stage) {
+          return { _id: stage._id, name: stage.name };
+      }
+      return null; // Handle the case where the stage ID doesn't match any stage
+  }).filter(stage => stage !== null); // Remove null values if any
+};

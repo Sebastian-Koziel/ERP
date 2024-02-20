@@ -12,6 +12,7 @@ export interface User {
         production: {
             generalAccess: boolean
             stagesAccess: string[]
+            mainStage: string
         },
         administration: {
             generalAccess: boolean

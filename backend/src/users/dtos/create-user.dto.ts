@@ -22,6 +22,7 @@ export class CreateUserDto {
     production: {
         generalAccess: boolean
         stagesAccess: string[]
+        mainStage: string
     },
     administration: {
         generalAccess: boolean

@@ -1,5 +1,4 @@
 import { User } from "../../Interfaces/user.interface";
-import { Form, useRouteLoaderData } from "react-router-dom";
 import {
   Container,
   Input,
@@ -13,8 +12,7 @@ import { roles } from "../../Utils/roles";
 import { useState } from "react";
 import { useInput } from "../../../../../hooks/form/use-input";
 import { useSelect } from "../../../../../hooks/form/use-select";
-import { UpdateGeneralUserInfo } from "../../Interfaces/updateGeneralInfo.interface";
-import { updateUser } from "../../Utils/postUpdateOnUser";
+import { Form } from "react-router-dom";
 
 function UserGeneralInfo(props:any) {
   
@@ -81,27 +79,6 @@ function UserGeneralInfo(props:any) {
     setEditing(!editing);
   }
 
-  //submitting changes
-  const submitFormHandler = async () => {
-    const data: UpdateGeneralUserInfo = {
-      id: user._id,
-      attr : {
-        login: enteredLogin,
-        name: enteredName,
-        surname:enteredSurname,
-        role: enteredRole
-      }
-    }
-    try {
-      const response = await updateUser(data);
-      //fix state with out fetching
-      setUser({...user, ...data.attr});
-    } catch (err) {
-      return err;
-    }
-    setEditing(!editing);
-  }
-
   return (
     <>
     <Form method="post">
@@ -159,7 +136,7 @@ function UserGeneralInfo(props:any) {
           </Select>
         </Form>
         <button onClick={editButtonHandler}>{!editing? 'Edit' : 'cancel' }</button>
-            {editing && (<button disabled={!formIsValid} onClick={submitFormHandler}>save</button>)}
+            {editing && (<button disabled={!formIsValid} onClick={()=>console.log(`nice`)}>save</button>)}
         </>
   );
 }

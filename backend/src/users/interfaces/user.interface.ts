@@ -13,6 +13,7 @@ export interface User extends Document {
         production: {
             generalAccess: boolean
             stagesAccess: string[]
+            mainStage: string
         },
         administration: {
             generalAccess: boolean

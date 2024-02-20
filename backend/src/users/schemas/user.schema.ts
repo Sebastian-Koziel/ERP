@@ -36,6 +36,10 @@ export const UserSchema = new mongoose.Schema({
             stagesAccess: {
                 type: Array,
                 default: []
+            },
+            mainStage: {
+                type: String,
+                default: ''
             }
         },
         administration: {

@@ -1,62 +1,47 @@
-import { useEffect, useState } from "react";
-import { fetchAllStages } from "../../../productionStages/utils/fetchAllStages";
 import { Stage } from "../../../productionStages/interfaces/Stage.interface";
 import { User } from "../../Interfaces/user.interface";
-import { UpdateUserStagesAccess } from "../../Interfaces/updateStagesAccess";
-import { updateUser } from "../../Utils/postUpdateOnUser";
-import { Box, Button, Checkbox, FormControl, FormLabel, Select, VStack } from "@chakra-ui/react";
-import { moveIdTo0Index } from "../../Utils/utils";
+import { Box, Button, Checkbox, FormControl, FormErrorMessage, FormHelperText, FormLabel, Select, VStack } from "@chakra-ui/react";
+import { mapIdsToStages} from "../../Utils/utils";
+import { useEffect, useState } from "react";
+import { useSelect } from "../../../../../hooks/form/use-select";
+import { UpdateUserData } from "../../Interfaces/updateUser.interface";
 
 interface userAccesProps {
   user: User
   setUser:React.Dispatch<React.SetStateAction<any>>
   stages: Stage[]
+  handleSave: any
 }
 
- const UserProductionSettings:React.FC<userAccesProps> = ({user, setUser, stages}) => {
-
-  //const [user, setUser] = useState<User>(props.user)
-  //fetched stages from DB
-  //const [stages, setStages] = useState<Stage[]>([]);
-  stages = []
-  useEffect(()=>{
-    const fetchData = async() => {
-      try {
-      const fetchedStages = await fetchAllStages()
-      
-      //setStages(fetchedStages);
-      
-      }catch(err){
-        return err
-      }
-    }
-    fetchData();
-
-    if (user.access.production.stagesAccess.length > 0) {
-      setMainStage(user.access.production.stagesAccess[0]);
-    }
-
-  }, []);
+ const UserProductionSettings:React.FC<userAccesProps> = ({user, setUser, stages, handleSave}) => {
 
   const [selectedStages, setSelectedStages] = useState<string[]>(user.access.production.stagesAccess);
-  const [mainStage, setMainStage] = useState<string>('');
+  const [mainStageOptions, setMainStageOptions] = useState<any[]>([]);
 
+  useEffect(() => {
+    const mappedStages = mapIdsToStages(selectedStages, stages);
+    setMainStageOptions(mappedStages);
+  }, [selectedStages, stages]);
 
   const handleCheckboxChange = (stageId: string) => {
-    
-      if (selectedStages.includes(stageId)) {
-        setSelectedStages(selectedStages.filter((id) => id !== stageId));
-      } else {
-        setSelectedStages([...selectedStages, stageId]);
-      }
-    
-  };
+    //if selected - unselect
+    if (selectedStages.includes(stageId)) {
+      setSelectedStages(selectedStages.filter((id) => id !== stageId));
+    } else {
+      setSelectedStages([...selectedStages, stageId]);
+    }
+ }
 
-  const handleMainStageSelect = (stageId: string) => {
-    
-      setMainStage(stageId);
-    
-  };
+  const {
+    value: enteredMainStage, 
+    isValid: enteredMainStageIsValid,
+    hasError: mainStageInputHasError, 
+    valueChangeHandler: mainStageChangedHandler, 
+    inputBlurHandler: mainStageBlurHandler,
+    generateOptions: mainStageGenerateOptions,
+    message: mainStageErrorMessage,
+    cancelEdit: resetMainStage
+  } = useSelect(mainStageOptions,[], user.access.production.mainStage);
 
   //handle editing
   const [editing, setEditing] = useState(false);
@@ -64,39 +49,34 @@ interface userAccesProps {
     if(editing){
       //reset values when cancel
       setSelectedStages(user.access.production.stagesAccess);
-      setMainStage('');
-      if (user.access.production.stagesAccess.length > 0) {
-        setMainStage(user.access.production.stagesAccess[0]);
-      }
+      resetMainStage();
     }
     setEditing(!editing);
   }
 
-  //submitting changes
-  const submitFormHandler = async () => {
-    //move mainStage id to first index in stages array
-    const newList = moveIdTo0Index(mainStage, selectedStages);
-    const data: UpdateUserStagesAccess = {
+  //saving
+  const handleSaveButton = () => {
+    let finalMainstage = enteredMainStage === '' ? selectedStages[0] : enteredMainStage;
+  
+    const data: UpdateUserData = {
       id: user._id,
-      attr: {
-        access:{
-          ...user.access, 
-          production:{
-            ...user.access.production,
-            stagesAccess: newList
+      attr : {
+        login: user.login,
+        name : user.name,
+        surname: user.surname,
+        role: user.role,
+        access: {
+          ...user.access,
+          production: {
+              ...user.access.production,
+              stagesAccess: selectedStages,
+              mainStage: finalMainstage
           }
         }
       }
     }
-    try {
-      const response = await updateUser(data);
-      //fix state with out fetching
-      setUser({...user, ...data.attr.access});
-      
-    } catch (err) {
-      return err;
-    }
-    setEditing(!editing);
+    handleSave(data);
+    setEditing(!editing)
   }
 
 return (
@@ -120,26 +100,32 @@ return (
         </VStack>
       </FormControl>
       
-      <div>
-        <h2>Select Main Stage (if you don`t select it will pick first one)</h2>
-        <Select 
-        value={mainStage} 
-        onChange={(e) => handleMainStageSelect(e.target.value)}
-        isDisabled={!editing}
-        >
-        <option value="">main stage</option>
-          {selectedStages.map((stageId) => (
-            <option key={stageId} value={stageId}>
-              {stages.find((stage) => stage._id === stageId)?.name}
-            </option>
-          ))}
-        </Select>
-      </div>
+      <FormControl>
+      <FormLabel>Workspace type for this operation</FormLabel>
+          <Select 
+            id="mainStage"
+            name="mainStage" 
+            value={enteredMainStage}
+            onChange={mainStageChangedHandler}
+            onBlur={mainStageBlurHandler}
+            placeholder="Select main stage"
+            disabled={!editing}
+            >
+          {mainStageGenerateOptions()}   
+          </Select>
+          {!mainStageInputHasError? (
+                <FormHelperText>
+                Pick a workspace type
+                </FormHelperText>
+                ) : (
+                <FormErrorMessage>{mainStageErrorMessage}</FormErrorMessage>
+                )}      
+    </FormControl>
       <Button onClick={editButtonHandler}>
         {!editing ? "Edit" : "Cancel"}
       </Button>
       {editing && (
-        <Button onClick={submitFormHandler} colorScheme="purple">
+        <Button onClick={handleSaveButton} colorScheme="purple">
           Save
         </Button>)}
       </Box>

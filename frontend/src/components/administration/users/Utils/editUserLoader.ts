@@ -1,4 +1,6 @@
 
+import { Stage } from "../../productionStages/interfaces/Stage.interface";
+import { fetchAllStages } from "../../productionStages/utils/fetchAllStages";
 import { User } from "../Interfaces/user.interface";
 import { fetchUserById } from "./fetchUserByID";
 
@@ -12,6 +14,7 @@ interface FetchError {
 
 export interface editUserConsolidatedData {
     user: User | FetchError;
+    stages: Stage[] | FetchError
     
     
   }
@@ -21,16 +24,17 @@ export interface editUserConsolidatedData {
 
     try {
       const userPromise = fetchUserById(_id);
-      
+      const stagesPromise = fetchAllStages();
       
       
       // Add more resource URLs as needed
   
-      const [user] = await Promise.all([userPromise]);
+      const [user, stages] = await Promise.all([userPromise, stagesPromise]);
       
       // Consolidate the data
       const consolidatedData: editUserConsolidatedData = {
-        user  
+        user,  
+        stages
       };
   
       return consolidatedData;

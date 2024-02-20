@@ -404,5 +404,3 @@ const deleteHandler = () => {
 }
 
 export default OrderDetails;
-
-
