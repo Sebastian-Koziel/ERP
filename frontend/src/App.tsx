@@ -22,10 +22,12 @@ import { ordersRoutes } from "./Routes/AdministrationOrders";
 import { productionRoutes } from "./Routes/AdministrationProduction";
 //production view
 import ProductionRoot from "./components/production/Root/ProductionRoot";
-import OperationHandlerDetails, { operationHandlerLoader } from "./components/production/Details/operationHandlerDetails";
-import OperationHanldersList from "./components/production/StagePage/OperationHanldersList";
 import CanvasRoot from "./components/CanvasTest/Root/CanvasRoot";
 import { planRoutes } from "./Routes/AdministrationPlan";
+import ProductionMainPage from "./components/production/ProductionMainPage/ProductionMainPage";
+import { fetchAllStages } from "./components/administration/productionStages/utils/fetchAllStages";
+import { operationHandlerDetailsLoader } from "./components/production/Utils/operationHandlerDetailsLoader";
+import { OperationHandlerDetails } from "./components/production/Details/operationHandlerDetails";
 
 
 
@@ -41,12 +43,13 @@ const router = createBrowserRouter([
     children: [
       {
         path: "",
-        element: <OperationHanldersList />, 
+        element: <ProductionMainPage />,
+        loader: fetchAllStages 
       }, 
       {
         path: ":operationHandlerId",
-        element: <OperationHandlerDetails />, 
-        loader: operationHandlerLoader
+        element: <OperationHandlerDetails />,
+        loader: operationHandlerDetailsLoader 
       }, 
     ],
   },

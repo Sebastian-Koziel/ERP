@@ -39,7 +39,7 @@ export class StartOrderService {
         //for all products
         const promises = productsToAdd.map(async product => {
         //create operation handlers    
-        const newOperationHandlersIds = await this.createOperationHandlersForProductService.createOperationsTreeForProduct(product, '');
+        const newOperationHandlersIds = await this.createOperationHandlersForProductService.createOperationsTreeForProduct(product, '', orderToStart);
         //and add them to the plan
         this.AddOperationsToPlanService.addOperationHandlersToPlan(newOperationHandlersIds);
         

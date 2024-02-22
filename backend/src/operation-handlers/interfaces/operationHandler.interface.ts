@@ -11,6 +11,9 @@ export class OperationHandler extends Document{
     workspaceType_id: string
     timePerPiece: number
   
+    //progress
+    startedAt: number
+    inProgress: boolean
     
     //plan
     plannedStart: number | null

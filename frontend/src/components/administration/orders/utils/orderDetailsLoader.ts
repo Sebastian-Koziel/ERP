@@ -1,8 +1,6 @@
 
 import { Product } from "../../products/Interfaces/Product.interface";
 import { fetchAllProducts } from "../../products/utils/fetchAllProducts";
-import { WorkspaceType } from "../../workspaceTypes/Interfaces/WorkspaceType";
-import { fetchAllWorkspaceTypes } from "../../workspaceTypes/Utils/fetchAllWorkspaceTypes";
 import { Order } from "../Interfaces/Order.interface";
 import { fetchOrderById } from "./fetchOrderById";
 

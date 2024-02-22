@@ -45,7 +45,7 @@ function UsersDetailsRoot() {
 
   const [userToBeEdited, setUserToBeEdited] = useState(user);
   const [tab, setTab] = useState('general');
-
+  console.log(stages)
   //handle saving changes
   const handleSave = async (data: UpdateUserData) => {
    

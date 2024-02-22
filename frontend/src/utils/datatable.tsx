@@ -27,7 +27,7 @@ interface Column {
   edit?: boolean;
   byId?: boolean;
   date?: boolean;
-  data?: { _id: string; [key: string]: string }[];
+  data?: any
   key?: string
 }
 
@@ -51,7 +51,7 @@ const DataTable: React.FC<DataTableProps> = ({ columns, data} ) => {
   //function to handle row render
   const renderColumn = (row: DataRow, column: Column): string => {
     if (column.byId && column.data && column.key) {
-      const matchingObject = column.data.find(obj => obj._id === row[column.accessor]);
+      const matchingObject = column.data.find((obj:any) => obj._id === row[column.accessor]);
       return matchingObject ? matchingObject[column.key] : '';
     }
     if (column.date){

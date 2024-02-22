@@ -11,6 +11,9 @@ export interface OperationHandler {
     workspaceType_id: string
     timePerPiece: number
   
+    //progress
+    startedAt: number
+    inProgress: boolean
     
     //plan
     plannedStart: number | null

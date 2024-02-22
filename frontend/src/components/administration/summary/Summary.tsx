@@ -9,14 +9,12 @@ function Summary() {
           Main Page
         </Heading>
         <Divider />
-        <Text mb="0.5rem"> Orders on time summary</Text>
-
-        <Text mb="0.5rem">
-          complaint summary
+       <Text>
+        loreum luptum
+          
         </Text>
         <Text>
-          Ogolnie rozne sekcje z informacjami ktore mozna wlaczac/wyl w
-          ustawieniach wedlug zapotrzebowania
+          
         </Text>
       </Container>
     </Container>

@@ -3,6 +3,7 @@ import { Operation } from "src/operations/interfaces/operation.interface";
 import { OperationHandlersService } from "../operation-handlers.service";
 import { CreateOperationHandlerDto } from "../dtos/createOperationHandler.dtos";
 import { OperationsService } from "src/operations/operations.service";
+import { Order } from "src/orders/interfaces/order.interface";
 
 
 //** Service takes a product and parent id **/
@@ -16,7 +17,7 @@ constructor(
     private operationService: OperationsService
     ){}
 
-    async createOperationsTreeForProduct(product, parentId:string){
+    async createOperationsTreeForProduct(product, parentId:string, orderToStart:Order){
         console.log(`creating operation handlers`)
         let createdOperationHandlers = []
         //add children array to each operation
@@ -34,7 +35,7 @@ constructor(
             //id of parent operation handler
             let parentOH_id = currentNode.parentOH_id;
             //create and add to DB new operation handler with basic data
-            const newOperationHandler:any = await this.createNewOperationHandler(operation, 'order_id','orderLine_id', parentOH_id, product.qty);
+            const newOperationHandler:any = await this.createNewOperationHandler(operation, orderToStart._id,'orderLine_id', parentOH_id, product.qty);
             createdOperationHandlers.push(newOperationHandler._id.toString());
              //if it there is a parent to the current operation handler
             if(parentOH_id !== ''){

@@ -1,8 +1,8 @@
 import { Navigate, Outlet } from "react-router-dom";
 import { isLogged } from "../../../services/auth";
 import TopBar from "../../administration/topbar/TopBar";
-import StagesBar from "../StagePage/StagesBar";
-import OperationHanldersList from "../StagePage/OperationHanldersList";
+import StagesBar from "../StageTopBar/StagesBar";
+import OperationHanldersList from "../ProductionMainPage/ProductionMainPage";
 import { useState } from "react";
 
 

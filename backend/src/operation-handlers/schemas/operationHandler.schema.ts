@@ -49,7 +49,15 @@ export const OperationHandlerSchema = new mongoose.Schema({
         default: false
     },
 
-    
+    //progress
+    startedAt: {
+        type: Number,
+        default: 0
+    },
+    inProgress:{ 
+        type: Boolean,
+        default: false
+    },
 
     //architecture
     parentOperationHandler_id: {

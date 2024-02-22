@@ -119,7 +119,7 @@ setUpTimesInOHandler = (oHandler: OperationHandler, workspaces: Workspace[], all
     //change as calculated
     oHandler.calculated = true;
     oHandler.workSpace_id = bestWorkspace._id;
-    oHandler.stage_id = bestWorkspace._id;
+    oHandler.stage_id = bestWorkspace.stage_id;
 }
 
 
