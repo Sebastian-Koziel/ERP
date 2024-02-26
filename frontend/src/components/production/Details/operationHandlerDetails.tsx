@@ -4,7 +4,7 @@ import { postOperationDone } from "../Utils/postOperationDone";
 import { useState } from "react";
 import { startJobData } from "../interfaces/startJobData.interface";
 import { updateOperationHandler } from "../Utils/updateOperationHandler";
-import { useToast } from "@chakra-ui/react";
+import { Container, useToast } from "@chakra-ui/react";
 import { operationHandlerDetailsConsolidatedData } from "../Utils/operationHandlerDetailsLoader";
 import { FetchError } from "../Utils/singleStageLoader";
 import FetchErrorComponent from "../../errorHandling/FetchErrorComponent";
@@ -74,6 +74,7 @@ const startJobButtonHandler = async () =>{
 
     return (
         <>
+        <Container>
         <div>
         <h2>{operationHandler.name}</h2>
         <p>Operation Comment: {}</p>
@@ -81,6 +82,7 @@ const startJobButtonHandler = async () =>{
         <button onClick={startJobButtonHandler}>Start Job</button>
         <button onClick={goBackHandler}>Go Back to List</button>
         </div>
+        </Container>
         </>
     )
 
