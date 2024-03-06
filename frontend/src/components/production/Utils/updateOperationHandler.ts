@@ -1,7 +1,8 @@
 import { storageGetToken } from "../../../utils/localhostHandlers";
+import { finishJobData } from "../interfaces/finishJobData.interface";
 import { startJobData } from "../interfaces/startJobData.interface";
 
-export async function updateOperationHandler(data: startJobData) {
+export async function updateOperationHandler(data: startJobData | finishJobData) {
 
     const token = storageGetToken();
 

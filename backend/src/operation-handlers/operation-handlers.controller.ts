@@ -4,12 +4,15 @@ import { OperationHandlersService } from './operation-handlers.service';
 import { CreateOperationHandlerDto } from 'src/operation-handlers/dtos/createOperationHandler.dtos';
 import { OperationHandler } from './interfaces/operationHandler.interface';
 import { UpdateOperationHandlerData } from './dtos/updateOperationHandler.dtos';
+import { finishOperationHandlerData } from './dtos/finishOperationHandler.dtos';
+import { finishOperationHandlerService } from './services/finishOperationHandler.service';
 
 
 @Controller('operation-handlers')
 export class OperationHandlersController {
 constructor(
     private operationHandlerService: OperationHandlersService,
+    private finishOperationService: finishOperationHandlerService
 ){}
 
 @UseGuards(AuthGuard)
@@ -33,10 +36,16 @@ constructor(
     async createNewOrder(@Body() body: CreateOperationHandlerDto){
         return await this.operationHandlerService.create(body);
         
-    }
-    @UseGuards(AuthGuard)
-    @Post('update')
-    updateUser(@Body() body: UpdateOperationHandlerData) {
+}
+@UseGuards(AuthGuard)
+@Post('update')
+updateOperationHandler(@Body() body: UpdateOperationHandlerData) {
         return this.operationHandlerService.update(body.id, body.attr);
+    }
+
+@UseGuards(AuthGuard)
+@Post('finish')
+finishOperationHandler(@Body() body: finishOperationHandlerData) {
+        return this.finishOperationService.finishOperation(body);
     }
 }
