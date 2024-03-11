@@ -1,7 +1,4 @@
 import { useLoaderData, useNavigate} from "react-router-dom";
-import { OperationHandler } from "../../administration/Production/Interfaces/operationHandler.interface";
-import { postOperationDone } from "../Utils/postOperationDone";
-import { useState } from "react";
 import { startJobData } from "../interfaces/startJobData.interface";
 import { updateOperationHandler } from "../Utils/updateOperationHandler";
 import { Box, Button, Heading, Text, useToast } from "@chakra-ui/react";
@@ -9,6 +6,7 @@ import { operationHandlerDetailsConsolidatedData } from "../Utils/operationHandl
 import { FetchError } from "../Utils/singleStageLoader";
 import FetchErrorComponent from "../../errorHandling/FetchErrorComponent";
 import { finishJobData } from "../interfaces/finishJobData.interface";
+import { finishOperationHandlerPost } from "../Utils/finishOperationHandler";
 
 
 export const OperationHandlerDetails: React.FC = () => {
@@ -75,23 +73,23 @@ const data: finishJobData = {
 id: operationHandler._id,
 attr : {
   finishedAt: Date.now(),
-  inProgress: true
 }
 }
 try {
-const response = await updateOperationHandler(data);
+const response = await finishOperationHandlerPost(data);
 toast({
   title: "Success",
-  description: "job started",
+  description: "job finished",
   status: "success",
   duration: 5000,
   position: 'top',
   isClosable: true
 });
+navigate("..");
 } catch (err: any) {
 toast({
   title: "Error.",
-  description: err.message || "Something went wrong with starting this job",
+  description: err.message || "Something went wrong with finishing this job",
   status: "error",
   duration: 5000,
   position: 'top',
@@ -113,9 +111,9 @@ toast({
         <Text>Operation Comment: </Text>
         <Text>Qty to Do: {operationHandler.totalQty}</Text>
         {operationHandler.inProgress ? (
-          <Button m="10px" onClick={startJobButtonHandler}>Finish Job</Button>
+          <Button m="10px" onClick={finishJobButtonHandler}>Finish Job</Button>
         ) : (
-          <Button onClick={startJobButtonHandler}>Start Job</Button>
+          <Button m="10px" onClick={startJobButtonHandler}>Start Job</Button>
         )}
         <Button onClick={goBackHandler}>Go Back to List</Button>
       </Box>

@@ -14,8 +14,18 @@ constructor(
     ){}
 
     async finishOperation(attr: finishOperationHandlerData){
-     
-    
+        console.log(`gonna finis: ${attr.id}`);
+
+        //get operation handler
+        //check if closing full
+        //check if there is next step
+
+
+
+        return {
+        statusCode: 200,
+        message: 'Job has been successfuly closed.',
+        }
     }
 }
 
