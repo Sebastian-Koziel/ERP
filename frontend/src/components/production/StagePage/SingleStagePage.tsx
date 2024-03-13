@@ -45,6 +45,7 @@ const SingleStagePage: React.FC<AddOperationFormProps> = ({currentStageId}) => {
         {header: "order name", accessor: "order_id", byId: true, data: orders, key: "name" },
         {header: "name", accessor: "name"},
         {header: "totalQty", accessor: "totalQty"},
+        {header: "avaiable", accessor: "avaiableQty"},
         {header: "planed start", accessor: "plannedStart", date:true},
         { header: "Actions", accessor: "actions", edit: true }
       ]

@@ -13,6 +13,7 @@ export interface OperationHandler {
   
     //progress
     startedAt: number
+    finishedAt: number
     inProgress: boolean
     
     //plan

@@ -71,9 +71,8 @@ const finishJobButtonHandler = async () =>{
   //set data
 const data: finishJobData = {
 id: operationHandler._id,
-attr : {
-  finishedAt: Date.now(),
-}
+time: 4444,
+qty: 40
 }
 try {
 const response = await finishOperationHandlerPost(data);

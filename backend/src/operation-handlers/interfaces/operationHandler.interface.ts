@@ -13,6 +13,7 @@ export class OperationHandler extends Document{
   
     //progress
     startedAt: number
+    finishedAt: number
     inProgress: boolean
     
     //plan

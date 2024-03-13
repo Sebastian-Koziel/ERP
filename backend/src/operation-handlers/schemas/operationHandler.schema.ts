@@ -54,6 +54,10 @@ export const OperationHandlerSchema = new mongoose.Schema({
         type: Number,
         default: 0
     },
+    finishedAt: {
+        type: Number,
+        default: 0
+    },
     inProgress:{ 
         type: Boolean,
         default: false
